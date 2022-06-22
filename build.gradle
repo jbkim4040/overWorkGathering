@@ -40,6 +40,16 @@ dependencies {
 
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     runtime('mysql:mysql-connector-java')
+    
+    
+    // mapper 어노테이션 설정
+    implementation 'org.mapstruct:mapstruct:1.4.2.Final'
+    annotationProcessor "org.mapstruct:mapstruct-processor:1.4.2.Final"
+    // lombok 에서 mapstruct binding 해주는 기능이 추가되었습니다.!
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
 }
 
 test {
