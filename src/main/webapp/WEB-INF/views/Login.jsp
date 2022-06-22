@@ -77,8 +77,6 @@
                 <input type="hidden" id="RSAExponent" value="${RSAExponent}" />
                 <button class="btn btn-primary d-grid w-100" href="btn_login" onclick="btn_login_onclick()">로그인</button>
               </div>
-                <input type="hidden" id="rsaPublicKeyModulus" value="<%=publicKeyModulus%>" />
-                <input type="hidden" id="rsaPublicKeyExponent" value="<%=publicKeyExponent%>" />
                 <a href="<%=request.getContextPath()%>/loginFailure.jsp" onclick="validateEncryptedForm(); return false;">로그인</a>
                 <form id="securedLoginForm" name="securedLoginForm" action="<%=request.getContextPath()%>/login" method="post" style="display: none;">
                     <input type="hidden" name="securedUsername" id="securedUsername" value="" />
@@ -116,24 +114,11 @@
     console.log("아이디 >>>>> " + id.val());
     console.log("비밀번호 >>>>> " + pw.val());
 
-    var rsa = new RSAKey();
-    rsa.setPublic($('#RSAModulus').val(),$('#RSAExponent').val());
-    console.log("RSAModulus >>>>> " + $('#RSAModulus').val());
-    console.log("RSAExponent >>>>> " + $('#RSAExponent').val());
-
     var encryptId = "";
     var encryptPw = "";
 
-    if(id.val() == "test"){
-        encryptId = id.val();
-        encryptPw = pw.val();
-    }else{
-        encryptId = rsa.encrypt(id.val());
-        encryptPw = rsa.encrypt(pw.val());
-    }
-
-    console.log("암호화 아이디 >>>>> " + encryptId);
-    console.log("암호화 비밀번호 >>>>> " + encryptPw);
+    encryptId = id.val();
+    encryptPw = pw.val();
 
     $.ajax({
         url:"/user/auth",
@@ -144,8 +129,12 @@
         },
         dataType : "json",
         success: function(result) {
+            debugger;
+
         },
-        error: function() {
+        error: function(request, error) {
+            debugger;
+            alert("code:" + request.status + "\n message:" + request.responseText+"\n error:" + error);
         }
     })
   }
