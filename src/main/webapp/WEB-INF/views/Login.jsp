@@ -4,13 +4,11 @@
 <head>
 <meta charset="UTF-8">
 <title>로그인</title>
-
-
     <script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script type="text/javascript" src="/js/rsa.js"></script>
-    <script type="text/javascript" src="/js/jsbn.js"></script>
-    <script type="text/javascript" src="/js/prng4.js"></script>
-    <script type="text/javascript" src="/js/rng.js"></script>
+    <script type="text/javascript" src="../js/rsa.js"></script>
+    <script type="text/javascript" src="../js/jsbn.js"></script>
+    <script type="text/javascript" src="../js/prng4.js"></script>
+    <script type="text/javascript" src="../js/rng.js"></script>
   <!-- Core CSS -->
     <link rel="stylesheet" href="../css/core.css" class="template-customizer-core-css" />
     <link rel="stylesheet" href="../css/theme-default.css" class="template-customizer-theme-css" />
@@ -34,14 +32,14 @@
                  <span class="app-brand-text demo text-body fw-bolder" style="padding-bottom:10px;">로그인</span>
               </div>
               <!-- /Logo -->
-
+            <form method="post" action="/user/auth" onsubmit="return login()">
               <div class="mb-3">
                 <label for="userId" class="form-label">아이디</label>
                 <input
                   type="text"
                   class="form-control"
                   id="userId"
-                  name="email-username"
+                  name="userId"
                   placeholder="ID"
                   autofocus
                 />
@@ -74,9 +72,11 @@
               <div class="mb-3">
                 <input type="hidden" id="RSAModulus" value="${RSAModulus}" />
                 <input type="hidden" id="RSAExponent" value="${RSAExponent}" />
-                <button class="btn btn-primary d-grid w-100" href="btn_login" onclick="btn_login_onclick()">로그인</button>
+                <input type="hidden" id="USER_ID" name="USER_ID">
+                <input type="hidden" id="USER_PW" name="USER_PW">
+                <input class="btn btn-primary d-grid w-100" type="submit" value="로그인">
               </div>
-                <a href="<%=request.getContextPath()%>/loginFailure.jsp" onclick="validateEncryptedForm(); return false;">로그인</a>
+              </form>
                 <form id="securedLoginForm" name="securedLoginForm" action="<%=request.getContextPath()%>/login" method="post" style="display: none;">
                     <input type="hidden" name="securedUsername" id="securedUsername" value="" />
                     <input type="hidden" name="securedPassword" id="securedPassword" value="" />
@@ -94,65 +94,52 @@
       </div>
     </div>
 <script>
-  <%
-    session = request.getSession();
-  %>
-  document.addEventListener('DOMContentLoaded', function() {
-    <%
-        String login = (String)session.getAttribute("login");
-        %>
-        //alert("login CODE :: " + <%out.print(login);%>);
+    document.addEventListener('DOMContentLoaded', function() {
+        debugger;
         <%
-        if(login == "999"){
+            session = request.getSession();
+            String login = (String)session.getAttribute("login");
+
+            if(login == "999"){
+            %>
+                alert("로그인에 실패하였습니다. \n 다시 로그인하여 주십시오.");
+                $("#userId").val = "";
+                $("#password").val = "";
+            <%
+            }
         %>
-            alert("로그인에 실패하였습니다. \n 다시 로그인하여 주십시오.");
-        <%
-        }else{
-        %>
-            //alert("부적절한 접근입니다.");
-        <%
-        }
+    })
 
-    %>
-
-  })
-
-  btn_login_onclick = function(){
+  function login(){
       var id = $("#userId");
       var pw = $("#password");
+
       if(id.val() == ""){
-          alert("아이디를 입력해주세요.");
-          id.focus();
-          return false;
+      alert("아이디를 입력 해주세요.");
+      id.focus();
+      return false;
       }
+
       if(pw.val() == ""){
-          alert("비밀번호를 입력해주세요.");
-          pw.focus();
-          return false;
+       alert("비밀번호를 입력 해주세요.");
+       pw.focus();
+       return false;
       }
-      console.log("로그인 버튼 클릭");
-      console.log("아이디 >>>>> " + id.val());
-      console.log("비밀번호 >>>>> " + pw.val());
-      var encryptId = "";
-      var encryptPw = "";
-      encryptId = id.val();
-      encryptPw = pw.val();
-      $.ajax({
-          url:"/user/auth",
-          type:"POST",
-          data: {
-            userId : encryptId,
-            pw : encryptPw
-          },
-          success: function(response, result) {
-              debugger;
-          },
-          error: function(request, error) {
-              debugger;
-              alert("code:" + request.status + "\n message:" + request.responseText+"\n error:" + error);
-          }
-      })
-    }
+
+      // rsa 암호화
+      var rsa = new RSAKey();
+      rsa.setPublic($('#RSAModulus').val(),$('#RSAExponent').val());
+
+      $("#USER_ID").val(rsa.encrypt(id.val()));
+      $("#USER_PW").val(rsa.encrypt(pw.val()));
+
+      console.log("encrypt ID :: " + rsa.encrypt(id.val()));
+      console.log("encrypt PASSWORD :: " + rsa.encrypt(pw.val()));
+
+      id.val("");
+      pw.val("");
+      return true;
+  }
 
 </script>
 </body>

@@ -27,9 +27,21 @@
   </div>
 </div>
 <script>
-var id = "hirofac";
+var id = "";
+var name = "";
 
   document.addEventListener('DOMContentLoaded', function() {
+     <%
+        session = request.getSession();
+        String userId = (String)session.getAttribute("userId");
+        String userName = (String)session.getAttribute("userName");
+    %>
+
+    id = "<%=userId%>";
+    name = "<%=userName%>";
+
+    alert(name + "님 환영합니다.");
+
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',

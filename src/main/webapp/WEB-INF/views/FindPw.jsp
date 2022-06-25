@@ -46,7 +46,7 @@
                 <button class="btn btn-primary d-grid w-100">메일 발송</button>
               </form>
               <div class="text-center">
-                <a href="Login" class="d-flex align-items-center justify-content-center">
+                <a href="/login" class="d-flex align-items-center justify-content-center">
                   <i class="bx bx-chevron-left scaleX-n1-rtl bx-sm"></i>
                   로그인 화면으로
                 </a>

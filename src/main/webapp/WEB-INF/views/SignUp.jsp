@@ -3,7 +3,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>회원가입</title>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript" src="../js/rsa.js"></script>
+    <script type="text/javascript" src="../js/jsbn.js"></script>
+    <script type="text/javascript" src="../js/prng4.js"></script>
+    <script type="text/javascript" src="../js/rng.js"></script>
 
 <!-- Core CSS -->
     <link rel="stylesheet" href="../css/core.css" class="template-customizer-core-css" />
@@ -31,14 +36,14 @@
               </div>
               <!-- /Logo -->
 
-              <form id="formAuthentication" class="mb-3" action="index.html" method="POST">
+              <form id="formAuthentication" class="mb-3" action="/user/signUp" method="POST" onsubmit="return login()">
                 <div class="mb-3">
-                  <label for="username" class="form-label">아이디</label>
+                  <label for="userId" class="form-label">아이디</label>
                   <input
                     type="text"
                     class="form-control"
-                    id="username"
-                    name="username"
+                    id="userId"
+                    name="userId"
                     placeholder="ID"
                     autofocus
                   />
@@ -63,11 +68,11 @@
                 </div>
 
                 <div class="mb-3 form-password-toggle">
-                  <label class="form-label" for="password">비밀번호 확인</label>
+                  <label class="form-label" for="passwordCk">비밀번호 확인</label>
                   <div class="input-group input-group-merge">
                     <input
-                      type="password"
-                      id="password"
+                      type="passwordCk"
+                      id="passwordCk"
                       class="form-control"
                       name="password"
                       placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
@@ -77,25 +82,35 @@
                   </div>
                 </div>
                 <div class="mb-3">
+                  <label for="name" class="form-label">이름</label>
+                  <input type="text" class="form-control" id="name" name="name" placeholder="name" maxlength="6"/>
+                </div>
+                <div class="mb-3">
                   <label for="phone" class="form-label">전화번호</label>
-                  <input type="text" class="form-control" id="phone" name="phone" placeholder="phone" />
+                  <input type="text" class="form-control" id="phone" name="phone" placeholder="phone" maxlength="12"/>
                 </div>
                 <div class="mb-3">
                 	<label for="phone" class="form-label">파트</label>
-                	<select class="form-select" name="part">
-                		<option value="">a</option>
-                		<option value="">b</option>
-                		<option value="">c</option>
+                	<select class="form-select" name="part" id="part">
+                		<option value="a">a</option>
+                		<option value="b">b</option>
+                		<option value="c">c</option>
                 	</select>
                 </div>
                 <div class="mb-3">
                 	<label for="phone" class="form-label">파트 리더</label>
-                	<select class="form-select" name="part">
-                		<option value="">아무개</option>
+                	<select class="form-select" name="partleader" id="partleader">
+                		<option value="아무개">아무개</option>
                 	</select>
                 </div>
-
-                <button class="btn btn-primary d-grid w-100">회원가입</button>
+                <input type="hidden" id="RSAModulus" value="${RSAModulus}" />
+                <input type="hidden" id="RSAExponent" value="${RSAExponent}" />
+                <input type="hidden" id="USER_ID" name="USER_ID">
+                <input type="hidden" id="USER_PW" name="USER_PW">
+                <input type="hidden" id="USER_NAME" name="USER_NAME">
+                <input type="hidden" id="USER_EMAIL" name="USER_EMAIL">
+                <input type="hidden" id="USER_PHONE" name="USER_PHONE">
+                <input class="btn btn-primary d-grid w-100" type="submit" value="회원가입">
               </form>
             </div>
           </div>
@@ -103,5 +118,69 @@
         </div>
       </div>
     </div>
+
+<script>
+  function login(){
+      var id = $("#userId");
+      var pw = $("#password");
+      var name = $("#name");
+      var email = $("#email");
+      var phone = $("#phone");
+
+      if(id.val() == ""){
+      alert("아이디를 입력 해주세요.");
+      id.focus();
+      return false;
+      }
+
+      if(pw.val() == ""){
+       alert("비밀번호를 입력 해주세요.");
+       pw.focus();
+       return false;
+      }
+
+      if(pw.val() == ""){
+       alert("이름을 입력 해주세요.");
+       pw.focus();
+       return false;
+      }
+
+      if(email.val() == ""){
+       alert("이메일을 입력 해주세요.");
+       email.focus();
+       return false;
+      }
+
+      if(phone.val() == ""){
+       alert("전화번호를 입력 해주세요.");
+       phone.focus();
+       return false;
+      }
+
+      // rsa 암호화
+      var rsa = new RSAKey();
+      rsa.setPublic($('#RSAModulus').val(),$('#RSAExponent').val());
+
+      $("#USER_ID").val(rsa.encrypt(id.val()));
+      $("#USER_PW").val(rsa.encrypt(pw.val()));
+      $("#USER_NAME").val(rsa.encrypt(name.val()));
+      $("#USER_EMAIL").val(rsa.encrypt(email.val()));
+      $("#USER_PHONE").val(rsa.encrypt(phone.val()));
+
+      console.log("encrypt ID :: " + rsa.encrypt(id.val()));
+      console.log("encrypt PASSWORD :: " + rsa.encrypt(pw.val()));
+      console.log("encrypt NAME :: " + rsa.encrypt(name.val()));
+      console.log("encrypt EMAIL :: " + rsa.encrypt(email.val()));
+      console.log("encrypt PHONE :: " + rsa.encrypt(phone.val()));
+
+      id.val("");
+      pw.val("");
+      name.val("");
+      email.val("");
+      phone.val("");
+      return true;
+  }
+
+</script>
 </body>
 </html>
