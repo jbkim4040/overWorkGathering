@@ -35,7 +35,6 @@
               </div>
               <!-- /Logo -->
 
-
               <div class="mb-3">
                 <label for="userId" class="form-label">아이디</label>
                 <input
@@ -95,50 +94,65 @@
       </div>
     </div>
 <script>
-  btn_login_onclick = function(){
-    var id = $("#userId");
-    var pw = $("#password");
-
-    if(id.val() == ""){
-        alert("아이디를 입력해주세요.");
-        id.focus();
-        return false;
-    }
-
-    if(pw.val() == ""){
-        alert("비밀번호를 입력해주세요.");
-        pw.focus();
-        return false;
-    }
-    console.log("로그인 버튼 클릭");
-    console.log("아이디 >>>>> " + id.val());
-    console.log("비밀번호 >>>>> " + pw.val());
-
-    var encryptId = "";
-    var encryptPw = "";
-
-    encryptId = id.val();
-    encryptPw = pw.val();
-
-    $.ajax({
-        url:"/user/auth",
-        type:"POST",
-        data: {
-          userId : encryptId,
-          pw : encryptPw
-        },
-        dataType : "json",
-        success: function(result) {
-            debugger;
-
-        },
-        error: function(request, error) {
-            debugger;
-            alert("code:" + request.status + "\n message:" + request.responseText+"\n error:" + error);
+  <%
+    session = request.getSession();
+  %>
+  document.addEventListener('DOMContentLoaded', function() {
+    <%
+        String login = (String)session.getAttribute("login");
+        %>
+        //alert("login CODE :: " + <%out.print(login);%>);
+        <%
+        if(login == "999"){
+        %>
+            alert("로그인에 실패하였습니다. \n 다시 로그인하여 주십시오.");
+        <%
+        }else{
+        %>
+            //alert("부적절한 접근입니다.");
+        <%
         }
-    })
-  }
 
+    %>
+
+  })
+
+  btn_login_onclick = function(){
+      var id = $("#userId");
+      var pw = $("#password");
+      if(id.val() == ""){
+          alert("아이디를 입력해주세요.");
+          id.focus();
+          return false;
+      }
+      if(pw.val() == ""){
+          alert("비밀번호를 입력해주세요.");
+          pw.focus();
+          return false;
+      }
+      console.log("로그인 버튼 클릭");
+      console.log("아이디 >>>>> " + id.val());
+      console.log("비밀번호 >>>>> " + pw.val());
+      var encryptId = "";
+      var encryptPw = "";
+      encryptId = id.val();
+      encryptPw = pw.val();
+      $.ajax({
+          url:"/user/auth",
+          type:"POST",
+          data: {
+            userId : encryptId,
+            pw : encryptPw
+          },
+          success: function(response, result) {
+              debugger;
+          },
+          error: function(request, error) {
+              debugger;
+              alert("code:" + request.status + "\n message:" + request.responseText+"\n error:" + error);
+          }
+      })
+    }
 
 </script>
 </body>

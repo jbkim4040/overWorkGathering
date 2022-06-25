@@ -27,16 +27,22 @@ public class UserService {
 	private static String RSA_INSTANCE = "RSA"; // rsa transformation
 
 
-	public boolean auth(HttpServletRequest request, HttpServletResponse response, UserDTO userInfo) throws Exception{
+	public void auth(HttpServletRequest request, HttpServletResponse response, UserDTO userInfo, HttpSession session) throws Exception{
 		UserEntity user = userRepository.findByUserIdAndPw(userInfo.getUserId(), userInfo.getPw());
-		HttpSession session = request.getSession();
 
-		System.out.println("ID >>>>> " + user.getUserId());
+		// 로그인 코드가 999 : 실패     000 : 성공
 		if(user.getUserId() == null || user.getUserId().equals("")){
-			return false;
-		};
-		session.setAttribute("ID", user.getUserId());
-		return true;
+			response.setStatus(999);
+			session.setAttribute("userInfo", user);
+			session.setAttribute("login", "999");
+			System.out.println("login CODE >>>>> " + (String) session.getAttribute("login"));
+		}else{
+			response.setStatus(000);
+			session.setAttribute("userInfo", user);
+			session.setAttribute("login", "000");
+			System.out.println("login CODE >>>>> " + (String) session.getAttribute("login"));
+		}
+
 	}
 
 
