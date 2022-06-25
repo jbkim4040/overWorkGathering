@@ -33,12 +33,13 @@ public class UserService {
 		// 로그인 코드가 999 : 실패     000 : 성공
 		if(user.getUserId() == null || user.getUserId().equals("")){
 			response.setStatus(999);
-			session.setAttribute("userInfo", user);
 			session.setAttribute("login", "999");
 			System.out.println("login CODE >>>>> " + (String) session.getAttribute("login"));
 		}else{
 			response.setStatus(000);
 			session.setAttribute("userInfo", user);
+			session.setAttribute("userId", user.getUserId());
+			session.setAttribute("auth", user.getAuth());
 			session.setAttribute("login", "000");
 			System.out.println("login CODE >>>>> " + (String) session.getAttribute("login"));
 		}
