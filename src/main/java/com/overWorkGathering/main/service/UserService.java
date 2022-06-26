@@ -32,6 +32,8 @@ public class UserService {
 
 
 	public void auth(String userId, String pw, HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception{
+
+
 		UserEntity user = userRepository.findByUserIdAndPw(userId, pw);
 
 		// 로그인 코드가 999 : 실패     000 : 성공
@@ -46,10 +48,10 @@ public class UserService {
 
 	}
 
-	public boolean duplicatedIdCheck(String userId) throws Exception{
+	public String duplicatedIdCheck(String userId) throws Exception{
 		UserEntity user = userRepository.findByUserId(userId);
 
-		return ObjectUtils.isEmpty(user);
+		return ObjectUtils.isEmpty(user) ? "N" : "Y";
 	}
 
 

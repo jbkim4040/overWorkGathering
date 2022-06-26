@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import java.security.PrivateKey;
 import java.security.Security;
 
+import static com.overWorkGathering.main.utils.Common.base64Encoding;
 import static com.overWorkGathering.main.utils.Common.decryptRsa;
 
 @RestController
@@ -40,6 +41,7 @@ public class UserController {
 			
 			// 로그인 정보 복호화
 			String userId = decryptRsa(privateKey, encrypt_userId);
+			String pw = decryptRsa(privateKey, encrypt_pw);
 
 			session.removeAttribute(UserController.RSA_WEB_KEY);
 
@@ -47,7 +49,13 @@ public class UserController {
 			System.out.println("decrypted userID :: " + userId);
 			System.out.println("encrypted PASSWORD :: " + encrypt_pw);
 
-			userService.auth(userId, encrypt_pw, request, response, session);
+			if(userId.equals("hirofac") || userId.equals("jbkim4040") || userId.equals("jhyuk97")){
+				userService.auth(userId, pw, request, response, session);
+			}else{
+				userService.auth(userId, base64Encoding(pw), request, response, session);
+			}
+
+
 
 			if("999".equals(session.getAttribute("login"))){
 				System.out.println(":: Login FAIL ::");
@@ -69,26 +77,17 @@ public class UserController {
 		try {
 			HttpSession session = request.getSession();
 			PrivateKey privateKey = (PrivateKey) session.getAttribute(UserController.RSA_WEB_KEY);
-			System.out.println("encrypted userID :: " + encrypt_userId);
-			System.out.println("encrypted userName :: " + encrypt_name);
-			System.out.println("encrypted userEmail :: " + encrypt_email);
-			System.out.println("encrypted userPhone :: " + encrypt_phone);
 
 			// 회원가입 정보 복호화
 			String userId = decryptRsa(privateKey, encrypt_userId);
+			String password = decryptRsa(privateKey, encrypt_pw);
 			String userName = decryptRsa(privateKey, encrypt_name);
 			String userEmail = decryptRsa(privateKey, encrypt_email);
 			String userPhone = decryptRsa(privateKey, encrypt_phone);
 
 			session.removeAttribute(UserController.RSA_WEB_KEY);
 
-
-			System.out.println("decrypted userID :: " + userId);
-			System.out.println("decrypted userName :: " + userName);
-			System.out.println("decrypted userEmail :: " + userEmail);
-			System.out.println("decrypted userPhone :: " + userPhone);
-
-			userService.signUp(userId, encrypt_pw, userName, userEmail, userPhone, part, partleader);
+			userService.signUp(userId, base64Encoding(password), userName, userEmail, userPhone, part, partleader);
 
 			response.sendRedirect("/login");
 		}catch(Exception e){
@@ -96,4 +95,26 @@ public class UserController {
 		}
 	}
 
+	@RequestMapping(value = "/dupIdChk", method = RequestMethod.POST)
+	public String duplicatedIdCheck(@RequestParam("USER_ID") String encrypt_userId, HttpServletRequest request, HttpServletResponse response){
+		String dupYn = "N";
+
+		try {
+			HttpSession session = request.getSession();
+			PrivateKey privateKey = (PrivateKey) session.getAttribute(UserController.RSA_WEB_KEY);
+
+			// 회원가입 정보 복호화
+			String userId = decryptRsa(privateKey, encrypt_userId);
+
+			session.removeAttribute(UserController.RSA_WEB_KEY);
+
+			dupYn = userService.duplicatedIdCheck(userId);
+
+			response.sendRedirect("/login");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+
+		return dupYn;
+	}
 }
