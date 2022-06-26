@@ -46,6 +46,7 @@ var name = "";
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',
+
 	  views: {
 	  	dayGridMonth: {
            type: 'dayGrid',

@@ -45,6 +45,8 @@ public class Common {
         //AES256 방식으로 암호화하기위한 설정
         Security.setProperty("crypto.policy", "unlimited");
 
+        System.out.println("privateKey :: " + privateKey);
+        System.out.println("securedValue :: " + securedValue);
         Cipher cipher = Cipher.getInstance(Common.RSA_INSTANCE);
         byte[] encryptedBytes = hexToByteArray(securedValue);
         cipher.init(Cipher.DECRYPT_MODE, privateKey);

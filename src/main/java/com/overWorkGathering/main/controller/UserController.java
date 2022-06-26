@@ -71,6 +71,10 @@ public class UserController {
 		try {
 			HttpSession session = request.getSession();
 			PrivateKey privateKey = (PrivateKey) session.getAttribute(UserController.RSA_WEB_KEY);
+			System.out.println("encrypted userID :: " + encrypt_userId);
+			System.out.println("encrypted userName :: " + encrypt_name);
+			System.out.println("encrypted userEmail :: " + encrypt_email);
+			System.out.println("encrypted userPhone :: " + encrypt_phone);
 
 			// 회원가입 정보 복호화
 			String userId = decryptRsa(privateKey, encrypt_userId);
@@ -80,13 +84,10 @@ public class UserController {
 
 			session.removeAttribute(UserController.RSA_WEB_KEY);
 
-			System.out.println("encrypted userID :: " + encrypt_userId);
+
 			System.out.println("decrypted userID :: " + userId);
-			System.out.println("encrypted userName :: " + encrypt_name);
 			System.out.println("decrypted userName :: " + userName);
-			System.out.println("encrypted userEmail :: " + encrypt_email);
 			System.out.println("decrypted userEmail :: " + userEmail);
-			System.out.println("encrypted userPhone :: " + encrypt_phone);
 			System.out.println("decrypted userPhone :: " + userPhone);
 
 			userService.signUp(userId, encrypt_pw, userName, userEmail, userPhone, part, partleader);

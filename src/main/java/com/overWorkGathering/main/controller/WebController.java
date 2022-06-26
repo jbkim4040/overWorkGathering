@@ -39,12 +39,6 @@ public class WebController {
 		// RSA 키 생성
 		initRsa(request);
 
-		HttpSession session = request.getSession();
-
-		if(!ObjectUtils.isEmpty(session.getAttribute("userId"))){
-			return "Calendar";
-		}
-
 		return "SignUp";
 	}
 	
