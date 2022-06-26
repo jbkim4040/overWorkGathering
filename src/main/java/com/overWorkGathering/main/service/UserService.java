@@ -38,10 +38,10 @@ public class UserService {
 		if(ObjectUtils.isEmpty(user)){
 			session.setAttribute("login", "999");
 		}else{
+			session.setAttribute("login", "000");
 			session.setAttribute("userId", user.getUserId());
 			session.setAttribute("userName", user.getName());
 			session.setAttribute("auth", user.getAuth());
-			session.setAttribute("login", "000");
 		}
 
 	}

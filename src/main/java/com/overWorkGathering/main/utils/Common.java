@@ -7,8 +7,10 @@ import org.springframework.stereotype.Controller;
 import javax.crypto.Cipher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.RSAPublicKeySpec;
+import java.util.Base64;
 
 @Controller
 public class Common {
@@ -66,4 +68,26 @@ public class Common {
         return bytes;
     }
 
+    /**
+     * Base64 인코딩
+     * @param info
+     * @return
+     */
+    public final static String base64Encoding(String info){
+        byte[] message = info.getBytes(StandardCharsets.UTF_8);
+        String encodedInfo = Base64.getEncoder().encodeToString(message);
+        System.out.println("encodedInfo :: " + encodedInfo);
+        return encodedInfo;
+    }
+
+    /**
+     * Base64 디코딩
+     * @param info
+     * @return
+     */
+    public final static String base64Decoding(String info){
+        byte[] decoded = Base64.getDecoder().decode(info);
+        System.out.println("decodedInfo :: " + new String(decoded, StandardCharsets.UTF_8));
+        return new String(decoded, StandardCharsets.UTF_8);
+    }
 }

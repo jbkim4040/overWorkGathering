@@ -39,17 +39,15 @@ public class UserController {
 			PrivateKey privateKey = (PrivateKey) session.getAttribute(UserController.RSA_WEB_KEY);
 			
 			// 로그인 정보 복호화
-			String userId = decryptRsa(privateKey, encrypt_userId);;
-			String pw = decryptRsa(privateKey, encrypt_pw);
+			String userId = decryptRsa(privateKey, encrypt_userId);
 
 			session.removeAttribute(UserController.RSA_WEB_KEY);
 
 			System.out.println("encrypted userID :: " + encrypt_userId);
 			System.out.println("decrypted userID :: " + userId);
 			System.out.println("encrypted PASSWORD :: " + encrypt_pw);
-			System.out.println("decrypted PASSWORD :: " + pw);
 
-			userService.auth(userId, pw, request, response, session);
+			userService.auth(userId, encrypt_pw, request, response, session);
 
 			if("999".equals(session.getAttribute("login"))){
 				System.out.println(":: Login FAIL ::");
