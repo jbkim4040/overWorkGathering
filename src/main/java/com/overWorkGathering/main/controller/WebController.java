@@ -3,6 +3,7 @@ package com.overWorkGathering.main.controller;
 import com.overWorkGathering.main.service.WorkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -37,6 +38,12 @@ public class WebController {
 	public String SignUp(final HttpServletRequest request) {
 		// RSA 키 생성
 		initRsa(request);
+
+		HttpSession session = request.getSession();
+
+		if(!ObjectUtils.isEmpty(session.getAttribute("userId"))){
+			return "Calendar";
+		}
 
 		return "SignUp";
 	}

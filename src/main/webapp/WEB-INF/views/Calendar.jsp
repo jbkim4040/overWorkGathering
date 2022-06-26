@@ -20,6 +20,7 @@
 	<div id='calendar-container' style="margin:0 auto; width:70%;">
 		<div id ='calendar'></div>
 	</div>
+
 <div class="modal hidden">
   <div class="bg"></div>
   <div class="modalBox">
