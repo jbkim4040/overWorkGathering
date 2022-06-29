@@ -141,6 +141,11 @@
       return true;
   }
 
+  window.onpageshow = function(event){
+      if(event.persisted){
+          location.href = "/login";
+      }
+    }
 </script>
 </body>
 </html>
