@@ -182,6 +182,11 @@
       return true;
   }
 
+  window.onpageshow = function(event){
+    if(event.persisted){
+        location.href = "/SignUp";
+    }
+  }
 </script>
 </body>
 </html>

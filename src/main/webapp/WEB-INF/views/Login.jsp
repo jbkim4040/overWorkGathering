@@ -145,7 +145,7 @@
       if(event.persisted){
           location.href = "/login";
       }
-    }
+  }
 </script>
 </body>
 </html>
