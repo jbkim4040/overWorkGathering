@@ -3,6 +3,7 @@ package com.overWorkGathering.main.controller;
 
 import com.overWorkGathering.main.DTO.UserDTO;
 import com.overWorkGathering.main.service.UserService;
+import com.overWorkGathering.main.utils.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,9 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.security.PrivateKey;
 import java.security.Security;
+import java.util.HashMap;
 
-import static com.overWorkGathering.main.utils.Common.base64Encoding;
-import static com.overWorkGathering.main.utils.Common.decryptRsa;
+import static com.overWorkGathering.main.utils.Common.*;
 
 @RestController
 @RequestMapping(path = "/user")
@@ -25,11 +26,11 @@ public class UserController {
 
 	@Autowired
 	UserService userService;
-	
+
 	@RequestMapping(value="/calendar", method = RequestMethod.GET)
 	public String calendar() {
 		System.out.println("CalendarCalendarCalendarCalendarCalendar");
-		
+
 		return "Calendar";
 	}
 
@@ -38,7 +39,7 @@ public class UserController {
 		try {
 			HttpSession session = request.getSession();
 			PrivateKey privateKey = (PrivateKey) session.getAttribute(UserController.RSA_WEB_KEY);
-			
+
 			// 로그인 정보 복호화
 			String userId = decryptRsa(privateKey, encrypt_userId);
 			String pw = decryptRsa(privateKey, encrypt_pw);
@@ -49,13 +50,7 @@ public class UserController {
 			System.out.println("decrypted userID :: " + userId);
 			System.out.println("encrypted PASSWORD :: " + encrypt_pw);
 
-			if(userId.equals("hirofac") || userId.equals("jbkim4040") || userId.equals("jhyuk97")){
-				userService.auth(userId, pw, request, response, session);
-			}else{
-				userService.auth(userId, base64Encoding(pw), request, response, session);
-			}
-
-
+			userService.auth(userId, pw, request, response, session);
 
 			if("999".equals(session.getAttribute("login"))){
 				System.out.println(":: Login FAIL ::");
@@ -71,9 +66,9 @@ public class UserController {
 
 	@RequestMapping(value = "/signUp", method = RequestMethod.POST)
 	public void signUp(@RequestParam("USER_ID") String encrypt_userId, @RequestParam("USER_PW") String encrypt_pw, @RequestParam("USER_NAME") String encrypt_name,
-					 @RequestParam("USER_EMAIL") String encrypt_email, @RequestParam("USER_PHONE") String encrypt_phone,
-					 @RequestParam("part") String part, @RequestParam("partleader") String partleader,
-					 HttpServletRequest request, HttpServletResponse response){
+					   @RequestParam("USER_EMAIL") String encrypt_email, @RequestParam("USER_PHONE") String encrypt_phone,
+					   @RequestParam("part") String part, @RequestParam("partleader") String partleader,
+					   HttpServletRequest request, HttpServletResponse response){
 		try {
 			HttpSession session = request.getSession();
 			PrivateKey privateKey = (PrivateKey) session.getAttribute(UserController.RSA_WEB_KEY);
@@ -87,7 +82,9 @@ public class UserController {
 
 			session.removeAttribute(UserController.RSA_WEB_KEY);
 
-			userService.signUp(userId, base64Encoding(password), userName, userEmail, userPhone, part, partleader);
+			HashMap<String, String> map = hashingPASSWORD(password, "");
+
+			userService.signUp(userId, map.get("password"), userName, userEmail, userPhone, part, partleader, map.get("salt"));
 
 			response.sendRedirect("/login");
 		}catch(Exception e){

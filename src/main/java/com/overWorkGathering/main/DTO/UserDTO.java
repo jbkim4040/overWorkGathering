@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class UserDTO {
-	
+
 	private String userId;
 	private String pw;
 	private String name;
@@ -16,17 +16,19 @@ public class UserDTO {
 	private String partleader;
 	private String auth;
 	private String phone;
-	
+	private String salt;
+
 	@Builder
 	public UserDTO(
-			String userId, 
-			String pw, 
-			String name, 
+			String userId,
+			String pw,
+			String name,
 			String email,
 			String part,
 			String partleader,
 			String auth,
-			String phone) {
+			String phone,
+			String salt) {
 		this.userId = userId;
 		this.pw = pw;
 		this.name = name;
@@ -35,5 +37,6 @@ public class UserDTO {
 		this.partleader = partleader;
 		this.auth = auth;
 		this.phone = phone;
+		this.salt = salt;
 	}
 }
