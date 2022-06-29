@@ -121,6 +121,37 @@
     </div>
 
 <script>
+  document.addEventListener('DOMContentLoaded', function() {
+
+
+
+    $.ajax({
+            url:"/work/retrievework",
+            type:"get",
+            data: {userId : id},
+            dataType : "json",
+            success: function(result) {
+            	debugger;
+                for(i = 0; i < result.length; i++){
+                    calendar.addEvent({
+                    	title : "  근무 시간  " + result[i].startTime + " ~ " + result[i].endTime + " ",
+                    	start : result[i].workDt
+                    });
+                    calendar.addEvent({
+                    	title : " 택시비 신청 여부  :  " + result[i].taxiYn,
+                    	start : result[i].workDt
+                    });
+                };
+
+
+            },
+            error: function() {
+                alert("에러 발생");
+            }
+        })
+
+  })
+
   function login(){
       var id = $("#userId");
       var pw = $("#password");

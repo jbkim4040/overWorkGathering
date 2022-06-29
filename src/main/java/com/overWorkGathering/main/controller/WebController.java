@@ -37,7 +37,7 @@ public class WebController {
 	}
 	
 	@RequestMapping(value="/SignUp")
-	public String SignUp(final HttpServletRequest request) {
+	public String SignUp(HttpServletRequest request) {
 		// RSA 키 생성
 		initRsa(request);
 

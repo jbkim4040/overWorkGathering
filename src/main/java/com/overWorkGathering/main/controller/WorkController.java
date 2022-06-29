@@ -26,4 +26,9 @@ public class WorkController {
 	public WorkDTO retrieveWorkOne(@RequestParam String userID, @RequestParam String workDt) {
 		return workService.retrieveWorkOne(userID, workDt);
 	}
+
+	@RequestMapping(value="/retrievePartInfo", method = RequestMethod.GET)
+	public WorkDTO retrievePartInfo(@RequestParam String userID, @RequestParam String workDt) {
+		return workService.retrieveWorkOne(userID, workDt);
+	}
 }
