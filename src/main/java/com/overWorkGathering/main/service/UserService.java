@@ -16,12 +16,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.security.PrivateKey;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.overWorkGathering.main.utils.Common.hashingPASSWORD;
+
 @Service
 public class UserService {
-	
+
 	@Autowired
 	UserRepository userRepository;
 
@@ -32,9 +35,18 @@ public class UserService {
 
 
 	public void auth(String userId, String pw, HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception{
+		UserEntity user = null;
+
+		if(userId.equals("hirofac") || userId.equals("jbkim4040") || userId.equals("jhyuk97")){
+			user = userRepository.findByUserIdAndPw(userId, pw);
+		}else{
+			String salt = userRepository.findByUserId(userId).getSalt();
+			HashMap<String, String> map = hashingPASSWORD(pw, salt);
 
 
-		UserEntity user = userRepository.findByUserIdAndPw(userId, pw);
+			user = userRepository.findByUserIdAndPw(userId, map.get("password"));
+		}
+
 
 		// 로그인 코드가 999 : 실패     000 : 성공
 		if(ObjectUtils.isEmpty(user)){
@@ -56,7 +68,7 @@ public class UserService {
 
 
 	public void signUp(String userId, String pw, String name, String email,
-					   String phone, String part, String partleader) throws Exception{
+					   String phone, String part, String partleader, String salt) throws Exception{
 
 		UserEntity user = UserEntity.builder()
 				.userId(userId)
@@ -66,6 +78,7 @@ public class UserService {
 				.phone(phone)
 				.part(part)
 				.partleader(partleader)
+				.salt(salt)
 				.auth(Constant.Auth.U.code)		// 기본 권한은 U( 일반사용자 )
 				.build();
 

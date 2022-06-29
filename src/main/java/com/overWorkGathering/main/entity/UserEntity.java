@@ -15,30 +15,32 @@ import javax.persistence.Table;
 @EqualsAndHashCode
 @Table(name = "USER")
 public class UserEntity {
-	
+
 	@Id
 	@Column(name = "USER_ID")
 	private String userId;
-	
+
 	@Column(name = "PW")
 	private String pw;
-	
+
 	@Column(name = "NAME")
 	private String name;
-	
+
 	@Column(name = "EMAIL")
 	private String email;
-	
+
 	@Column(name = "PART")
 	private String part;
-	
+
 	@Column(name = "PARTLEADER")
 	private String partleader;
-	
+
 	@Column(name = "AUTH")
 	private String auth;
-	
+
 	@Column(name = "PHONE")
 	private String phone;
-	
+
+	@Column(name = "SALT")
+	private String salt;
 }
