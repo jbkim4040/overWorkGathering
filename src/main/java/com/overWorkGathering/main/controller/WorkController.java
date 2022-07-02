@@ -1,14 +1,19 @@
 package com.overWorkGathering.main.controller;
 
-import com.overWorkGathering.main.DTO.WorkDTO;
-import com.overWorkGathering.main.service.WorkService;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.overWorkGathering.main.DTO.WorkDTO;
+import com.overWorkGathering.main.service.UserService;
+import com.overWorkGathering.main.service.WorkService;
 
 @RestController
 @RequestMapping(path = "/work")
@@ -26,9 +31,14 @@ public class WorkController {
 	public WorkDTO retrieveWorkOne(@RequestParam String userID, @RequestParam String workDt) {
 		return workService.retrieveWorkOne(userID, workDt);
 	}
-
-	@RequestMapping(value="/retrievePartInfo", method = RequestMethod.GET)
-	public WorkDTO retrievePartInfo(@RequestParam String userID, @RequestParam String workDt) {
-		return workService.retrieveWorkOne(userID, workDt);
+	
+	@RequestMapping(value="/SaveWork", method = RequestMethod.POST)
+	public void saveWork(@RequestBody Map<String, Object> param) {
+		workService.saveWork(param);
+	}
+	
+	@RequestMapping(value="/DeleteWork", method = RequestMethod.POST)
+	public void DeleteWork(@RequestBody Map<String, Object> param) {
+		workService.deleteWork(param);
 	}
 }

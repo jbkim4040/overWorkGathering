@@ -1,17 +1,28 @@
 package com.overWorkGathering.main.entity;
 
-import lombok.*;
+import javax.persistence.Column;
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.SqlResultSetMapping;
+import javax.persistence.Table;
 
-import javax.persistence.*;
+import com.overWorkGathering.main.DTO.UserDTO;
+
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@EqualsAndHashCode
 @IdClass(DoublePK.class)
-@Table(name = "WORK")
+@Table(name = "TB_WORK_HIS")
 public class WorkEntity {
 	
 	@Id
