@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +15,8 @@ import com.overWorkGathering.main.DTO.WorkCollectionReqDTO;
 import com.overWorkGathering.main.DTO.WorkDTO;
 import com.overWorkGathering.main.entity.UserEntity;
 import com.overWorkGathering.main.entity.WorkEntity;
+import com.overWorkGathering.main.mapper.UserMapper;
+import com.overWorkGathering.main.mapper.WorkMapper;
 import com.overWorkGathering.main.repository.UserRepository;
 import com.overWorkGathering.main.repository.WorkRepository;
 
@@ -26,8 +27,10 @@ public class WorkService {
 	WorkRepository workRepository;
 	@Autowired
 	UserRepository userRepository;
-	
-	ModelMapper modelMapper = new ModelMapper();
+	@Autowired
+	WorkMapper workMapper;
+	@Autowired
+	UserMapper userMapper;
 	
 	public List<WorkDTO> retrieveWork(String userId) {
 
@@ -43,11 +46,7 @@ public class WorkService {
 		List<WorkEntity> workEntityList =
 				workRepository.findAllByUserIdAndWorkDtLike(userId, workDt);
 		
-		return workEntityList
-				.stream() 
-				.map(workEntity -> modelMapper.map(workEntity,
-						WorkDTO.class)) 
-				.collect(Collectors.toList());
+		return workMapper.toWorkDTOList(workEntityList);
 	}
 	
 	/*
@@ -56,7 +55,7 @@ public class WorkService {
 	public WorkDTO retrieveWorkOne(String userId, String workDt) {
 		WorkEntity workEntity = workRepository.findAllByUserIdAndWorkDt("jhyuk97", workDt);
 		if(workEntity != null) {
-			return modelMapper.map(workEntity, WorkDTO.class);
+			return workMapper.toWorkDTO(workEntity);
 		}
 		return null;
 	}
@@ -87,11 +86,7 @@ public class WorkService {
 		List<WorkEntity> workEntityList =
 				workRepository.findAllByUserIdInAndWorkDtLike(userIdList ,workDt);
 		
-		List<WorkDTO> WorkDTOList = 
-				workEntityList.stream() 
-					.map(workEntity -> modelMapper.map(workEntity,
-							WorkDTO.class)) 
-					.collect(Collectors.toList());
+		List<WorkDTO> WorkDTOList = workMapper.toWorkDTOList(workEntityList);
 		
 		WorkDTOList.stream().forEach(item ->{
 			WorkCollectionReqDTOList.add(WorkCollectionReqDTO.builder()
@@ -112,11 +107,7 @@ public class WorkService {
 		
 		List<UserEntity> userEntityList = userRepository.findAllByPart(part);
 		
-		List<UserDTO> userDTOList = 
-				userEntityList.stream() 
-					.map(userEntity -> modelMapper.map(userEntity,
-							UserDTO.class)) 
-					.collect(Collectors.toList());
+		List<UserDTO> userDTOList = userMapper.toUserDTOList(userEntityList);
 		
 		return userDTOList.stream().map(UserDTO::getUserId).collect(Collectors.toList());
 	}
@@ -187,7 +178,7 @@ public class WorkService {
 						 .dinnerYn(param.get("dinnerYn").toString())
 						 .taxiYn(param.get("taxiYn").toString()).build();
 		
-		WorkEntity workEntity = modelMapper.map(workDTO, WorkEntity.class);
+		WorkEntity workEntity = workMapper.toWorkEntity(workDTO);
 		
 		workRepository.save(workEntity);
 	}

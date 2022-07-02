@@ -2,7 +2,8 @@ package com.overWorkGathering.main.mapper;
 
 import com.overWorkGathering.main.DTO.WorkDTO;
 import com.overWorkGathering.main.entity.WorkEntity;
-import org.mapstruct.Mapper;
+
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
