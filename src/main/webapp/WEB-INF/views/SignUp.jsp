@@ -39,20 +39,24 @@
               <form id="formAuthentication" class="mb-3" action="/user/signUp" method="POST" onsubmit="return login()">
                 <div class="mb-3">
                   <label for="userId" class="form-label">아이디</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="userId"
-                    name="userId"
-                    placeholder="ID"
-                    autofocus
-                  />
-                  <button>중복체크</button>
+                  <div class="row">
+                    <div class="col-sm-8">
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="userId"
+                            name="userId"
+                            placeholder="ID"
+                            autofocus
+                        />
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="button" class="btn btn-primary d-grid w-100" value="중복체크" onclick="dupIdChk()">
+                    </div>
+                  </div>
+                  <div id="dupIdChk_div"></div>
                 </div>
-                <div class="mb-3">
-                  <label for="email" class="form-label">이메일</label>
-                  <input type="text" class="form-control" id="email" name="email" placeholder="email" />
-                </div>
+
                 <div class="mb-3 form-password-toggle">
                   <label class="form-label" for="password">비밀번호</label>
                   <div class="input-group input-group-merge">
@@ -73,15 +77,33 @@
                   <div class="input-group input-group-merge">
                     <input
                       type="password"
-                      id="passwordCk"
+                      id="passwordChk"
                       class="form-control"
-                      name="passwordCk"
+                      name="passwordChk"
                       placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                       aria-describedby="password"
+                      onkeyup="pssChk()"
                     />
                     <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                   </div>
+                  <div id="passwordChk_div"></div>
                 </div>
+
+                <div class="mb-3">
+                  <label for="email" class="form-label">이메일</label>
+                  <div class="row">
+                      <div class="col-sm-8">
+                          <input type="text" class="form-control" id="email" name="email" placeholder="email" />
+                      </div>
+                      <div class="col-sm-4">
+                          <input type="button" id="codeSendBtn" class="btn btn-primary d-grid w-100" value="확인" onclick="codeSend(3, 0)">
+                      </div>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <div id="codeInput_div"></div>
+                </div>
+
                 <div class="mb-3">
                   <label for="name" class="form-label">이름</label>
                   <input type="text" class="form-control" id="name" name="name" placeholder="name" maxlength="6"/>
@@ -121,36 +143,162 @@
     </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  var SetTime;
+  var timer;
 
+  function dupIdChk(){
+    var id = $("#userId");
+    var rsa = new RSAKey();
 
+    if(id.val() == ""){
+        alert("ID를 입력해 주세요.");
+        id.focus();
+        return false;
+    }
+
+    rsa.setPublic($('#RSAModulus').val(),$('#RSAExponent').val());
+    var encryptedId = rsa.encrypt(id.val());
+
+    const element = document.getElementById('dupIdChk_div');
 
     $.ajax({
-            url:"/work/retrievework",
-            type:"get",
-            data: {userId : id},
-            dataType : "json",
-            success: function(result) {
-            	debugger;
-                for(i = 0; i < result.length; i++){
-                    calendar.addEvent({
-                    	title : "  근무 시간  " + result[i].startTime + " ~ " + result[i].endTime + " ",
-                    	start : result[i].workDt
-                    });
-                    calendar.addEvent({
-                    	title : " 택시비 신청 여부  :  " + result[i].taxiYn,
-                    	start : result[i].workDt
-                    });
-                };
-
-
-            },
-            error: function() {
-                alert("에러 발생");
+        url:"/user/dupIdChk",
+        type:"POST",
+        data: {USER_ID : encryptedId},
+        dataType : "text",
+        success: function(e) {
+            if(e == "Y"){
+                element.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:red">사용할수 없는 ID 입니다.</label>';
+                id.focus();
+            }else if(e == "N"){
+                element.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:blue">사용할수 있는 ID 입니다.</label>';
+            }else{
+                alert("에러 \n" + e);
+                element.innerHTML = '<label class="form-label" id="dupChkMsg"></label>';
             }
-        })
+        },
+        error: function(request,status,error) {
+            alert("에러 발생 \n" +
+            "에러코드 : "+request.status+"\n"+
+            "에러메시지 : "+request.responseText+"\n"+
+            "에러 : "+error
+            );
+        }
+    })
+  }
 
-  })
+  function pssChk(){
+    var password = $("#password").val();
+    var passwordChk = $("#passwordChk").val();
+    const element = document.getElementById('passwordChk_div');
+
+    console.log("비밀번호 :: " + password + "\n비밀번호 확인 :: " + passwordChk);
+
+    if(password == passwordChk){
+        element.innerHTML = '<label class="form-label" id="passwordChkMsg" style="color:blue">일치하는 비밀번호입니다.</label>';
+    }else{
+        element.innerHTML = '<label class="form-label" id="passwordChkMsg" style="color:red">일치하지 않는 비밀번호입니다.</label>';
+    }
+
+  }
+
+  function codeSend(time_minutes, time_seconds){
+    // 최초 설정 시간(기본 : 초)
+    SetTime = 180;
+    var email = $("#email");
+    var rsa = new RSAKey();
+
+     if($("#codeSendBtn").val() == "재전송"){
+        clearInterval(timer);
+    }
+
+    if(email.val() == ""){
+        alert("이메일을 입력해 주세요.");
+        email.focus();
+        return false;
+    }
+
+    rsa.setPublic($('#RSAModulus').val(),$('#RSAExponent').val());
+    var encryptedEmail = rsa.encrypt(email.val());
+
+    const element = document.getElementById('codeInput_div');
+    const codeSendBtn = document.getElementById('codeSendBtn');
+
+    codeSendBtn.setAttribute("value", "재전송")
+
+    element.innerHTML =
+        '<div class="row">' +
+        '<div class="col-sm-4">' +
+        '<input type="text" class="form-control" id="code" placeholder="code"/>' +
+        '</div>' +
+        '<div class="col-sm-2">' +
+        '</div>' +
+        '<div class="col-sm-3">' +
+        '<div class="center" id="ViewTimer"></div>' +
+        '</div>' +
+        '<div class="col-sm-3">' +
+        '<input type="button" class="btn btn-primary d-grid w-100" value="확인" onclick="codeChk()">' +
+        '</div>' +
+        '</div>'
+    ;
+
+    $.ajax({
+        url:"/user/sendMail",
+        type:"POST",
+        data: {USER_EMAIL : encryptedEmail},
+        dataType : "json",
+        success: function(e) {
+            if(e.prssYn == "Y"){
+                timer = setInterval(function() { msg_time(); }, 1000);
+            }else{
+                alert("코드전송에 실패하였습니다.\n 다시 시도해 주세요.");
+            }
+        },
+        error: function(request,status,error) {
+            alert("에러 발생 \n" +
+            "에러코드 : "+request.status+"\n"+
+            "에러메시지 : "+request.responseText+"\n"+
+            "에러 : "+error
+            );
+        }
+    })
+
+
+  }
+
+  function msg_time() {   // 1초씩 카운트
+      min = Math.floor(SetTime / 60);
+      sec = SetTime % 60;
+
+      var msg = "";
+      var m = "";
+
+      if(min > 0){
+        m = min + "분 " + sec + "초";
+      }else {
+        m = sec + "초";
+      }
+
+      if(min == 0 && sec <= 30){
+         msg = "<font color='red'>" + m + "</font>";
+      }else{
+         msg = "<font color='blue'>" + m + "</font>";
+      }
+
+      document.all.ViewTimer.innerHTML = msg;
+      --SetTime;
+
+      if (SetTime < 0) {
+          document.all.ViewTimer.innerHTML = "<font color='red'>시간초과</font>";
+          clearInterval(timer);
+          codeDelete();
+      }
+  }
+
+  function codeChk(){
+    var code = $("#code").val();
+    console.log("입력한 코드 :: " + code);
+  }
 
   function login(){
       var id = $("#userId");

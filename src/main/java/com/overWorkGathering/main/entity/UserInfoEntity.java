@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Builder
 @EqualsAndHashCode
 @Table(name = "TB_USER_INFO")
-public class UserEntity {
+public class UserInfoEntity {
 
 	@Id
 	@Column(name = "USER_ID")

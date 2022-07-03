@@ -1,29 +1,31 @@
 package com.overWorkGathering.main.service;
 
-import com.overWorkGathering.main.DTO.UserDTO;
 import com.overWorkGathering.main.controller.WebController;
-import com.overWorkGathering.main.entity.UserEntity;
+import com.overWorkGathering.main.entity.UserInfoEntity;
 import com.overWorkGathering.main.repository.UserRepository;
 import com.overWorkGathering.main.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.crypto.Cipher;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.security.PrivateKey;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
 
+import static com.overWorkGathering.main.utils.Common.codeGenerator;
 import static com.overWorkGathering.main.utils.Common.hashingPASSWORD;
 
 @Service
 public class UserService {
+
+	@Autowired
+	private JavaMailSender javaMailSender;
 
 	@Autowired
 	UserRepository userRepository;
@@ -35,7 +37,7 @@ public class UserService {
 
 
 	public void auth(String userId, String pw, HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception{
-		UserEntity user = null;
+		UserInfoEntity user = null;
 
 		if(userId.equals("hirofac") || userId.equals("jbkim4040") || userId.equals("jhyuk97")){
 			user = userRepository.findByUserIdAndPw(userId, pw);
@@ -61,7 +63,7 @@ public class UserService {
 	}
 
 	public String duplicatedIdCheck(String userId) throws Exception{
-		UserEntity user = userRepository.findByUserId(userId);
+		UserInfoEntity user = userRepository.findByUserId(userId);
 
 		return ObjectUtils.isEmpty(user) ? "N" : "Y";
 	}
@@ -70,7 +72,7 @@ public class UserService {
 	public void signUp(String userId, String pw, String name, String email,
 					   String phone, String part, String partleader, String salt) throws Exception{
 
-		UserEntity user = UserEntity.builder()
+		UserInfoEntity user = UserInfoEntity.builder()
 				.userId(userId)
 				.pw(pw)
 				.name(name)
@@ -83,5 +85,28 @@ public class UserService {
 				.build();
 
 		userRepository.save(user);
+	}
+
+	public void sendCode(HttpSession session, String mail)throws MessagingException, UnsupportedEncodingException {
+		String to = mail;
+		String from = "jbkim404037@gmail.com";
+		String subject = "이메일 확인 코드 전송 테스트";
+		String code = codeGenerator(4);
+
+		StringBuilder body = new StringBuilder();
+		body.append("<html> <body><h1>"+ code + "</h1>");
+		body.append("<div>테스트 입니다. </div> </body></html>");
+
+		MimeMessage message = javaMailSender.createMimeMessage();
+		MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, true, "UTF-8");
+
+		mimeMessageHelper.setFrom(from,"김정빈");
+		mimeMessageHelper.setTo(to);
+		mimeMessageHelper.setSubject(subject);
+		mimeMessageHelper.setText(body.toString(), true);
+
+		javaMailSender.send(message);
+
+		session.setAttribute("code", code);
 	}
 }

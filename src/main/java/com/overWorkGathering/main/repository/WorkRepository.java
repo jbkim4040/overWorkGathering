@@ -5,19 +5,19 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.overWorkGathering.main.entity.WorkEntity;
+import com.overWorkGathering.main.entity.WorkHisEntity;
 
-public interface WorkRepository extends JpaRepository<WorkEntity, String> {
+public interface WorkRepository extends JpaRepository<WorkHisEntity, String> {
 
-	List<WorkEntity> findAllByUserId(String id);
+	List<WorkHisEntity> findAllByUserId(String id);
 
-	WorkEntity findAllByUserIdAndWorkDt(String userId, String workDt);
+	WorkHisEntity findAllByUserIdAndWorkDt(String userId, String workDt);
 
-	List<WorkEntity> findAllByUserIdAndWorkDtLike(String userId, String workDt);
+	List<WorkHisEntity> findAllByUserIdAndWorkDtLike(String userId, String workDt);
 	
 	@Transactional
 	void deleteByUserIdAndWorkDt(String userId, String workDt);
 
-	List<WorkEntity> findAllByUserIdInAndWorkDtLike(List<String> userIdList, String workDt);
+	List<WorkHisEntity> findAllByUserIdInAndWorkDtLike(List<String> userIdList, String workDt);
 	
 }

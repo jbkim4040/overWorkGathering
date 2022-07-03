@@ -12,6 +12,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(new Interceptor())
         .addPathPatterns("/*")
         .excludePathPatterns("/login")
-        .excludePathPatterns("/SignUp");
+        .excludePathPatterns("/SignUp")
+        .excludePathPatterns("/FindPw")
+        .excludePathPatterns("/CodeSendPopup")
+        ;
     }
 }

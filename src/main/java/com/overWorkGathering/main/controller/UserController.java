@@ -1,6 +1,7 @@
 package com.overWorkGathering.main.controller;
 
 
+import com.overWorkGathering.main.DTO.PrssRsltDTO;
 import com.overWorkGathering.main.DTO.UserDTO;
 import com.overWorkGathering.main.service.UserService;
 import com.overWorkGathering.main.utils.Common;
@@ -8,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.crypto.Cipher;
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
 import java.security.PrivateKey;
 import java.security.Security;
 import java.util.HashMap;
@@ -93,7 +96,7 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/dupIdChk", method = RequestMethod.POST)
-	public String duplicatedIdCheck(@RequestParam("USER_ID") String encrypt_userId, HttpServletRequest request, HttpServletResponse response){
+	public String duplicatedIdCheck(@RequestParam("USER_ID") String encrypt_userId, HttpServletRequest request){
 		String dupYn = "N";
 
 		try {
@@ -103,15 +106,36 @@ public class UserController {
 			// 회원가입 정보 복호화
 			String userId = decryptRsa(privateKey, encrypt_userId);
 
-			session.removeAttribute(UserController.RSA_WEB_KEY);
-
 			dupYn = userService.duplicatedIdCheck(userId);
-
-			response.sendRedirect("/login");
 		}catch(Exception e){
-			e.printStackTrace();
+			dupYn = e.getMessage();
 		}
 
 		return dupYn;
+	}
+
+	@RequestMapping(value = "/sendMail", method = RequestMethod.POST)
+	public PrssRsltDTO sendMail(@RequestParam("USER_EMAIL") String encrypt_userEmail, HttpServletRequest request){
+		PrssRsltDTO prssRsltDTO = PrssRsltDTO.builder().prssYn("N").prssMsg("").build();
+
+		try{
+			HttpSession session = request.getSession();
+
+			PrivateKey privateKey = (PrivateKey) session.getAttribute(UserController.RSA_WEB_KEY);
+
+			// 회원가입 정보 복호화
+			String mail = decryptRsa(privateKey, encrypt_userEmail);
+			System.out.println("전송할 이메일 주소 :: " + mail);
+
+			userService.sendCode(session, mail);
+
+			prssRsltDTO.setPrssYn("Y");
+			prssRsltDTO.setPrssMsg("메일 전송 성공");
+		}catch (Exception e){
+			prssRsltDTO.setPrssYn("N");
+			prssRsltDTO.setPrssMsg(e.getMessage());
+		}
+
+		return prssRsltDTO;
 	}
 }

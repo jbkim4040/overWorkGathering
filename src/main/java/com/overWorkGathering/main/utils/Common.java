@@ -156,4 +156,15 @@ public class Common {
         }
         return sb.toString();
     }
+
+    public static String codeGenerator(int codeLength){
+        StringBuffer buf =new StringBuffer();
+
+        for(int i=0;i<codeLength;i++){
+            buf.append((char)((int)(Math.random()*26)+65));
+        }
+
+        return buf.toString();
+    }
+
 }
