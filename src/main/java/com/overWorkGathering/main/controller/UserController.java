@@ -6,6 +6,7 @@ import com.overWorkGathering.main.DTO.UserDTO;
 import com.overWorkGathering.main.service.UserService;
 import com.overWorkGathering.main.utils.Common;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.crypto.Cipher;
@@ -127,10 +128,11 @@ public class UserController {
 			String mail = decryptRsa(privateKey, encrypt_userEmail);
 			System.out.println("전송할 이메일 주소 :: " + mail);
 
-			userService.sendCode(session, mail);
+			String code = userService.sendCode(session, mail);
 
 			prssRsltDTO.setPrssYn("Y");
 			prssRsltDTO.setPrssMsg("메일 전송 성공");
+			prssRsltDTO.setContent(StringUtils.isEmpty(code) ? "error" : code);
 		}catch (Exception e){
 			prssRsltDTO.setPrssYn("N");
 			prssRsltDTO.setPrssMsg(e.getMessage());

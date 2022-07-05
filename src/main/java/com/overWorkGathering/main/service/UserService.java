@@ -4,6 +4,7 @@ import com.overWorkGathering.main.controller.WebController;
 import com.overWorkGathering.main.entity.UserInfoEntity;
 import com.overWorkGathering.main.repository.UserRepository;
 import com.overWorkGathering.main.utils.Constant;
+import com.overWorkGathering.main.utils.SHA256;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 import static com.overWorkGathering.main.utils.Common.codeGenerator;
@@ -87,7 +89,7 @@ public class UserService {
 		userRepository.save(user);
 	}
 
-	public void sendCode(HttpSession session, String mail)throws MessagingException, UnsupportedEncodingException {
+	public String sendCode(HttpSession session, String mail)throws MessagingException, UnsupportedEncodingException {
 		String to = mail;
 		String from = "jbkim404037@gmail.com";
 		String subject = "이메일 확인 코드 전송 테스트";
@@ -107,6 +109,14 @@ public class UserService {
 
 		javaMailSender.send(message);
 
-		session.setAttribute("code", code);
+		try{
+			SHA256 SHA256 = new SHA256();
+
+			code = SHA256.encrypt(code);
+		}catch(NoSuchAlgorithmException e){
+			e.printStackTrace();
+		}
+
+		return code;
 	}
 }

@@ -8,4 +8,5 @@ import lombok.Data;
 public class PrssRsltDTO {
     private String prssYn;
     private String prssMsg;
+    private String content;
 }

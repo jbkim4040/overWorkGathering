@@ -102,6 +102,7 @@
                 </div>
                 <div class="mb-3">
                   <div id="codeInput_div"></div>
+                  <div id="emailChk_div"></div>
                 </div>
 
                 <div class="mb-3">
@@ -141,11 +142,11 @@
         </div>
       </div>
     </div>
-
+<script	src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
 <script>
   var SetTime;
   var timer;
-
+  var code;
   function dupIdChk(){
     var id = $("#userId");
     var rsa = new RSAKey();
@@ -227,7 +228,7 @@
     codeSendBtn.setAttribute("value", "재전송")
 
     element.innerHTML =
-        '<div class="row">' +
+        '<div class="row" id="codeInput_div">' +
         '<div class="col-sm-4">' +
         '<input type="text" class="form-control" id="code" placeholder="code"/>' +
         '</div>' +
@@ -249,6 +250,8 @@
         dataType : "json",
         success: function(e) {
             if(e.prssYn == "Y"){
+                debugger;
+                code = e.content;
                 timer = setInterval(function() { msg_time(); }, 1000);
             }else{
                 alert("코드전송에 실패하였습니다.\n 다시 시도해 주세요.");
@@ -289,15 +292,30 @@
       --SetTime;
 
       if (SetTime < 0) {
-          document.all.ViewTimer.innerHTML = "<font color='red'>시간초과</font>";
+          $("#codeInput_div").empty();
+          document.getElementById('emailChk_div').innerHTML =
+          '<label class="form-label" id="dupChkMsg" style="color:red">요청한 시간이 초과되었습니다.<br>코드를 재전송 해주시기 바랍니다.</label>';
           clearInterval(timer);
-          codeDelete();
       }
   }
 
   function codeChk(){
-    var code = $("#code").val();
-    console.log("입력한 코드 :: " + code);
+    var inputCode = sha256($("#code").val());
+    const codeSendBtn = document.getElementById('codeSendBtn');
+    const email = document.getElementById('email');
+    const emailChk_div = document.getElementById('emailChk_div');
+
+    if(code == inputCode){
+        clearInterval(timer);
+        $("#codeInput_div").remove();
+        codeSendBtn.setAttribute("value", "확인");
+        codeSendBtn.setAttribute("disabled", "true");
+        email.setAttribute("disabled", "true");
+        alert("이메일 인증되었습니다.");
+        emailChk_div.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:blue">사용가능한 이메일입니다.</label>';
+    }else{
+        emailChk_div.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:red">코드가 일치하지 않습니다.</label>';
+    }
   }
 
   function login(){
