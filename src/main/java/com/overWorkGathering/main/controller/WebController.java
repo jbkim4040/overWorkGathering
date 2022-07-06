@@ -30,8 +30,6 @@ public class WebController {
 	public String login(final HttpServletRequest request) {
 		// RSA 키 생성
 		initRsa(request);
-		String encodedInfo = base64Encoding("test");
-		String decodedInfo = base64Decoding(encodedInfo);
 
 		return "Login";
 	}

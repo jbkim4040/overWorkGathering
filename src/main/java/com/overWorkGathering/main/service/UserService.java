@@ -5,6 +5,7 @@ import com.overWorkGathering.main.entity.UserInfoEntity;
 import com.overWorkGathering.main.repository.UserRepository;
 import com.overWorkGathering.main.utils.Constant;
 import com.overWorkGathering.main.utils.SHA256;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -23,6 +24,7 @@ import java.util.HashMap;
 import static com.overWorkGathering.main.utils.Common.codeGenerator;
 import static com.overWorkGathering.main.utils.Common.hashingPASSWORD;
 
+@Slf4j
 @Service
 public class UserService {
 
@@ -30,26 +32,32 @@ public class UserService {
 	private JavaMailSender javaMailSender;
 
 	@Autowired
-	UserRepository userRepository;
-
-	WebController webController;
+	private UserRepository userRepository;
 
 	private static String RSA_WEB_KEY = "_RSA_WEB_Key_"; // 개인키 session key
 	private static String RSA_INSTANCE = "RSA"; // rsa transformation
 
 
-	public void auth(String userId, String pw, HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception{
+	public void auth(String userId, String pw, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		UserInfoEntity user = null;
 
-		if(userId.equals("hirofac") || userId.equals("jbkim4040") || userId.equals("jhyuk97")){
-			user = userRepository.findByUserIdAndPw(userId, pw);
-		}else{
-			String salt = userRepository.findByUserId(userId).getSalt();
-			HashMap<String, String> map = hashingPASSWORD(pw, salt);
+		try{
+			if(userId.equals("hirofac") || userId.equals("jbkim4040") || userId.equals("jhyuk97")){
+				user = userRepository.findByUserIdAndPw(userId, pw);
+			}else{
+				String salt = userRepository.findByUserId(userId).getSalt();
+				HashMap<String, String> map = hashingPASSWORD(pw, salt);
+				System.out.println("아이디 :: " + userId);
+				System.out.println("비밀번호 :: " + map.get("password"));
 
+				user = userRepository.findByUserIdAndPw(userId, map.get("password"));
 
-			user = userRepository.findByUserIdAndPw(userId, map.get("password"));
+				System.out.println("로그인 성공 :: " + ObjectUtils.isEmpty(user));
+			}
+		} catch(Exception e){
+
 		}
+
 
 
 		// 로그인 코드가 999 : 실패     000 : 성공

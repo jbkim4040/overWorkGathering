@@ -68,6 +68,19 @@ public class UserController {
 		}
 	}
 
+	@RequestMapping(value = "/logOut", method = RequestMethod.POST)
+	public void logOut(HttpServletRequest request, HttpServletResponse response){
+		try{
+			HttpSession session = request.getSession();
+			session.invalidate();
+
+			System.out.println(":: LogOut ::");
+			response.sendRedirect("/login");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
 	@RequestMapping(value = "/signUp", method = RequestMethod.POST)
 	public void signUp(@RequestParam("USER_ID") String encrypt_userId, @RequestParam("USER_PW") String encrypt_pw, @RequestParam("USER_NAME") String encrypt_name,
 					   @RequestParam("USER_EMAIL") String encrypt_email, @RequestParam("USER_PHONE") String encrypt_phone,
@@ -126,8 +139,6 @@ public class UserController {
 
 			// 회원가입 정보 복호화
 			String mail = decryptRsa(privateKey, encrypt_userEmail);
-			System.out.println("전송할 이메일 주소 :: " + mail);
-
 			String code = userService.sendCode(session, mail);
 
 			prssRsltDTO.setPrssYn("Y");

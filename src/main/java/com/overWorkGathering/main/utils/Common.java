@@ -80,7 +80,6 @@ public class Common {
     public final static String base64Encoding(String info){
         byte[] message = info.getBytes(StandardCharsets.UTF_8);
         String encodedInfo = Base64.getEncoder().encodeToString(message);
-        System.out.println("encodedInfo :: " + encodedInfo);
         return encodedInfo;
     }
 
@@ -91,7 +90,6 @@ public class Common {
      */
     public final static String base64Decoding(String info){
         byte[] decoded = Base64.getDecoder().decode(info);
-        System.out.println("decodedInfo :: " + new String(decoded, StandardCharsets.UTF_8));
         return new String(decoded, StandardCharsets.UTF_8);
     }
 
