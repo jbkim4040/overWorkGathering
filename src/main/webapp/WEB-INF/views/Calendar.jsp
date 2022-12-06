@@ -38,9 +38,9 @@ var name = "";
         String userName = (String)session.getAttribute("userName");
     %>
 
-    id = "<%=userId%>";
-    name = "<%=userName%>";
 
+    id = "hirofac";
+    name = "박준호";
     alert(name + "님 환영합니다.");
 
     var calendarEl = document.getElementById('calendar');

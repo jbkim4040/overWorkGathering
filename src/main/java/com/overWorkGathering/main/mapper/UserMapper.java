@@ -5,10 +5,11 @@ import com.overWorkGathering.main.entity.UserInfoEntity;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Mapper;
+//import org.apache.ibatis.annotations.Mapper;
+import org.mapstruct.Mapper;
 
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface UserMapper {
     UserDTO toUserDTO (UserInfoEntity userInfoEntity);
 
