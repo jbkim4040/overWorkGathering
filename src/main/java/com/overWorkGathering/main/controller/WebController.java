@@ -55,5 +55,11 @@ public class WebController {
 		return mav;
 	}
 
+	@RequestMapping(value="/Master")
+	public String Master(final HttpServletRequest request) {
+		// RSA 키 생성
+		initRsa(request);
 
+		return "Master";
+	}
 }
