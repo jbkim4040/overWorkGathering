@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.overWorkGathering.main.DTO.WorkCollectionDtlReqDTO;
 import com.overWorkGathering.main.DTO.WorkCollectionReqDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,8 +44,19 @@ public class WorkController {
 		workService.deleteWork(param);
 	}
 
+	/*
+	 * 월간 야근식대 요청 현황 합계 조회
+	 */
 	@RequestMapping(value="/retrieveWorkCollection", method = RequestMethod.GET)
 	public List<WorkCollectionReqDTO> retrieveWorkCollection(@RequestParam String part, @RequestParam String dt) {
 		return workService.retrieveWorkCollection(part, dt);
+	}
+
+	/*
+	 * 월간 야근식대 요청 현황 상세 조회
+	 */
+	@RequestMapping(value="/retrieveWorkCollectionDtl", method = RequestMethod.GET)
+	public List<WorkDTO> retrieveWorkCollectionDtl(@RequestParam String part, @RequestParam String dt) {
+		return workService.retrieveWorkCollectionDtl(part, dt);
 	}
 }

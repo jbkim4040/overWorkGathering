@@ -21,26 +21,17 @@
 </head>
 <body>
 <div class="card">
-  <div class="card-body" style="width:800px; margin:0 auto;">
+  <div class="card-body" id="card_body">
     <div class="table-responsive text-nowrap">
       <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>지출 내역서</strong></th>
-            <th><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>팀</strong></th>
-            <th><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>팀장</strong></th>
-          </tr>
-        </thead>
-        <table class="table table-bordered">
         <tbody id="tbody">
           <tr>
+            <th><i class="fab fa-angular fa-lg text-danger me-3"></i></th>
+          </tr>
+          <tr>
             <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>발의일자</strong></td>
-            <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>야근식대</strong></td>
-            <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>교통비</strong></td>
-            <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>비고</strong></td>
           </tr>
         </tbody>
-        </table>
       </table>
     </div>
   </div>
@@ -53,7 +44,7 @@ window.onload = function(){
 
 
     $.ajax({
-        url:"/work/retrieveWorkCollection",
+        url:"/work/retrieveWorkCollectionDtl",
         type:"get",
         data: {
         	part : part,
@@ -64,13 +55,42 @@ window.onload = function(){
         	debugger;
         	setpTable(dt);
 
-        	setpData(result);
-
+        	setpUserTable(result);
         },
         error: function() {
             alert("에러 발생");
         }
     })
+
+};
+
+setpUserTable= function(result) {
+debugger;
+    let tbody = document.getElementById("tbody");
+    let row = tbody.rows.length;
+    for (var j = 0; j < 3; j++) {
+        for(var i = 0; i < row; i++){
+            const newCell = tbody.rows[i].insertCell(-1);
+            newCell.width = 200;
+            if ( j == 0 && i == 0){
+                newCell.innerHTML = "<strong>직급</strong>";
+            }
+            if ( j == 1 && i == 0){
+                newCell.innerHTML = "<strong>"이름"</strong>";
+            }
+
+            if ( j == 0 && i == 1) {
+                newCell.innerHTML = "<strong>야근식대</strong>";
+            }
+            if ( j == 1 && i == 1) {
+                newCell.innerHTML = "<strong>교통비</strong>";
+            }
+            if ( j == 2 && i == 1) {
+                newCell.innerHTML = "<strong>비고</strong>";
+            }
+
+        }
+    }
 
 };
 
@@ -92,8 +112,6 @@ setpTable = function(dt){
 		cell3.setAttribute("id", "taxi" + i);
 		cell4.setAttribute("id", "other" + i);
 		cell1.innerHTML = yyyy + "년 " + MM + "월 " + i + "일";
-	    cell2.innerHTML = "0 원";
-	    cell3.innerHTML = "0 원";
 	    cell4.innerHTML = "";
 	}
 
@@ -121,33 +139,6 @@ setpTable = function(dt){
     cell2.innerHTML = "";
     cell3.innerHTML = "0 원";
     cell4.innerHTML = "";
-
-};
-
-setpData = function(result){
-
-	debugger;
-
-	var plusDinner = 0;
-	var plusTaxi = 0;
-	var plusAll = 0;
-
-	for(var i = 0;  i < result.length ; i++){
-
-		var dd = Number(result[i].workDt.substr(8));
-
-		document.getElementById("dinner" + dd).innerText = result[i].dinnerPay + " 원";
-		document.getElementById("taxi" + dd).innerText = result[i].taxiPay + " 원";
-
-		plusDinner += Number(result[i].dinnerPay);
-		plusTaxi += Number(result[i].taxiPay);
-	}
-
-	plusAll = plusDinner + plusTaxi;
-
-	document.getElementById("plusDinner").innerText = plusDinner + " 원";
-	document.getElementById("plusTaxi").innerText = plusTaxi + " 원";
-	document.getElementById("plusAll").innerText = plusAll + " 원";
 
 };
 </script>

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.overWorkGathering.main.DTO.WorkCollectionDtlReqDTO;
 import com.overWorkGathering.main.entity.UserInfoEntity;
 import com.overWorkGathering.main.entity.WorkHisEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -189,4 +190,47 @@ public class WorkService {
 		workRepository.deleteByUserIdAndWorkDt(param.get("userID").toString(), param.get("workDt").toString());
 	}
 
+	/*
+	 * 월간 야근식대 요청 현황 상세 조회
+	 */
+	public List<WorkDTO> retrieveWorkCollectionDtl(String part, String dt){
+		//파트 구성원 조회
+		List<UserInfoEntity> userInfoEntityList = userRepository.findAllByPart(part);
+		List<UserDTO> userDTOList = userMapper.toUserDTOList(userInfoEntityList);
+		List<String> userIdList = userDTOList.stream().map(UserDTO::getUserId).collect(Collectors.toList());
+
+		//월간 야근식대 요청 현황 전체 조회
+		List<WorkDTO> workDTOList = retrieveWorkCollectionReqDTOList(userIdList, dt);
+
+		//유저 한글명 세팅
+		return setpUserNm(workDTOList, userDTOList);
+	}
+
+	/*
+	 * 유저 한글명 세팅
+	 */
+	private List<WorkDTO> setpUserNm(List<WorkDTO> workDTOList, List<UserDTO> userDTOList) {
+
+		Map<String, String> userNm = userDTOList.stream().collect(Collectors.toMap(UserDTO::getUserId, UserDTO::getName));
+
+		workDTOList.stream().forEach(item ->{
+			item.setUserId(userNm.get(item.getUserId()));
+		});
+
+		return workDTOList;
+	}
+
+
+	/*
+	 * 월간 야근식대 요청 현황 전체 조회
+	 */
+	public List<WorkDTO> retrieveWorkCollectionReqDTOList(List<String> userIdList, String dt) {
+
+		String workDt = "%" + dt + "%";
+
+		List<WorkHisEntity> workHisEntityList =
+				workRepository.findAllByUserIdInAndWorkDtLike(userIdList ,workDt);
+
+		return workMapper.toWorkDTOList(workHisEntityList);
+	}
 }
