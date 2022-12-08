@@ -28,7 +28,7 @@ public class Interceptor extends HandlerInterceptorAdapter {
             out.close();
             String referrer = request.getHeader("Referer");
             request.getSession().setAttribute("url_prior_login", referrer);
-            // response.sendRedirect("/auth/login");
+             response.sendRedirect("/auth/login");
             return false;
         }
         return true;
