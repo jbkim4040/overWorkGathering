@@ -11,6 +11,7 @@ import com.overWorkGathering.main.entity.UserInfoEntity;
 import com.overWorkGathering.main.entity.WorkHisEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.mapstruct.Mapper;
 
 import com.overWorkGathering.main.DTO.UserDTO;
 import com.overWorkGathering.main.DTO.WorkCollectionReqDTO;
@@ -153,26 +154,23 @@ public class WorkService {
 	 * 야근식대 저장 및 업데이트
 	 */
 	public void saveWork(Map<String, Object> param) {
-		String startTime = "09:00";
-		String endTime = "";
+
 		if("true".equals(param.get("dinnerYn").toString())) {
 			param.replace("dinnerYn", "Y");
-			endTime = "21:00";
 		}else {
 			param.replace("dinnerYn", "N");
 		}
 
 		if("true".equals(param.get("taxiYn").toString())) {
 			param.replace("taxiYn", "Y");
-			endTime = "23:00";
 		}else {
 			param.replace("taxiYn", "N");
 		}
 
 		WorkDTO workDTO = WorkDTO.builder().userId(param.get("userID").toString())
 				.workDt(param.get("workDt").toString())
-				.startTime(startTime)
-				.endTime(endTime)
+				.startTime(param.get("startTime").toString())
+				.endTime(param.get("endTime").toString())
 				.img(param.get("Img").toString())
 				.taxiPay(param.get("taxiPay").toString())
 				.dinnerYn(param.get("dinnerYn").toString())

@@ -23,8 +23,8 @@
 
 <div class="modal hidden">
   <div class="bg"></div>
-  <div class="modalBox">
-    <iframe id="CalendarPopup" width="400" height="350"></iframe>
+  <div class="modalBox" style="width:465px; height:600px;">
+    <iframe id="CalendarPopup" width="465" height="600"></iframe>
   </div>
 </div>
 <script>
@@ -39,8 +39,8 @@ var name = "";
     %>
 
 
-    id = "hirofac";
-    name = "박준호";
+    id = "jhyuk97";
+    name = "최재혁";
     alert(name + "님 환영합니다.");
 
     var calendarEl = document.getElementById('calendar');
