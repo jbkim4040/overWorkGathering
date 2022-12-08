@@ -174,7 +174,8 @@ public class WorkService {
 				.img(param.get("Img").toString())
 				.taxiPay(param.get("taxiPay").toString())
 				.dinnerYn(param.get("dinnerYn").toString())
-				.taxiYn(param.get("taxiYn").toString()).build();
+				.taxiYn(param.get("taxiYn").toString())
+				.remarks(param.get("remarks").toString()).build();
 
 		WorkHisEntity workHisEntity = workMapper.toWorkEntity(workDTO);
 

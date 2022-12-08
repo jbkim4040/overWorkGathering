@@ -15,6 +15,7 @@ public class WorkDTO {
 	private String taxiPay;
 	private String dinnerYn;
 	private String taxiYn;
+	private String remarks;
 	
 	@Builder
 	public WorkDTO(
@@ -25,7 +26,8 @@ public class WorkDTO {
 			String img,
 			String taxiPay,
 			String dinnerYn,
-			String taxiYn) {
+			String taxiYn,
+			String remarks) {
 		this.userId = userId;
 		this.workDt = workDt;
 		this.startTime = startTime;
@@ -34,5 +36,6 @@ public class WorkDTO {
 		this.taxiPay = taxiPay;
 		this.dinnerYn = dinnerYn;
 		this.taxiYn = taxiYn;
+		this.remarks = remarks;
 	}
 }

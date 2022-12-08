@@ -34,6 +34,7 @@ $.ajax({
 	dataType:"json",
 	contentType:"application/json",
 	success: function(result){
+	debugger;
 		if(result.dinnerYn == "Y"){
 			$("input:checkbox[id='dinnerYn']").prop("checked", true);
 			a = "Y";
@@ -45,6 +46,10 @@ $.ajax({
 		}
 
 		$("#taxiPay").val(result.taxiPay);
+		$("#startTime").val(result.startTime);
+		$("#endTime").val(result.endTime);
+		$("#remarks").val(result.remarks);
+
 	}
 });
 
@@ -68,12 +73,18 @@ var fSave = function(url){
 		return;
 	}
     const imageInput = $("#taxiFile")[0];
-    const image = imageInput.files[0];
+    const image = "";
+    if(imageInput.files[0] !== undefined){
+        image = imageInput.files[0].name
+    }
+
+
 	$.ajax({
 		url:url,
 		type:"POST",
 		data:JSON.stringify({userID : "jhyuk97", workDt : params, dinnerYn:$('#dinnerYn').is(':checked')
-			 , taxiYn:$('#taxiYn').is(':checked'), Img:image.name, taxiPay:$('#taxiPay').val(), startTime:$('#startTime').val(), endTime:$('#endTime').val()}),
+			 , taxiYn:$('#taxiYn').is(':checked'), Img:image, taxiPay:$('#taxiPay').val()
+			 , startTime:$('#startTime').val(), endTime:$('#endTime').val(), remarks:$('#remarks').val()}),
 		contentType:"application/json",
 		success: function(result){
 			alert("처리성공");
@@ -120,6 +131,10 @@ var check = function(){
 			<input class="form-control" type="text" id="taxiPay" disabled/>
 			<label class="form-label">택시 영수증</label>
 			<input class="form-control" type="file" id="taxiFile" accept="image/*"/>
+			</div>
+
+			<div class="mb-3">
+			<textarea class="form-control" id="remarks" placeholder="비고"></textarea>
 			</div>
 
 			<div class="mb-3">

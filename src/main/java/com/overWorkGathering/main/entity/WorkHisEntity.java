@@ -43,5 +43,8 @@ public class WorkHisEntity {
 	
 	@Column(name = "TAXI_YN")
 	private String taxiYn;
+
+	@Column(name = "REMARKS")
+	private String remarks;
 	
 }
