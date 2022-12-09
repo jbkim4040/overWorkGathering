@@ -176,7 +176,7 @@ public class WorkService {
 				.workDt(param.get("workDt").toString())
 				.startTime(param.get("startTime").toString())
 				.endTime(param.get("endTime").toString())
-				.img(param.get("Img").toString())
+				.taxiReceiptImg(param.get("Img").toString())
 				.taxiPay(param.get("taxiPay").toString())
 				.dinnerYn(param.get("dinnerYn").toString())
 				.taxiYn(param.get("taxiYn").toString())

@@ -90,7 +90,7 @@ var fSave = function(url){
 		url:url,
 		type:"POST",
 		data:JSON.stringify({userID : "jhyuk97", workDt : params, dinnerYn:$('#dinnerYn').is(':checked')
-			 , taxiYn:$('#taxiYn').is(':checked'), Img:formData, taxiPay:$('#taxiPay').val()
+			 , taxiYn:$('#taxiYn').is(':checked'), Img:image, taxiPay:$('#taxiPay').val()
 			 , startTime:startHour+":"+startMin, endTime:endHour+":"+endMin, remarks:$('#remarks').val()}),
 		contentType:"application/json",
 		success: function(result){
