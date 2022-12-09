@@ -13,7 +13,6 @@ import java.security.spec.RSAPublicKeySpec;
 import java.util.Base64;
 import java.util.HashMap;
 
-import static com.sun.javafx.font.FontResource.SALT;
 
 @Controller
 public class Common {
