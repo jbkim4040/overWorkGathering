@@ -32,8 +32,8 @@ public class WorkHisEntity {
 	@Column(name = "END_TIME")
 	private String endTime;
 	
-	@Column(name = "IMG")
-	private String img;
+	@Column(name = "TAXI_RECEIPT_IMG")
+	private String taxiReceiptImg;
 	
 	@Column(name = "TAXI_PAY")
 	private String taxiPay;
