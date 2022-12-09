@@ -19,12 +19,9 @@
 <body>
 <script>
 var params = window.location.search.substr(1);
-var a = "N";
-var b = "N";
 params = params.split("=")[1];
 document.addEventListener("DOMContentLoaded", function(){
 	document.getElementById("workDt").innerHTML = params;
-
 });
 
 $.ajax({
@@ -35,74 +32,102 @@ $.ajax({
 	contentType:"application/json",
 	success: function(result){
 	debugger;
+	    if(result.dinnerYn == "Y" || result.taxiYn == "Y"){
+            $("#btn_delete").show();
+	    }else{
+	        $("#btn_delete").hide();
+	    }
+
 		if(result.dinnerYn == "Y"){
 			$("input:checkbox[id='dinnerYn']").prop("checked", true);
-			a = "Y";
 		}
 		if(result.taxiYn == "Y"){
 			$("input:checkbox[id='taxiYn']").prop("checked", true);
-			b = "Y";
 			$("#taxiPay").removeAttr("disabled");
 		}
 
 		$("#taxiPay").val(result.taxiPay);
-		$("#startTime").val(result.startTime);
-		$("#endTime").val(result.endTime);
+		$("#startHour").val(result.startTime.substr(0,2));
+		$("#startMin").val(result.startTime.substr(3,2));
+		$("#endHour").val(result.endTime.substr(0,2));
+		$("#endMin").val(result.endTime.substr(3,2));
 		$("#remarks").val(result.remarks);
 
 	}
 });
 
-var saveWork = function(){
-debugger;
-	if(a != "Y" && b != "Y"){
-		fSave("/work/SaveWork");
-	}else{
-		if(!$('#dinnerYn').is(':checked') && !$('#taxiYn').is(':checked')){
-			fSave("/work/DeleteWork");
-		}else{
-			fSave("/work/SaveWork");
-		}
-	}
-
-	parent.document.querySelector(".modal").classList.add("hidden");
-}
-
 var fSave = function(url){
-	if(!checkVaild()){
+	if(url.indexOf("Delete") == -1 && !checkVaild()){
 		return;
 	}
     const imageInput = $("#taxiFile")[0];
-    const image = "";
+    let image = "";
     if(imageInput.files[0] !== undefined){
         image = imageInput.files[0].name
     }
+    var formData = new FormData();
+    formData.append("fileObj",imageInput.files[0]);
 
+    let startHour = $('#startHour').val();
+    let startMin  = $('#startMin').val();
+    let endHour   = $('#endHour').val();
+    let endMin    = $('#endMin').val();
+    debugger;
+    if(startHour.length == 1){
+        startHour = "0" + startHour;
+    }
+    if(startMin.length == 1){
+            startMin = "0" + startMin;
+    }
+    if(endHour.length == 1){
+            endHour = "0" + endHour;
+    }
+    if(endMin.length == 1){
+            endMin = "0" + endMin;
+    }
 
 	$.ajax({
 		url:url,
 		type:"POST",
 		data:JSON.stringify({userID : "jhyuk97", workDt : params, dinnerYn:$('#dinnerYn').is(':checked')
-			 , taxiYn:$('#taxiYn').is(':checked'), Img:image, taxiPay:$('#taxiPay').val()
-			 , startTime:$('#startTime').val(), endTime:$('#endTime').val(), remarks:$('#remarks').val()}),
+			 , taxiYn:$('#taxiYn').is(':checked'), Img:formData, taxiPay:$('#taxiPay').val()
+			 , startTime:startHour+":"+startMin, endTime:endHour+":"+endMin, remarks:$('#remarks').val()}),
 		contentType:"application/json",
 		success: function(result){
+		debugger;
 			alert("처리성공");
+			parent.document.querySelector(".modal").classList.add("hidden");
+            parent.location.reload();
+
 		}
 	});
 
-}
+};
 
 var checkVaild = function(){
+    if(!$('#taxiYn').is(':checked') && !$('#dinnerYn').is(':checked')){
+        alert("체크박스를 선택해주세요");
+        return false;
+    }
 
 	if($('#taxiYn').is(':checked') && $('#taxiPay').val() == ""){
 		alert("택시비를 입력해주세요.");
 		return false;
 	}
 
+	if($('#dinnerYn').is(':checked') && $('#endHour').val() < 21 && $('#endHour').val() > 9){
+	    alert('21시 이전에 퇴근한 경우\n야근식대 신청이 불가합니다.');
+	    return false;
+	}
+debugger;
+	if($('#taxiYn').is(':checked') && $('#endHour').val() < 23 && $('#endHour').val() > 9){
+	    alert('23시 이전에 퇴근한 경우\n택시비 신청이 불가합니다.');
+	    return false;
+	}
+
 	return true;
 
-}
+};
 
 var check = function(){
 	if($('#taxiYn').is(':checked')){
@@ -110,7 +135,27 @@ var check = function(){
 	}else{
 		$("#taxiPay").attr("disabled",true);
 	}
+};
+
+function minChk(obj){
+    if(obj.value > 59)
+        obj.value = 59;
+    if(obj.value < 0)
+        obj.value = 00;
+    if(obj.value.length > 2)
+        obj.value = 00;
 }
+
+function hourChk(obj){
+debugger;
+    if(obj.value > 23)
+        obj.value = 23;
+    if(obj.value < 0)
+        obj.value = 00;
+    if(obj.value.length > 2)
+        obj.value = 00;
+}
+
 </script>
 <div class="container-xxl">
 <div class="authentication-wrapper authentication-basic container-p-y">
@@ -120,11 +165,19 @@ var check = function(){
 			<div class="app-brand justify-content-center">
 				<span id="workDt" class="app-brand-text demo text-body fw-bolder" style="padding-bottom:10px;">날짜적기</span>
 			</div>
-			<input class="form-check-input" type="checkbox" id="dinnerYn">식대 요청</input>
-			<input class="form-check-input" type="checkbox" id="taxiYn" onclick="check();">택시비 요청</input>
-            <div class="mb-3"></br>
-                <input class="form-control" type="text" id="startTime" placeholder="출근시간"/></br>
-                <input class="form-control" type="text" id="endTime" placeholder="퇴근시간"/>
+			<div class="mb-3 text-center">
+                <input class="form-check-input" type="checkbox" id="dinnerYn">식대 요청</input>
+                <input class="form-check-input" type="checkbox" id="taxiYn" onclick="check();">택시비 요청</input>
+			</div>
+            <div class="mb-3">
+                <label>출근시간</label>
+                <input class="form-control" style="width:100px; display:inline;" type="number" id="startHour" min="00" max="23" oninput="hourChk(this)" placeholder="시"></input> :
+                <input class="form-control" style="width:100px; display:inline;" type="number" id="startMin" min="00" max="59" oninput="minChk(this)" placeholder="분"></input>
+            </div>
+            <div class="mb-3">
+                <label>퇴근시간</label>
+                <input class="form-control" style="width:100px; display:inline;" type="number" id="endHour" min="00" max="23" oninput="hourChk(this)" placeholder="시"></input> :
+                <input class="form-control" style="width:100px; display:inline;" type="number" id="endMin" min="00" max="59" oninput="minChk(this)" placeholder="분"></input>
             </div>
 			<div class="mb-3">
 			<label class="form-label">택시비</label>
@@ -137,8 +190,9 @@ var check = function(){
 			<textarea class="form-control" id="remarks" placeholder="비고"></textarea>
 			</div>
 
-			<div class="mb-3">
-              <button class="btn btn-primary d-grid w-100" href="Calendar" onclick="saveWork()">확인</button>
+			<div class="mb-3 text-center">
+              <button class="btn btn-primary d-inline w-25" href="Calendar" onclick="fSave('/work/SaveWork')">확인</button>
+              <button class="btn btn-primary w-25" href="Calendar" style="display:none;" id="btn_delete" onclick="fSave('/work/DeleteWork')">삭제</button>
             </div>
 		</div>
 	</div>

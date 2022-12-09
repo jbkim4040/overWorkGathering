@@ -23,8 +23,8 @@
 
 <div class="modal hidden">
   <div class="bg"></div>
-  <div class="modalBox" style="width:465px; height:600px;">
-    <iframe id="CalendarPopup" width="465" height="600"></iframe>
+  <div class="modalBox" style="width:465px; height:670px;">
+    <iframe id="CalendarPopup" width="465" height="670"></iframe>
   </div>
 </div>
 <script>

@@ -168,6 +168,10 @@ public class WorkService {
 			param.replace("taxiYn", "N");
 		}
 
+		if(!"".equals(param.get("taxiPay").toString())){
+			param.replace("taxiPay", param.get("taxiPay").toString()+"원");
+		}
+
 		WorkDTO workDTO = WorkDTO.builder().userId(param.get("userID").toString())
 				.workDt(param.get("workDt").toString())
 				.startTime(param.get("startTime").toString())
