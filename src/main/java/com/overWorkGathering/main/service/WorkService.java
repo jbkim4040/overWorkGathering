@@ -148,7 +148,7 @@ public class WorkService {
 				.map(WorkDTO::getDinnerYn)
 				.collect(Collectors.toList());
 
-		return Integer.toString(7000 * dinnerPays.size());
+		return Integer.toString(9000 * dinnerPays.size());
 	}
 
 	/*
@@ -193,7 +193,7 @@ public class WorkService {
 	/*
 	 * 월간 야근식대 요청 현황 상세 조회
 	 */
-	public List<WorkDTO> retrieveWorkCollectionDtl(String part, String dt){
+	public List<WorkCollectionDtlReqDTO> retrieveWorkCollectionDtl(String part, String dt){
 		//파트 구성원 조회
 		List<UserInfoEntity> userInfoEntityList = userRepository.findAllByPart(part);
 		List<UserDTO> userDTOList = userMapper.toUserDTOList(userInfoEntityList);
@@ -202,22 +202,31 @@ public class WorkService {
 		//월간 야근식대 요청 현황 전체 조회
 		List<WorkDTO> workDTOList = retrieveWorkCollectionReqDTOList(userIdList, dt);
 
-		//유저 한글명 세팅
-		return setpUserNm(workDTOList, userDTOList);
+		List<WorkCollectionDtlReqDTO> workCollectionDtlReqDTOList = setpWorkCollectionDtlReqDTO(workDTOList, userDTOList);
+
+		return workCollectionDtlReqDTOList;
 	}
 
-	/*
-	 * 유저 한글명 세팅
-	 */
-	private List<WorkDTO> setpUserNm(List<WorkDTO> workDTOList, List<UserDTO> userDTOList) {
 
-		Map<String, String> userNm = userDTOList.stream().collect(Collectors.toMap(UserDTO::getUserId, UserDTO::getName));
-
+	private List<WorkCollectionDtlReqDTO> setpWorkCollectionDtlReqDTO(List<WorkDTO> workDTOList, List<UserDTO> userDTOList) {
+		List<WorkCollectionDtlReqDTO> workCollectionDtlReqDTOlist = new ArrayList<>();
 		workDTOList.stream().forEach(item ->{
-			item.setUserId(userNm.get(item.getUserId()));
+			workCollectionDtlReqDTOlist.add(WorkCollectionDtlReqDTO
+					.builder()
+					.workDt(item.getWorkDt())
+					.userId(item.getUserId())
+					.taxiPay(item.getTaxiPay())
+					.dinnerYn(item.getDinnerYn())
+					.name(setUserNm(userDTOList, item.getUserId()))
+					.build()
+			);
 		});
 
-		return workDTOList;
+		return workCollectionDtlReqDTOlist;
+	}
+
+	private String setUserNm(List<UserDTO> userDTOList, String userId) {
+		return userDTOList.stream().filter(item -> userId.equals( item.getUserId() )).map(UserDTO::getName).findFirst().orElseGet(()-> "");
 	}
 
 

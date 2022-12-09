@@ -56,7 +56,7 @@ public class WorkController {
 	 * 월간 야근식대 요청 현황 상세 조회
 	 */
 	@RequestMapping(value="/retrieveWorkCollectionDtl", method = RequestMethod.GET)
-	public List<WorkDTO> retrieveWorkCollectionDtl(@RequestParam String part, @RequestParam String dt) {
+	public List<WorkCollectionDtlReqDTO> retrieveWorkCollectionDtl(@RequestParam String part, @RequestParam String dt) {
 		return workService.retrieveWorkCollectionDtl(part, dt);
 	}
 }

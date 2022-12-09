@@ -1,7 +1,11 @@
 package com.overWorkGathering.main.DTO;
 
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
 public class WorkCollectionDtlReqDTO {
     private String userId;
     private String workDt;
@@ -11,7 +15,6 @@ public class WorkCollectionDtlReqDTO {
     private String taxiPay;
     private String dinnerYn;
     private String taxiYn;
-
     private String name;
 
     @Builder
@@ -23,6 +26,7 @@ public class WorkCollectionDtlReqDTO {
             String img,
             String taxiPay,
             String dinnerYn,
+            String name,
             String taxiYn) {
         this.userId = userId;
         this.workDt = workDt;
@@ -31,6 +35,7 @@ public class WorkCollectionDtlReqDTO {
         this.img = img;
         this.taxiPay = taxiPay;
         this.dinnerYn = dinnerYn;
+        this.name = name;
         this.taxiYn = taxiYn;
     }
 }
