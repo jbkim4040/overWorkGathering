@@ -3,6 +3,7 @@ package com.overWorkGathering.main.service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -246,4 +247,28 @@ public class WorkService {
 
 		return workMapper.toWorkDTOList(workHisEntityList);
 	}
+
+	public Map<String, List<WorkCollectionDtlReqDTO>> retrieveExcelDtl(String part, String dt){
+
+		List<WorkCollectionDtlReqDTO> workCollectionDtlReqDTOList = retrieveWorkCollectionDtl( part, dt );
+
+		return setResultMap(workCollectionDtlReqDTOList);
+	}
+
+	private Map<String, List<WorkCollectionDtlReqDTO>> setResultMap(List<WorkCollectionDtlReqDTO> workCollectionDtlReqDTOList) {
+
+		Map<String, List<WorkCollectionDtlReqDTO>> resultMap = new HashMap<>();
+
+		List<String> reqUserIdList = workCollectionDtlReqDTOList.stream().map(WorkCollectionDtlReqDTO::getUserId).distinct().collect(Collectors.toList());
+
+		if ( !reqUserIdList.isEmpty() ) {
+			reqUserIdList.stream().forEach(item -> {
+				resultMap.put(item, workCollectionDtlReqDTOList.stream().filter(e -> item.equals(e.getUserId())).collect(Collectors.toList()));
+			});
+		}
+
+		return resultMap;
+	}
+
+
 }
