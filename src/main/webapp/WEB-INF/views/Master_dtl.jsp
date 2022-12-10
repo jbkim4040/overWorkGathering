@@ -20,8 +20,10 @@
     <link rel="stylesheet" href="../css/pages/page-auth.css" />
 </head>
 <body>
+<--<%@ include file="/fix/header.jsp"%>-->
 <div class="card">
   <div class="card-body" id="card_body">
+  <input class="btn btn-primary" type="button" id="btn_excel_create" value="엑셀" onClick="createWorkCollectionExcel()">
     <div class="table-responsive text-nowrap">
       <table class="table table-bordered">
         <tbody id="tbody">
@@ -36,7 +38,10 @@
     </div>
   </div>
 </div>
+<--<%@ include file="/fix/footer.jsp"%>-->
 <script>
+let workCollectionDtl;
+
 window.onload = function(){
 
 	var part = "본구축프로젝트";
@@ -54,6 +59,8 @@ window.onload = function(){
         success: function(result) {
         	debugger;
         	if ( result.length > 0 ) {
+        	    workCollectionDtl = result;
+
                 let reqPersonnel = calculationReqPersonnel(result);
 
                 setpDateOfInitiation(dt);
@@ -69,6 +76,24 @@ window.onload = function(){
     })
 
 };
+
+createWorkCollectionExcel = function(){
+    debugger;
+    $.ajax({
+            url:"/excel/workCollection",
+            type:"post",
+            data: JSON.stringify(workCollectionDtl),
+            dataType : "json",
+            contentType: "application/json; charset=UTF-8",
+            success: function(result) {
+            	debugger;
+
+            },
+            error: function() {
+                alert("에러 발생");
+            }
+        })
+}
 
 calculationReqPersonnel = function(result){
     const a = new Set(result.map(item => item.userId));

@@ -1,16 +1,26 @@
 package com.overWorkGathering.main.controller;
 
+import com.overWorkGathering.main.DTO.WorkCollectionDtlReqDTO;
 import com.overWorkGathering.main.service.ExcelService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.util.List;
 
 @RestController
+@RequestMapping(path = "/excel")
 public class ExcelController {
 
     @Autowired
     private ExcelService excelService;
 
-    public void createOverworkGatheringExcel(){
+    @PostMapping(value = "/workCollection")
+    public void createOverworkGatheringExcel(@RequestBody List<WorkCollectionDtlReqDTO> workCollectionDtl){//@RequestBody List<WorkCollectionDtlReqDTO> workCollectionDtl
+        try{
+            excelService.createExcel(workCollectionDtl);
+        }catch(IOException ioe){
 
+        }
     }
 }
