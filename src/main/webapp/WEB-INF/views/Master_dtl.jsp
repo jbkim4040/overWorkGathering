@@ -58,16 +58,14 @@ window.onload = function(){
         dataType : "json",
         success: function(result) {
         	debugger;
-        	if ( result.length > 0 ) {
-        	    workCollectionDtl = result;
+            workCollectionDtl = result;
 
-                let reqPersonnel = calculationReqPersonnel(result);
+            let reqPersonnel = calculationReqPersonnel(result);
 
-                setpDateOfInitiation(dt);
+            setpDateOfInitiation(dt);
 
-                for (i=0; i<reqPersonnel.length; i++) {
-                    setpUserTable(result, reqPersonnel[i], dt);
-                }
+            for (i=0; i<reqPersonnel.length; i++) {
+                setpUserTable(Object.values(result)[i], reqPersonnel[i], dt);
             }
         },
         error: function() {
@@ -96,9 +94,7 @@ createWorkCollectionExcel = function(){
 }
 
 calculationReqPersonnel = function(result){
-    const a = new Set(result.map(item => item.userId));
-    const uniqueArr = [...a];
-    return uniqueArr;
+    return Object.keys(result);
 };
 
 setpDateOfInitiation = function(dt) {
@@ -131,7 +127,7 @@ debugger;
 
             if ( result.filter(item => reqPersonnel == item.userId).filter(item => item.workDt.substring(8) == day).length > 0 ){
 
-                setpMealsAndTaxPay( j, newCell, result, reqPersonnel, day);
+                setpMealsAndTaxPay( j, newCell, result, reqPersonnel, day );
 
             } else {
                 newCell.innerHTML = "0 원";
