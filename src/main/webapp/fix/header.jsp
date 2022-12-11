@@ -24,10 +24,22 @@
 
         <div style= 'text-align:right;'>
             <a style = 'margin-right:15px;' href="">나의 정보</a>
-            <input class="btn btn-primary" type="button" id="btn_logout" value="로그아웃">
+            <input class="btn btn-primary" type="button" id="btn_logout" value="로그아웃" onclick="logout()">
         </div>
     </header>
 <script>
+
+    logout = function(){
+        $.ajax({
+            url:"/user/logOut",
+            type:"POST",
+            dataType : "json",
+            success: function(result) {
+            },
+            error: function() {
+            }
+        })
+    }
 </script>
 </body>
 </html>

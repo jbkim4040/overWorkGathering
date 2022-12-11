@@ -17,6 +17,10 @@ import com.overWorkGathering.main.DTO.WorkDTO;
 import com.overWorkGathering.main.service.UserService;
 import com.overWorkGathering.main.service.WorkService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping(path = "/work")
 public class WorkController {
@@ -24,8 +28,20 @@ public class WorkController {
 	@Autowired
 	WorkService workService;	
 
+//	@RequestMapping(value="/retrievework", method = RequestMethod.GET)
+//	public List<WorkDTO> retrieveWork(@RequestParam String userId) {
+//		return workService.retrieveWork(userId);
+//	}
+
 	@RequestMapping(value="/retrievework", method = RequestMethod.GET)
-	public List<WorkDTO> retrieveWork(@RequestParam String userId) {
+	public List<WorkDTO> retrieveWork(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		String userId = (String)session.getAttribute("userId");
+		String userName = (String)session.getAttribute("userName");
+
+		System.out.println("세션에서 가져온 ID >>>>> " + userId);
+		System.out.println("세션에서 가져온 이름 >>>>> " + userName);
+
 		return workService.retrieveWork(userId);
 	}
 	

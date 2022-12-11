@@ -42,7 +42,7 @@ public class UserService {
 		UserInfoEntity user = null;
 
 		try{
-			if(userId.equals("hirofac") || userId.equals("jbkim4040") || userId.equals("jhyuk97")){
+			if(userId.equals("hirofac") || userId.equals("jhyuk97")){
 				user = userRepository.findByUserIdAndPw(userId, pw);
 			}else{
 				String salt = userRepository.findByUserId(userId).getSalt();
@@ -57,8 +57,6 @@ public class UserService {
 		} catch(Exception e){
 
 		}
-
-
 
 		// 로그인 코드가 999 : 실패     000 : 성공
 		if(ObjectUtils.isEmpty(user)){

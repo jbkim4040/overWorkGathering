@@ -40,10 +40,8 @@ var name = "";
         String userName = (String)session.getAttribute("userName");
     %>
 
-
-    id = "jhyuk97";
-    name = "최재혁";
-    alert(name + "님 환영합니다.");
+    let session = window.sessionStorage;
+    debugger;
 
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -67,7 +65,6 @@ var name = "";
     $.ajax({
         url:"/work/retrievework",
         type:"get",
-        data: {userId : id},
         dataType : "json",
         success: function(result) {
         	debugger;
