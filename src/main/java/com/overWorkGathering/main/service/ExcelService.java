@@ -1,5 +1,6 @@
 package com.overWorkGathering.main.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.overWorkGathering.main.DTO.WorkCollectionDtlReqDTO;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -11,43 +12,34 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
 public class ExcelService {
-    // 날짜 계산 함수
-    private int[] calculateDate (int year, int month, int day){
-        Calendar cal = Calendar.getInstance();
-        cal.set(year, month-1, day); //월은 -1해줘야 해당월로 인식
+    private final String[] alphabet = {
+            "A", "B", "C", "D", "E", "F",
+            "G", "H", "I", "J", "K", "L",
+            "M", "N", "O", "P", "Q", "R",
+            "S", "T", "U", "V", "W", "X",
+            "Y", "Z"
+    };
 
-        int[] rtn = new int[2];
-        rtn[0] = cal.getMinimum(Calendar.DAY_OF_MONTH);
-        rtn[1] = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 
-        return rtn;
-    }
-
-    public String createExcel(List<WorkCollectionDtlReqDTO> workCollectionDtl) throws IOException {
-        HashMap<String, List<WorkCollectionDtlReqDTO>> workCollectionListMap = new HashMap<>();
-        List<WorkCollectionDtlReqDTO> workCollection;
+    public String createExcel(Map<String, Object> workCollectionDtl) throws IOException {
         String name = "";
 
-        for(WorkCollectionDtlReqDTO dto : workCollectionDtl){
-            if(!name.equals(dto.getName())){
-                workCollection = new ArrayList<WorkCollectionDtlReqDTO>();
-                workCollectionListMap.put(dto.getName(), workCollection);
-            }
+        DateFormat df = new SimpleDateFormat("yyyyMMdd");
+        Calendar cal = Calendar.getInstance( );
+        cal.add ( cal.MONTH, -1 ); //이전달
 
-            //workCollection.add(dto);
-        }
-
-        Set<String> keySet = workCollectionListMap.keySet();
-
-        System.out.println("map 변환 >>> " + workCollectionListMap.toString());
-
-        int year = 2022;
-        int month = 8;
-        int day = 1;
+        int year = Integer.parseInt(df.format(cal.getTime()).substring(0,4));
+        int month = Integer.parseInt(df.format(cal.getTime()).substring(4,6));
+        int day = Integer.parseInt(df.format(cal.getTime()).substring(6,8));
 
         int[] rtn = calculateDate(year, month, day);
 
@@ -77,10 +69,8 @@ public class ExcelService {
 
         // 헤더 제목 셀 폰트
         Font headerTitleFont = workbook.createFont();
-        //headerTitleFont.setFontHeight((short) 14);
         headerTitleFont.setBold(true);
         headerTitleFont.setFontName("돋음");
-        //headerTitleFont.setUnderline(Font.U_SINGLE);
         headerTitleStyle.setFont(headerTitleFont);
 
         // 헤더 제목 셀 스타일, 폰트 적용
@@ -159,9 +149,7 @@ public class ExcelService {
 
         // 바디 타이틀 셀 폰트 - 발의일자
         Font body1Font = workbook.createFont();
-        //headerTitleFont.setFontHeight((short) 14);
         body1Font.setBold(true);
-        //headerTitleFont.setUnderline(Font.U_SINGLE);
         body1Font.setFontName("돋음");
         body1Style.setFont(body1Font);
 
@@ -178,7 +166,6 @@ public class ExcelService {
         body2Style.setAlignment(HorizontalAlignment.CENTER);
         body2Style.setVerticalAlignment(VerticalAlignment.CENTER);
         body2Style.setFillBackgroundColor((short) 3);
-        //body1Style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         body2Style.setBorderTop(BorderStyle.THICK);
         body2Style.setBorderLeft(BorderStyle.THIN);
         body2Style.setBorderRight(BorderStyle.THIN);
@@ -188,10 +175,8 @@ public class ExcelService {
 
         // 바디 타이틀 셀 폰트 - 금액
         Font body2Font = workbook.createFont();
-        //headerTitleFont.setFontHeight((short) 14);
         body2Font.setBold(true);
         body2Font.setFontName("돋음");
-        //headerTitleFont.setUnderline(Font.U_SINGLE);
         body2Style.setFont(body2Font);
 
         body2Cell.setCellStyle(body2Style);
@@ -599,8 +584,127 @@ public class ExcelService {
         // 근태관리 excel sheet 생성
         Sheet workManagementSheet = workbook.createSheet("근태관리");
 
+        CellStyle workManagementCell3Style = workbook.createCellStyle();
+        workManagementCell3Style.setAlignment(HorizontalAlignment.CENTER);
 
-        // 근태관리 excel sheet 생성
+        Set<String> keySet = workCollectionDtl.keySet();
+
+        System.out.println("화면에서 던져주는 데이터 >>>>>" + workCollectionDtl.toString());
+        System.out.println("화면에서 던져주는 데이터 keyset >>>>> " + keySet.toString());
+
+        Row workManagementRow1 = workManagementSheet.createRow(1);
+        Cell workManagementCell1 = workManagementRow1.createCell(0);
+        // 35px
+        workManagementCell1.setCellValue(month + "월");
+        workManagementCell1.setCellStyle(workManagementCell3Style);
+
+        Cell workManagementCell2 = workManagementRow1.createCell(1);
+        workManagementCell2.setCellValue("여기는 팀명이 들어갑니다!");
+
+
+        Row workManagementRow1_1 = workManagementSheet.createRow(2);
+        CellStyle employeeInfoHeaderStyle = workbook.createCellStyle();
+        employeeInfoHeaderStyle.setAlignment(HorizontalAlignment.CENTER);
+        employeeInfoHeaderStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+        employeeInfoHeaderStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        int index = 1;
+        ObjectMapper mapper = new ObjectMapper();
+        String[] keyList = keySet.toArray(new String[workCollectionDtl.size()]);
+
+        HashMap<String, Row> dayRowMap = new HashMap<>();
+        String[] dayOfWeekList = {"월", "화", "수", "목", "금", "토", "일"};
+        int dayOfWeekCnt = rtn[2];
+        for(int i = rtn[0]; i <= rtn[1]; i++){
+            Row workManagementRow2 = workManagementSheet.createRow(1 + (i * 2));
+            Cell workManagementCell3 = workManagementRow2.createCell(0);
+            workManagementCell3.setCellValue(Integer.toString(i));
+            workManagementCell3.setCellStyle(workManagementCell3Style);
+
+            Row workManagementRow3 = workManagementSheet.createRow(1 + (i * 2) + 1);
+            Cell workManagementCell4 = workManagementRow3.createCell(0);
+            workManagementCell4.setCellValue(dayOfWeekList[dayOfWeekCnt % 7]);
+            workManagementCell4.setCellStyle(workManagementCell3Style);
+
+            dayRowMap.put(Integer.toString(i), workManagementRow2);
+            dayRowMap.put(i + "_1", workManagementRow3);
+
+            dayOfWeekCnt++;
+        }
+
+        System.out.println("dayRowMap >>>>> " + dayRowMap.toString());
+
+
+        for(String key : keySet){
+            List<WorkCollectionDtlReqDTO> reqDTOList = (List<WorkCollectionDtlReqDTO>)workCollectionDtl.get(key);
+
+            Cell workManagementCell4 = workManagementRow1_1.createCell((3 * index) - 2);
+            workManagementCell4.setCellValue("직책");
+            workManagementCell4.setCellStyle(employeeInfoHeaderStyle);
+
+            Cell workManagementCell5 = workManagementRow1_1.createCell((3 * index) - 1);
+
+            workManagementCell5.setCellValue(mapper.convertValue(reqDTOList.get(0), WorkCollectionDtlReqDTO.class).getName());
+            workManagementCell5.setCellStyle(employeeInfoHeaderStyle);
+
+            Cell workManagementCell6 = workManagementRow1_1.createCell(3 * index);
+            workManagementCell6.setCellValue("비고");
+
+            String personalDinnerAmt = "";
+            String personalTaxiAmt = "";
+
+            for(int i = 0; i < reqDTOList.size(); i++){
+                WorkCollectionDtlReqDTO DTO = mapper.convertValue(reqDTOList.get(i), WorkCollectionDtlReqDTO.class);
+                System.out.println("시작 시간 >>>>> " + DTO.getStartTime());
+                System.out.println("종료 시간 >>>>> " + DTO.getEndTime());
+
+                int j = Integer.parseInt(DTO.getWorkDt().substring(8));
+
+                dayRowMap.get(j + "")
+                        .createCell((3 * index) - 2).setCellValue(DTO.getStartTime());
+                dayRowMap.get(j + "_1")
+                        .createCell((3 * index) - 2).setCellValue(DTO.getEndTime());
+
+                dayRowMap.get(j + "")
+                        .createCell((3 * index) - 1).setCellValue("비고1");
+                dayRowMap.get(j + "_1")
+                        .createCell((3 * index) - 1).setCellValue("비고2");
+            }
+
+            index++;
+        }
+
+        workManagementSheet.setColumnWidth(0, 1350);
+        workManagementSheet.setDisplayGridlines(false);
+
+//        //헤더//
+//        Row workManagementHeader1 = outcomeHistorySheet.createRow(1);
+//
+//        // 헤더 제목 셀 생성
+//        Cell headerTitleCell = workManagementHeader1.createCell(0);
+//        outcomeHistorySheet.addMergedRegion(new CellRangeAddress(0,1,0,0));
+//        headerTitleCell.setCellValue("지출 내역서");
+//
+//        // 헤더 제목 셀 스타일
+//        CellStyle headerTitleStyle = workbook.createCellStyle();
+//        headerTitleStyle.setAlignment(HorizontalAlignment.CENTER);
+//        headerTitleStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+//
+//        // 헤더 제목 셀 폰트
+//        Font headerTitleFont = workbook.createFont();
+//        //headerTitleFont.setFontHeight((short) 14);
+//        headerTitleFont.setBold(true);
+//        headerTitleFont.setFontName("돋음");
+//        //headerTitleFont.setUnderline(Font.U_SINGLE);
+//        headerTitleStyle.setFont(headerTitleFont);
+//
+//        // 헤더 제목 셀 스타일, 폰트 적용
+//        headerTitleCell.setCellStyle(headerTitleStyle);
+
+
+
+
+        // 택시비 영수증 excel sheet 생성
         Sheet taxiFeeReceiptSheet = workbook.createSheet("택시비 영수증");
 
 
@@ -619,5 +723,39 @@ public class ExcelService {
 
 
         return "성공";
+    }
+
+
+    // 날짜 계산 함수
+    private int[] calculateDate (int year, int month, int day){
+        Calendar cal = Calendar.getInstance();
+        cal.set(year, month-1, day); //월은 -1해줘야 해당월로 인식
+
+        int[] rtn = new int[3];
+        rtn[0] = cal.getMinimum(Calendar.DAY_OF_MONTH);
+        rtn[1] = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        rtn[2] = cal.getFirstDayOfWeek();
+        return rtn;
+    }
+
+
+    private String invertCellIndexToAlphabet(int cellIndex){
+        String cellAlphabet = "";
+
+        // 26개
+        if(cellIndex / 26 == 0){
+            cellAlphabet += alphabet[cellIndex - 1];
+        }else{
+            while(cellIndex / 26 >= 26){
+                cellAlphabet += alphabet[(cellIndex % 26) - 1];
+
+                cellIndex = cellIndex / 26;
+            }
+
+            cellAlphabet += alphabet[(cellIndex % 26) - 1];
+
+        }
+
+        return cellAlphabet;
     }
 }
