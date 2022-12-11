@@ -70,4 +70,12 @@ public class WebController {
 
 		return "Master_dtl";
 	}
+
+	@RequestMapping(value="/User_dtl")
+	public String User_dtl(final HttpServletRequest request) {
+		// RSA 키 생성
+		initRsa(request);
+
+		return "User_dtl";
+	}
 }

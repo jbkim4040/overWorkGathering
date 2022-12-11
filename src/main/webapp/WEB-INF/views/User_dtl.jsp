@@ -22,8 +22,7 @@
 <body>
 <--<%@ include file="/fix/header.jsp"%>-->
 <div class="card">
-  <div class="card-body" id="card_body">
-  <input class="btn btn-primary" type="button" id="btn_excel_create" value="엑셀" onClick="createWorkCollectionExcel()">
+  <div class="card-body" id="card_body" sytle = 'width:800px;'>
     <div class="table-responsive text-nowrap">
       <table class="table table-bordered">
         <tbody id="tbody">
@@ -40,33 +39,28 @@
 </div>
 <--<%@ include file="/fix/footer.jsp"%>-->
 <script>
-let workCollectionDtl;
-
 window.onload = function(){
 
 	var part = "본구축프로젝트";
 	var dt = "2022-12";
+	var userId = "hirofac";
 
 
     $.ajax({
-        url:"/work/retrieveWorkCollectionDtl",
+        url:"/work/retrieveWorkCollectionUserDtl",
         type:"get",
         data: {
         	part : part,
-        	dt : dt
+        	dt : dt,
+        	userId : userId
         		},
         dataType : "json",
         success: function(result) {
         	debugger;
-            workCollectionDtl = result;
-
-            let reqPersonnel = calculationReqPersonnel(result);
-
             setpDateOfInitiation(dt);
 
-            for (i=0; i<reqPersonnel.length; i++) {
-                setpUserTable(Object.values(result)[i], reqPersonnel[i], dt);
-            }
+            setpUserTable(result, userId, dt);
+
         },
         error: function() {
             alert("에러 발생");
@@ -75,23 +69,6 @@ window.onload = function(){
 
 };
 
-createWorkCollectionExcel = function(){
-    debugger;
-    $.ajax({
-            url:"/excel/workCollection",
-            type:"post",
-            data: JSON.stringify(workCollectionDtl),
-            dataType : "json",
-            contentType: "application/json; charset=UTF-8",
-            success: function(result) {
-                debugger;
-
-            },
-            error: function() {
-                alert("에러 발생");
-            }
-        })
-}
 
 calculationReqPersonnel = function(result){
     return Object.keys(result);

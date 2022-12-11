@@ -16,6 +16,7 @@ public class WorkCollectionDtlReqDTO {
     private String dinnerYn;
     private String taxiYn;
     private String name;
+    private String remarks;
 
     @Builder
     public WorkCollectionDtlReqDTO(
@@ -27,7 +28,8 @@ public class WorkCollectionDtlReqDTO {
             int taxiPay,
             String dinnerYn,
             String name,
-            String taxiYn) {
+            String taxiYn,
+            String remarks) {
         this.userId = userId;
         this.workDt = workDt;
         this.startTime = startTime;
@@ -37,5 +39,6 @@ public class WorkCollectionDtlReqDTO {
         this.dinnerYn = dinnerYn;
         this.name = name;
         this.taxiYn = taxiYn;
+        this.remarks = remarks;
     }
 }

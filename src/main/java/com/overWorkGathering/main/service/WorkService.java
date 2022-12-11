@@ -225,6 +225,7 @@ public class WorkService {
 					.taxiPay(item.getTaxiPay())
 					.dinnerYn(item.getDinnerYn())
 					.name(setUserNm(userDTOList, item.getUserId()))
+					.remarks(item.getRemarks())
 					.build()
 			);
 		});
@@ -273,4 +274,10 @@ public class WorkService {
 	}
 
 
+	public List<WorkCollectionDtlReqDTO> retrieveWorkCollectionUserDtl(String part, String dt, String userId) {
+
+		Map<String, List<WorkCollectionDtlReqDTO>> retrieveWorkCollectionDtl = retrieveExcelDtl(part, dt);
+
+		return retrieveWorkCollectionDtl.get(userId);
+	}
 }

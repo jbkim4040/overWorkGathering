@@ -59,4 +59,12 @@ public class WorkController {
 	public Map<String, List<WorkCollectionDtlReqDTO>> retrieveExcelDtl(@RequestParam String part, @RequestParam String dt) {
 		return workService.retrieveExcelDtl(part, dt);
 	}
+
+	/*
+	 * 월간 야근식대 요청 개인현황 상세 조회
+	 */
+	@RequestMapping(value="/retrieveWorkCollectionUserDtl", method = RequestMethod.GET)
+	public List<WorkCollectionDtlReqDTO> retrieveWorkCollectionUserDtl(@RequestParam String part, @RequestParam String dt, @RequestParam String userId) {
+		return workService.retrieveWorkCollectionUserDtl(part, dt, userId);
+	}
 }
