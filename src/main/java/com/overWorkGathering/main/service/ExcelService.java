@@ -671,9 +671,9 @@ public class ExcelService {
                         .createCell((3 * index) - 2).setCellValue(DTO.getEndTime());
 
                 dayRowMap.get(j + "")
-                        .createCell((3 * index) - 1).setCellValue("저녁식사금액");
+                        .createCell((3 * index) - 1).setCellValue(DTO.getDinnerYn().equals("Y") ? "9,000" : "0");
                 dayRowMap.get(j + "_1")
-                        .createCell((3 * index) - 1).setCellValue("택시비");
+                        .createCell((3 * index) - 1).setCellValue(DTO.getTaxiPay());
 
                 dayRowMap.get(j + "")
                         .createCell(3 * index).setCellValue("비고1");

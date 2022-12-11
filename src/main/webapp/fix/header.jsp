@@ -21,7 +21,8 @@
 </head>
 <body>
     <header>
-
+        <a href="">나의 정보</a>
+        <input class="btn btn-primary" type="button" id="btn_logout" value="로그아웃">
     </header>
 <script>
 </script>

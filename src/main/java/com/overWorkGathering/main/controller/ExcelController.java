@@ -17,11 +17,11 @@ public class ExcelController {
     private ExcelService excelService;
 
     @PostMapping(value = "/workCollection")
-    public void createOverworkGatheringExcel(@RequestBody Map<String, Object> workCollectionDtl){//@RequestBody List<WorkCollectionDtlReqDTO> workCollectionDtl
+    public void createOverworkGatheringExcel(@RequestBody Map<String, Object> workCollectionDtl){
         try{
             excelService.createExcel(workCollectionDtl);
         }catch(IOException ioe){
- 
+
         }
     }
 }
