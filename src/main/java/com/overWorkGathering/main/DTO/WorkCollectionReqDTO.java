@@ -10,14 +10,14 @@ public class WorkCollectionReqDTO {
 	
 	private String workDt;
 	private String dinnerPay;
-	private String taxiPay;
+	private int taxiPay;
 	private String other;
 	
 	@Builder
 	public WorkCollectionReqDTO(
 			String workDt, 
-			String dinnerPay, 
-			String taxiPay, 
+			String dinnerPay,
+			int taxiPay,
 			String other) {
 		this.workDt = workDt;
 		this.dinnerPay = dinnerPay;

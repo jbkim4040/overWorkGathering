@@ -9,6 +9,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -34,9 +35,10 @@ public class WorkHisEntity {
 	
 	@Column(name = "TAXI_RECEIPT_IMG")
 	private String taxiReceiptImg;
-	
+
 	@Column(name = "TAXI_PAY")
-	private String taxiPay;
+	@ColumnDefault("0")
+	private int taxiPay;
 	
 	@Column(name = "DINNER_YN")
 	private String dinnerYn;

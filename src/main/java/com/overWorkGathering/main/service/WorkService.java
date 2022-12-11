@@ -118,24 +118,24 @@ public class WorkService {
 	/*
 	 * 택시비 취합
 	 */
-	private String plusTaxiPay(List<WorkDTO> workDTOList, String workDt) {
+	private int plusTaxiPay(List<WorkDTO> workDTOList, String workDt) {
 
-		List<String> taxiPays
+		List<Integer> taxiPays
 				= workDTOList.stream()
 				.filter(item -> workDt.equals(item.getWorkDt()))
 				.filter(item -> "Y".equals(item.getTaxiYn()))
 				.map(WorkDTO::getTaxiPay)
 				.collect(Collectors.toList());
 
-		if(taxiPays.size() == 0) { return "0"; }
+		if(taxiPays.size() == 0) { return 0; }
 
 		int plusTaxiPay = 0;
 
-		for (String item : taxiPays) {
-			plusTaxiPay += Integer.parseInt(item);
+		for (int item : taxiPays) {
+			plusTaxiPay += item;
 		}
 
-		return Integer.toString(plusTaxiPay);
+		return plusTaxiPay;
 	}
 	/*
 	 * 저녁식대 취합
@@ -178,7 +178,7 @@ public class WorkService {
 				.startTime(param.get("startTime").toString())
 				.endTime(param.get("endTime").toString())
 				.taxiReceiptImg(param.get("Img").toString())
-				.taxiPay(param.get("taxiPay").toString())
+				.taxiPay(param.get("taxiPay"))
 				.dinnerYn(param.get("dinnerYn").toString())
 				.taxiYn(param.get("taxiYn").toString())
 				.remarks(param.get("remarks").toString()).build();

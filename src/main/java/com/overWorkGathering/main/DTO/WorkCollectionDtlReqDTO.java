@@ -12,7 +12,7 @@ public class WorkCollectionDtlReqDTO {
     private String startTime;
     private String endTime;
     private String img;
-    private String taxiPay;
+    private int taxiPay;
     private String dinnerYn;
     private String taxiYn;
     private String name;
@@ -24,7 +24,7 @@ public class WorkCollectionDtlReqDTO {
             String startTime,
             String endTime,
             String img,
-            String taxiPay,
+            int taxiPay,
             String dinnerYn,
             String name,
             String taxiYn) {

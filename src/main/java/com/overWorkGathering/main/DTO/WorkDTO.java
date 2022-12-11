@@ -12,7 +12,7 @@ public class WorkDTO {
 	private String startTime;
 	private String endTime;
 	private String taxiReceiptImg;
-	private String taxiPay;
+	private int taxiPay;
 	private String dinnerYn;
 	private String taxiYn;
 	private String remarks;
@@ -24,7 +24,7 @@ public class WorkDTO {
 			String startTime, 
 			String endTime,
 			String taxiReceiptImg,
-			String taxiPay,
+			int taxiPay,
 			String dinnerYn,
 			String taxiYn,
 			String remarks) {
