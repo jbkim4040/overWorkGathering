@@ -219,6 +219,8 @@ public class WorkService {
 			workCollectionDtlReqDTOlist.add(WorkCollectionDtlReqDTO
 					.builder()
 					.workDt(item.getWorkDt())
+					.startTime(item.getStartTime())
+					.endTime(item.getEndTime())
 					.userId(item.getUserId())
 					.taxiPay(item.getTaxiPay())
 					.dinnerYn(item.getDinnerYn())

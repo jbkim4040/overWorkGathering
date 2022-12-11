@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/excel")
@@ -16,7 +17,7 @@ public class ExcelController {
     private ExcelService excelService;
 
     @PostMapping(value = "/workCollection")
-    public void createOverworkGatheringExcel(@RequestBody List<WorkCollectionDtlReqDTO> workCollectionDtl){//@RequestBody List<WorkCollectionDtlReqDTO> workCollectionDtl
+    public void createOverworkGatheringExcel(@RequestBody Map<String, Object> workCollectionDtl){//@RequestBody List<WorkCollectionDtlReqDTO> workCollectionDtl
         try{
             excelService.createExcel(workCollectionDtl);
         }catch(IOException ioe){
