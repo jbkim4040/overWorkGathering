@@ -17,6 +17,7 @@
 <title>Insert title here</title>
 </head>
 <body>
+<%@ include file="/fix/header.jsp"%>
 	<div id='calendar-container' style="margin:0 auto; width:60%;">
 		<div id ='calendar'></div>
 	</div>
@@ -27,6 +28,7 @@
     <iframe id="CalendarPopup" width="465" height="670"></iframe>
   </div>
 </div>
+<%@ include file="/fix/footer.jsp"%>
 <script>
 var id = "";
 var name = "";
