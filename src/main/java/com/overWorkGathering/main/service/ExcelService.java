@@ -608,11 +608,12 @@ public class ExcelService {
         employeeInfoHeaderStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
         employeeInfoHeaderStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
-        int index = 1;
+
         ObjectMapper mapper = new ObjectMapper();
         String[] keyList = keySet.toArray(new String[workCollectionDtl.size()]);
 
         HashMap<String, Row> dayRowMap = new HashMap<>();
+        HashMap<String, String> amtSumMap = new HashMap<>();
         String[] dayOfWeekList = {"월", "화", "수", "목", "금", "토", "일"};
         int dayOfWeekCnt = rtn[2];
         for(int i = rtn[0]; i <= rtn[1]; i++){
@@ -629,12 +630,19 @@ public class ExcelService {
             dayRowMap.put(Integer.toString(i), workManagementRow2);
             dayRowMap.put(i + "_1", workManagementRow3);
 
+            amtSumMap.put(i + "_Dinner", "");
+            amtSumMap.put(i + "_Taxi", "");
+
             dayOfWeekCnt++;
         }
 
         System.out.println("dayRowMap >>>>> " + dayRowMap.toString());
+        System.out.println("amtSumMap >>>>> " + amtSumMap.toString());
 
+        String personalDinnerAmtSum = "=";
+        String personalTaxiAmtSum = "=";
 
+        int index = 1;
         for(String key : keySet){
             List<WorkCollectionDtlReqDTO> reqDTOList = (List<WorkCollectionDtlReqDTO>)workCollectionDtl.get(key);
 
@@ -650,9 +658,6 @@ public class ExcelService {
             Cell workManagementCell6 = workManagementRow1_1.createCell(3 * index);
             workManagementCell6.setCellValue("비고");
 
-            String personalDinnerAmt = "";
-            String personalTaxiAmt = "";
-
             for(int i = 0; i < reqDTOList.size(); i++){
                 WorkCollectionDtlReqDTO DTO = mapper.convertValue(reqDTOList.get(i), WorkCollectionDtlReqDTO.class);
                 System.out.println("시작 시간 >>>>> " + DTO.getStartTime());
@@ -666,13 +671,28 @@ public class ExcelService {
                         .createCell((3 * index) - 2).setCellValue(DTO.getEndTime());
 
                 dayRowMap.get(j + "")
-                        .createCell((3 * index) - 1).setCellValue("비고1");
+                        .createCell((3 * index) - 1).setCellValue("저녁식사금액");
                 dayRowMap.get(j + "_1")
-                        .createCell((3 * index) - 1).setCellValue("비고2");
+                        .createCell((3 * index) - 1).setCellValue("택시비");
+
+                dayRowMap.get(j + "")
+                        .createCell(3 * index).setCellValue("비고1");
+                dayRowMap.get(j + "_1")
+                        .createCell(3 * index).setCellValue("비고2");
+
+                if(i > 0){
+                    personalDinnerAmtSum += "+" + invertCellIndexToAlphabet(index) + j;
+                    personalTaxiAmtSum += "+" + invertCellIndexToAlphabet(index) + (j+1);
+                }else{
+                    personalDinnerAmtSum += invertCellIndexToAlphabet(index) + j;
+                    personalTaxiAmtSum += invertCellIndexToAlphabet(index) + (j+1);
+                }
             }
 
             index++;
         }
+
+
 
         workManagementSheet.setColumnWidth(0, 1350);
         workManagementSheet.setDisplayGridlines(false);
@@ -741,19 +761,19 @@ public class ExcelService {
 
     private String invertCellIndexToAlphabet(int cellIndex){
         String cellAlphabet = "";
+        int index = cellIndex + 1;
 
         // 26개
-        if(cellIndex / 26 == 0){
-            cellAlphabet += alphabet[cellIndex - 1];
+        if(index / 26 == 0){
+            cellAlphabet += alphabet[cellIndex];
         }else{
             while(cellIndex / 26 >= 26){
-                cellAlphabet += alphabet[(cellIndex % 26) - 1];
+                cellAlphabet += alphabet[(index % 26) - 1];
 
-                cellIndex = cellIndex / 26;
+                index = index / 26;
             }
 
-            cellAlphabet += alphabet[(cellIndex % 26) - 1];
-
+            cellAlphabet += alphabet[(index % 26) - 1];
         }
 
         return cellAlphabet;
