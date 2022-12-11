@@ -169,8 +169,8 @@ public class WorkService {
 			param.replace("taxiYn", "N");
 		}
 
-		if(!"".equals(param.get("taxiPay").toString())){
-			param.replace("taxiPay", param.get("taxiPay").toString()+"원");
+		if("".equals(param.get("taxiPay").toString())){
+			param.replace("taxiPay", "0");
 		}
 
 		WorkDTO workDTO = WorkDTO.builder().userId(param.get("userID").toString())
@@ -178,7 +178,7 @@ public class WorkService {
 				.startTime(param.get("startTime").toString())
 				.endTime(param.get("endTime").toString())
 				.taxiReceiptImg(param.get("Img").toString())
-				.taxiPay(param.get("taxiPay"))
+				.taxiPay(Integer.parseInt(param.get("taxiPay").toString()))
 				.dinnerYn(param.get("dinnerYn").toString())
 				.taxiYn(param.get("taxiYn").toString())
 				.remarks(param.get("remarks").toString()).build();
