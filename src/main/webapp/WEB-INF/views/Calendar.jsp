@@ -17,7 +17,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<div id='calendar-container' style="margin:0 auto; width:70%;">
+	<div id='calendar-container' style="margin:0 auto; width:60%;">
 		<div id ='calendar'></div>
 	</div>
 
