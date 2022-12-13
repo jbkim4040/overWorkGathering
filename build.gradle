@@ -85,5 +85,5 @@ bootRun {
 
 bootWar {
     enabled = true
-    archiveName("overworkgathering.war")
+    archiveName("freelec-springboot2-webservice-1.0-SNAPSHOT.war")
 }
