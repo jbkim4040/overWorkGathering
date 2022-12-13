@@ -85,4 +85,5 @@ bootRun {
 
 bootWar {
     enabled = true
+    archiveName("overworkgathering.war")
 }
