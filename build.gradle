@@ -74,9 +74,9 @@ test {
     useJUnitPlatform()
 }
 
-bootJar {
-    mainClassName = 'com.overWorkGathering.main.Application'
-}
+//bootJar {
+//    mainClassName = 'com.overWorkGathering.main.Application'
+//}
 
 bootRun {
     String activeProfile = System.properties['spring.profile.active']
