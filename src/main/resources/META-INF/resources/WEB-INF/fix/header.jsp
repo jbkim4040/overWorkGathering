@@ -28,13 +28,7 @@
     </header>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-         <%
-            session = request.getSession();
-            String userId = (String)session.getAttribute("userId");
-            String userName = (String)session.getAttribute("userName");
-        %>
         var userInfoDtl = Document.getElementById("userInfoDtl");
-        userInfoDtl.setAttribute("value", "<%=userName%>");
       });
 
 
