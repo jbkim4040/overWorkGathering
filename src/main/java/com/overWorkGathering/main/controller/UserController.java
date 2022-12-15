@@ -75,7 +75,7 @@ public class UserController {
 			session.invalidate();
 
 			System.out.println(":: LogOut ::");
-			response.sendRedirect("/login");
+			response.sendRedirect("/WEB-INF/views/login");
 		}catch(Exception e){
 			e.printStackTrace();
 		}

@@ -12,6 +12,7 @@ buildscript {
 }
 
 apply plugin: 'java'
+apply plugin: 'war'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
@@ -26,19 +27,20 @@ repositories {
 }
 
 dependencies {
-    compile('org.springframework.boot:spring-boot-starter-web')
-    compile('org.projectlombok:lombok')
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    providedRuntime ('org.springframework.boot:spring-boot-starter-tomcat')
+    implementation('org.projectlombok:lombok')
     // JPA 관련 라이브러리 버전 관리
-    compile('org.springframework.boot:spring-boot-starter-data-jpa')
-    compile('com.h2database:h2')
-    compile('org.springframework.boot:spring-boot-starter-mustache')
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+    implementation('com.h2database:h2')
+    implementation('org.springframework.boot:spring-boot-starter-mustache')
     testCompile('org.springframework.boot:spring-boot-starter-test')
 
     // jsp 설정 관리
-    compile 'org.apache.tomcat.embed:tomcat-embed-jasper'
-    compile 'javax.servlet:jstl'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+    implementation 'javax.servlet:jstl'
 
-    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
     runtime('mysql:mysql-connector-java')
 
     // Lombok
@@ -47,14 +49,14 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 
     // mapstruct
-    compile 'org.mapstruct:mapstruct:1.5.3.Final'
+    implementation ('org.mapstruct:mapstruct:1.5.3.Final')
     compileOnly 'org.mapstruct:mapstruct-processor:1.5.3.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
 
     // JPA Audit 설정
-    compile('org.springframework.boot:spring-boot-starter-web')
-    compile('org.projectlombok:lombok')
-    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation('org.projectlombok:lombok')
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
 
     // POI
     // https://mvnrepository.com/artifact/org.apache.poi/poi
@@ -64,7 +66,7 @@ dependencies {
     implementation group: 'org.apache.tika', name: 'tika-core', version: '2.3.0'
 
     // 메일 발송 설정
-    compile("org.springframework.boot:spring-boot-starter-mail")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
 }
 
 test {
@@ -78,4 +80,8 @@ bootJar {
 bootRun {
     String activeProfile = System.properties['spring.profile.active']
     systemProperty "spring.profiles.active", activeProfile
+}
+
+bootWar{
+    archiveName("freelec-springboot2-webservice-1.0-SNAPSHOT.war")
 }
