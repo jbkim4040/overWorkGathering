@@ -41,9 +41,14 @@
 <script>
 window.onload = function(){
 
+	<%
+        session = request.getSession();
+        String userId = (String)session.getAttribute("userId");
+        String userName = (String)session.getAttribute("userName");
+    %>
+
 	var part = "본구축프로젝트";
 	var dt = "2022-12";
-	var userId = "hirofac";
 
 
     $.ajax({
@@ -52,7 +57,7 @@ window.onload = function(){
         data: {
         	part : part,
         	dt : dt,
-        	userId : userId
+        	userId : "<%=userId%>"
         		},
         dataType : "json",
         success: function(result) {

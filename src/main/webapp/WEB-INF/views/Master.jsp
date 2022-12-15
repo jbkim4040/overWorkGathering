@@ -49,6 +49,13 @@
 <%@ include file="/fix/footer.jsp"%>
 <script>
 window.onload = function(){
+    <%
+        session = request.getSession();
+        String userId = (String)session.getAttribute("userId");
+        String userName = (String)session.getAttribute("userName");
+    %>
+
+    var userId = "<%=userId%>";
 
 	var part = "본구축프로젝트";
 	var dt = "2022-12";
