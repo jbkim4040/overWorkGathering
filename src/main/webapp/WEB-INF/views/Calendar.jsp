@@ -13,7 +13,7 @@
 <!-- fullcalendar 언어 CDN -->
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/locales-all.min.js'></script>
 <!-- 모달 CDN -->
-<link rel="stylesheet" href="../css/modal.css" />
+<link rel="stylesheet" href="./static/css/modal.css" />
 <title>Insert title here</title>
 </head>
 <body>

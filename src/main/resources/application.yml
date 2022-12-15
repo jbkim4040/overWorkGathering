@@ -1,0 +1,50 @@
+spring:
+  profiles:
+    active: local
+
+  jpa:
+    show_sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+  h2:
+    console:
+      enabled: true
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://overworkgatheringdb.cyficpszcokr.ap-northeast-2.rds.amazonaws.com:3306/OVER_WORK_GATHERING
+    username: root
+    password: abacusservice
+
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: jbkim404037@gmail.com
+    password: awvrkaqpszcysnqr
+    properties:
+      main:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
+
+
+
+server:
+  servlet:
+    jsp:
+      init-parameters:
+        development: true
+
+

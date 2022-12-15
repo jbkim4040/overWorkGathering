@@ -6,14 +6,14 @@
 <title>Insert title here</title>
 
 <!-- Core CSS -->
-    <link rel="stylesheet" href="../css/core.css" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="../css/theme-default.css" class="template-customizer-theme-css" />
-    <link rel="stylesheet" href="../css/demo.css" />
+    <link rel="stylesheet" href="./static/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="./static/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="./static/css/demo.css" />
 <!-- Vendors CSS -->
-    <link rel="stylesheet" href="../css/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="./static/css/perfect-scrollbar.css" />
 <!-- Page CSS -->
 <!-- Page -->
-    <link rel="stylesheet" href="../css/pages/page-auth.css" />
+    <link rel="stylesheet" href="./static/css/pages/page-auth.css" />
 </head>
 <body>
 
