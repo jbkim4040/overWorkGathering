@@ -32,6 +32,7 @@ public class ExcelService {
 
     public String createExcel(Map<String, Object> workCollectionDtl) throws IOException {
         String name = "";
+        Set<String> keySet = workCollectionDtl.keySet();
 
         DateFormat df = new SimpleDateFormat("yyyyMMdd");
         Calendar cal = Calendar.getInstance( );
@@ -337,22 +338,16 @@ public class ExcelService {
 
             Cell body9Cell = body3Row.createCell(1);
             body9Cell.setCellStyle(monthCellStyle);
-            body9Cell.setCellValue(i);		// 야근식대 금액 세팅
-
+            body9Cell.setCellFormula("근태관리!" + invertCellIndexToAlphabet(1 + 3 * keySet.size()) + (2 + 2 * i));// 야근식대 금액 세팅
 
             Cell body10Cell = body3Row.createCell(2);
             body10Cell.setCellStyle(monthCellStyle);
-            body10Cell.setCellValue(i);		// 교통비 금액 세팅
+            body10Cell.setCellFormula("근태관리!" + invertCellIndexToAlphabet(1 + 3 * keySet.size()) + (2 + 2 * i + 1));
 
 
             Cell body11Cell = body3Row.createCell(3);
             body11Cell.setCellStyle(monthRightCellStyle);
-
-            dinnerAmt += i;	// 야근식대 금액 취합
-            transportAmt += i;	// 교통비 금액 취합
         }
-        amt += dinnerAmt;
-        amt += transportAmt;
 
         // 총합계 ROW
         Row body4Row = outcomeHistorySheet.createRow(6 + rtn[1] + 1);
@@ -369,10 +364,9 @@ public class ExcelService {
         body12Style.setBorderRight(BorderStyle.THIN);
         body12Cell.setCellStyle(body12Style);
 
-
         // 바디 타이틀 셀 - 총합계
         Cell body13Cell = body4Row.createCell(1);
-        body13Cell.setCellValue(dinnerAmt);
+        body13Cell.setCellFormula("SUM(B" + (7 + rtn[0]) + ":" + "B" + (7 + rtn[1]) + ")");
 
         // 바디 타이틀 스타일 - 총합계
         CellStyle body13Style = workbook.createCellStyle();
@@ -388,6 +382,7 @@ public class ExcelService {
         // 바디 타이틀 셀 - 총합계
         Cell body14Cell = body4Row.createCell(2);
         body14Cell.setCellValue(transportAmt);
+        body14Cell.setCellFormula("SUM(C" + (7 + rtn[0]) + ":" + "C" + (7 + rtn[1]) + ")");
 
         // 바디 타이틀 스타일 - 총합계
         CellStyle body14Style = workbook.createCellStyle();
@@ -446,6 +441,7 @@ public class ExcelService {
         // 바디 타이틀 셀
         Cell body17Cell = body5Row.createCell(1);
         body17Cell.setCellValue(amt);
+        body17Cell.setCellFormula("SUM(B" + (7 + rtn[1] + 1) + "," + "C" + (7 + rtn[1] + 1) + ")");
 
         // 바디 타이틀 스타일
         XSSFCellStyle body17Style = (XSSFCellStyle) workbook.createCellStyle();
@@ -583,11 +579,10 @@ public class ExcelService {
 
         // 근태관리 excel sheet 생성
         Sheet workManagementSheet = workbook.createSheet("근태관리");
+        workManagementSheet.createFreezePane(0, 3);
 
         CellStyle workManagementCell3Style = workbook.createCellStyle();
         workManagementCell3Style.setAlignment(HorizontalAlignment.CENTER);
-
-        Set<String> keySet = workCollectionDtl.keySet();
 
         System.out.println("화면에서 던져주는 데이터 >>>>>" + workCollectionDtl.toString());
         System.out.println("화면에서 던져주는 데이터 keyset >>>>> " + keySet.toString());
@@ -598,9 +593,6 @@ public class ExcelService {
         workManagementCell1.setCellValue(month + "월");
         workManagementCell1.setCellStyle(workManagementCell3Style);
 
-        Cell workManagementCell2 = workManagementRow1.createCell(1);
-        workManagementCell2.setCellValue("여기는 팀명이 들어갑니다!");
-
 
         Row workManagementRow1_1 = workManagementSheet.createRow(2);
         CellStyle employeeInfoHeaderStyle = workbook.createCellStyle();
@@ -610,8 +602,6 @@ public class ExcelService {
 
 
         ObjectMapper mapper = new ObjectMapper();
-        String[] keyList = keySet.toArray(new String[workCollectionDtl.size()]);
-
         HashMap<String, Row> dayRowMap = new HashMap<>();
         HashMap<String, String> amtSumMap = new HashMap<>();
         String[] dayOfWeekList = {"월", "화", "수", "목", "금", "토", "일"};
@@ -688,8 +678,12 @@ public class ExcelService {
             index++;
         }
 
-        String totalDinnerAmt = "=SUM(";
-        String totalTaxiAmt = "=SUM(";
+        workManagementRow1_1.createCell(3 * keySet.size() + 1).setCellValue("합계");
+
+        // 일별 야근식대, 택시비 취합
+
+        String totalDinnerAmt = "SUM(";
+        String totalTaxiAmt = "SUM(";
 
         int darRowCount = dayRowMap.size()/2;
 
@@ -704,25 +698,103 @@ public class ExcelService {
                 totalDinnerAmt += invertCellIndexToAlphabet(3 * j - 1) + (2 + 2 * i);
                 totalTaxiAmt += invertCellIndexToAlphabet(3 * j - 1) + (2 + 2 * i + 1);
 
-                System.out.println(totalDinnerAmt);
-                System.out.println(totalTaxiAmt);
-
-
                 if(j != keySet.size()){
-                    totalDinnerAmt += "+";
-                    totalTaxiAmt += "+";
+                    totalDinnerAmt += ",";
+                    totalTaxiAmt += ",";
                 }else{
                     totalDinnerAmt += ")";
                     totalTaxiAmt += ")";
                 }
             }
 
-            dinnerTotalCell.setCellValue(totalDinnerAmt);
-            taxiTotalCell.setCellValue(totalTaxiAmt);
+            dinnerTotalCell.setCellFormula(totalDinnerAmt);
+            taxiTotalCell.setCellFormula(totalTaxiAmt);
 
-            totalDinnerAmt = "=SUM(";
-            totalTaxiAmt = "=SUM(";
+            totalDinnerAmt = "SUM(";
+            totalTaxiAmt = "SUM(";
         }
+
+        // 개인별 월별 야근식대, 택시비 취합
+        Row personalMonthAmtSumRow1 = workManagementSheet.createRow(2 + dayRowMap.size() + 1);
+        Row personalMonthAmtSumRow2 = workManagementSheet.createRow(2 + dayRowMap.size() + 2);
+        Row personalMonthAmtSumRow3 = workManagementSheet.createRow(2 + dayRowMap.size() + 3);
+
+        personalMonthAmtSumRow1.createCell(0).setCellValue("합계");
+
+
+        for(int i = 1; i <= keySet.size(); i++){
+            String oddCell = "SUM(";
+            String evenCell = "SUM(";
+            String totalCell = "SUM(";
+
+            for(int j = 3; j <= dayRowMap.size() + 2; j++){
+
+                if(j % 2 == 0){
+                    oddCell += invertCellIndexToAlphabet(3 * i - 1) + j;
+                }else {
+                    evenCell += invertCellIndexToAlphabet(3 * i - 1) + j;
+                }
+
+                totalCell += invertCellIndexToAlphabet(3 * i - 1) + j;
+
+                if(j != dayRowMap.size() + 2){
+                    if(j % 2 == 0){
+                        oddCell += ",";
+                    }else {
+                        evenCell += ",";
+                    }
+
+                    totalCell += ",";
+                }
+            }
+
+            oddCell += ")";
+            evenCell += ")";
+            totalCell += ")";
+
+
+            personalMonthAmtSumRow1.createCell(3 * i - 1).setCellFormula(oddCell);
+            personalMonthAmtSumRow2.createCell(3 * i - 1).setCellFormula(evenCell);
+            personalMonthAmtSumRow3.createCell(3 * i - 1).setCellFormula(totalCell);
+        }
+
+
+        String oddCell = "SUM(";
+        String evenCell = "SUM(";
+        String totalCell = "SUM(";
+
+        String prefix = invertCellIndexToAlphabet(3 * (keySet.size() + 1) - 2);
+        for(int i = 3; i <= dayRowMap.size() + 2; i++){
+            if(i % 2 == 0){
+                oddCell += prefix + i;
+            }else {
+                evenCell += prefix + i;
+            }
+
+            totalCell += prefix + i;
+
+            if(i != dayRowMap.size() + 2){
+                if(i % 2 == 0){
+                    oddCell += ",";
+                }else {
+                    evenCell += ",";
+                }
+
+                totalCell += ",";
+            }
+        }
+
+        oddCell += ")";
+        evenCell += ")";
+        totalCell += ")";
+
+        //3 * (keySet.size() + 1) - 2
+        personalMonthAmtSumRow1.createCell(3 * (keySet.size() + 1) - 2).setCellFormula(oddCell);
+        personalMonthAmtSumRow2.createCell(3 * (keySet.size() + 1) - 2).setCellFormula(evenCell);
+        personalMonthAmtSumRow3.createCell(3 * (keySet.size() + 1) - 2).setCellFormula(totalCell);
+
+
+        // 총 야근식대, 택시비 취합
 
 
 
