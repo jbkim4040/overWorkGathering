@@ -59,10 +59,10 @@ spring:
 spring:
   profiles: dev
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://overworkgatheringdb.cyficpszcokr.ap-northeast-2.rds.amazonaws.com:3306/OVER_WORK_GATHERING
-    username: root
-    password: abacusservice
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://211.239.124.246.com:14302/hong
+    username: hong
+    password: hong1234!
 
 ---
 spring:
