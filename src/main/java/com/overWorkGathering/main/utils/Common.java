@@ -110,10 +110,10 @@ public class Common {
             hashedPASSWORD = Hashing(PW, SALT);
 
             // 두번째 해싱
-            hashedPASSWORD = Hashing(hashedPASSWORD.getBytes(), SALT);
+            //hashedPASSWORD = Hashing(hashedPASSWORD.getBytes(), SALT);
 
             // 세번째 해싱
-            hashedPASSWORD = Hashing(hashedPASSWORD.getBytes(), SALT);
+            //hashedPASSWORD = Hashing(hashedPASSWORD.getBytes(), SALT);
 
             map.put("password", hashedPASSWORD);
             map.put("salt", SALT);
