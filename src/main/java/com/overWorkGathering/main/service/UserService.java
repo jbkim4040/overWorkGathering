@@ -37,15 +37,14 @@ public class UserService {
 	public void auth(String userId, String pw, HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception{
 		UserEntity user = null;
 
-		if(userId.equals("hirofac") || userId.equals("jbkim4040") || userId.equals("jhyuk97")){
-			user = userRepository.findByUserIdAndPw(userId, pw);
-		}else{
+		if(!(userId.equals("hirofac") || userId.equals("jbkim4040") || userId.equals("jhyuk97"))){
 			String salt = userRepository.findByUserId(userId).getSalt();
 			HashMap<String, String> map = hashingPASSWORD(pw, salt);
 
-
-			user = userRepository.findByUserIdAndPw(userId, map.get("password"));
+			pw = map.get("password");
 		}
+
+		user = userRepository.findByUserIdAndPw(userId, pw);
 
 
 		// 로그인 코드가 999 : 실패     000 : 성공
