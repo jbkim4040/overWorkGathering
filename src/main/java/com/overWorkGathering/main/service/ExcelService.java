@@ -622,16 +622,21 @@ public class ExcelService {
             workManagementCell3.setCellValue(Integer.toString(i));
             workManagementCell3.setCellStyle(workManagementCell3Style);
 
+
             Row workManagementRow3 = workManagementSheet.createRow(1 + (i * 2) + 1);
             Cell workManagementCell4 = workManagementRow3.createCell(0);
             workManagementCell4.setCellValue(dayOfWeekList[dayOfWeekCnt % 7]);
             workManagementCell4.setCellStyle(workManagementCell3Style);
 
+
+            for(int j = 1; j <= workCollectionDtl.size(); j++){
+                workManagementRow2.createCell((3 * j) - 1).setCellValue(0);
+                workManagementRow3.createCell((3 * j) - 1).setCellValue(0);
+            }
+
             dayRowMap.put(Integer.toString(i), workManagementRow2);
             dayRowMap.put(i + "_1", workManagementRow3);
 
-            amtSumMap.put(i + "_Dinner", "");
-            amtSumMap.put(i + "_Taxi", "");
 
             dayOfWeekCnt++;
         }
@@ -639,64 +644,85 @@ public class ExcelService {
         System.out.println("dayRowMap >>>>> " + dayRowMap.toString());
         System.out.println("amtSumMap >>>>> " + amtSumMap.toString());
 
-        String personalDinnerAmtSum = "=";
-        String personalTaxiAmtSum = "=";
-
         int index = 1;
 
         Set<String> amtSumKeySet = workCollectionDtl.keySet();
-        for(String amtSumKey : amtSumKeySet){
-            for(String key : keySet){
-                List<WorkCollectionDtlReqDTO> reqDTOList = (List<WorkCollectionDtlReqDTO>)workCollectionDtl.get(key);
+        for(String key : keySet){
+            List<WorkCollectionDtlReqDTO> reqDTOList = (List<WorkCollectionDtlReqDTO>)workCollectionDtl.get(key);
 
-                Cell workManagementCell4 = workManagementRow1_1.createCell((3 * index) - 2);
-                workManagementCell4.setCellValue("직책");
-                workManagementCell4.setCellStyle(employeeInfoHeaderStyle);
+            Cell workManagementCell4 = workManagementRow1_1.createCell((3 * index) - 2);
+            workManagementCell4.setCellValue("직책");
+            workManagementCell4.setCellStyle(employeeInfoHeaderStyle);
 
-                Cell workManagementCell5 = workManagementRow1_1.createCell((3 * index) - 1);
+            Cell workManagementCell5 = workManagementRow1_1.createCell((3 * index) - 1);
 
-                workManagementCell5.setCellValue(mapper.convertValue(reqDTOList.get(0), WorkCollectionDtlReqDTO.class).getName());
-                workManagementCell5.setCellStyle(employeeInfoHeaderStyle);
+            workManagementCell5.setCellValue(mapper.convertValue(reqDTOList.get(0), WorkCollectionDtlReqDTO.class).getName());
+            workManagementCell5.setCellStyle(employeeInfoHeaderStyle);
 
-                Cell workManagementCell6 = workManagementRow1_1.createCell(3 * index);
-                workManagementCell6.setCellValue("비고");
+            Cell workManagementCell6 = workManagementRow1_1.createCell(3 * index);
+            workManagementCell6.setCellValue("비고");
 
-                for(int i = 0; i < reqDTOList.size(); i++){
-                    WorkCollectionDtlReqDTO DTO = mapper.convertValue(reqDTOList.get(i), WorkCollectionDtlReqDTO.class);
-                    System.out.println("시작 시간 >>>>> " + DTO.getStartTime());
-                    System.out.println("종료 시간 >>>>> " + DTO.getEndTime());
+            for(int i = 0; i < reqDTOList.size(); i++){
+                WorkCollectionDtlReqDTO DTO = mapper.convertValue(reqDTOList.get(i), WorkCollectionDtlReqDTO.class);
+                System.out.println("시작 시간 >>>>> " + DTO.getStartTime());
+                System.out.println("종료 시간 >>>>> " + DTO.getEndTime());
 
-                    int j = Integer.parseInt(DTO.getWorkDt().substring(8));
+                int j = Integer.parseInt(DTO.getWorkDt().substring(8));
 
-                    dayRowMap.get(j + "")
-                            .createCell((3 * index) - 2).setCellValue(DTO.getStartTime());
-                    dayRowMap.get(j + "_1")
-                            .createCell((3 * index) - 2).setCellValue(DTO.getEndTime());
+                dayRowMap.get(j + "")
+                        .createCell((3 * index) - 2).setCellValue(DTO.getStartTime());
+                dayRowMap.get(j + "_1")
+                        .createCell((3 * index) - 2).setCellValue(DTO.getEndTime());
 
-                    dayRowMap.get(j + "")
-                            .createCell((3 * index) - 1).setCellValue(DTO.getDinnerYn().equals("Y") ? "9,000" : "0");
-                    dayRowMap.get(j + "_1")
-                            .createCell((3 * index) - 1).setCellValue(DTO.getTaxiPay());
+                dayRowMap.get(j + "")
+                        .createCell((3 * index) - 1).setCellValue(DTO.getDinnerYn().equals("Y") ? 9000 : 0);
+                dayRowMap.get(j + "_1")
+                        .createCell((3 * index) - 1).setCellValue(DTO.getTaxiPay());
 
-                    dayRowMap.get(j + "")
-                            .createCell(3 * index).setCellValue("비고1");
-                    dayRowMap.get(j + "_1")
-                            .createCell(3 * index).setCellValue("비고2");
-
-                    if(i > 0){
-                        personalDinnerAmtSum += "+" + invertCellIndexToAlphabet(index) + j;
-                        personalTaxiAmtSum += "+" + invertCellIndexToAlphabet(index) + (j+1);
-                    }else{
-                        personalDinnerAmtSum += invertCellIndexToAlphabet(index) + j;
-                        personalTaxiAmtSum += invertCellIndexToAlphabet(index) + (j+1);
-                    }
-                }
-
-                index++;
+                dayRowMap.get(j + "")
+                        .createCell(3 * index).setCellValue("비고1");
+                dayRowMap.get(j + "_1")
+                        .createCell(3 * index).setCellValue("비고2");
             }
+
+            index++;
         }
 
+        String totalDinnerAmt = "=SUM(";
+        String totalTaxiAmt = "=SUM(";
 
+        int darRowCount = dayRowMap.size()/2;
+
+        for(int i = 1; i <= darRowCount; i++){
+            Row dinnerRow = dayRowMap.get(Integer.toString(i));
+            Cell dinnerTotalCell = dinnerRow.createCell(3 * keySet.size() + 1);
+
+            Row taxiRow = dayRowMap.get(i + "_1");
+            Cell taxiTotalCell = taxiRow.createCell(3 * keySet.size() + 1);
+
+            for(int j = 1; j <= keySet.size(); j++){
+                totalDinnerAmt += invertCellIndexToAlphabet(3 * j - 1) + (2 + 2 * i);
+                totalTaxiAmt += invertCellIndexToAlphabet(3 * j - 1) + (2 + 2 * i + 1);
+
+                System.out.println(totalDinnerAmt);
+                System.out.println(totalTaxiAmt);
+
+
+                if(j != keySet.size()){
+                    totalDinnerAmt += "+";
+                    totalTaxiAmt += "+";
+                }else{
+                    totalDinnerAmt += ")";
+                    totalTaxiAmt += ")";
+                }
+            }
+
+            dinnerTotalCell.setCellValue(totalDinnerAmt);
+            taxiTotalCell.setCellValue(totalTaxiAmt);
+
+            totalDinnerAmt = "=SUM(";
+            totalTaxiAmt = "=SUM(";
+        }
 
 
 

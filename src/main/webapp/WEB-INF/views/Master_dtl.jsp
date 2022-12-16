@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="./static/css/pages/page-auth.css" />
 </head>
 <body>
-<%@ include file="/fix/header.jsp"%>
+<%@ include file="/WEB-INF/fix/header.jsp"%>
 <div class="card">
   <div class="card-body" id="card_body">
   <input class="btn btn-primary" type="button" id="btn_excel_create" value="엑셀" onClick="createWorkCollectionExcel()">
@@ -38,7 +38,7 @@
     </div>
   </div>
 </div>
-<%@ include file="/fix/footer.jsp"%>
+<%@ include file="/WEB-INF/fix/footer.jsp"%>
 <script>
 let workCollectionDtl;
 
