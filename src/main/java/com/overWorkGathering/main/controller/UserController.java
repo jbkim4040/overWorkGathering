@@ -134,16 +134,12 @@ public class UserController {
 
 		try{
 			HttpSession session = request.getSession();
-
 			PrivateKey privateKey = (PrivateKey) session.getAttribute(UserController.RSA_WEB_KEY);
 
 			// 회원가입 정보 복호화
 			String mail = decryptRsa(privateKey, encrypt_userEmail);
-			String code = userService.sendCode(session, mail);
+			userService.sendCode(prssRsltDTO, mail);
 
-			prssRsltDTO.setPrssYn("Y");
-			prssRsltDTO.setPrssMsg("메일 전송 성공");
-			prssRsltDTO.setContent(StringUtils.isEmpty(code) ? "error" : code);
 		}catch (Exception e){
 			prssRsltDTO.setPrssYn("N");
 			prssRsltDTO.setPrssMsg(e.getMessage());

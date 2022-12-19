@@ -47,6 +47,7 @@
                             id="userId"
                             name="userId"
                             placeholder="ID"
+                            style="ime-mode:disabled;"
                             autofocus
                         />
                     </div>
@@ -93,7 +94,7 @@
                   <label for="email" class="form-label">이메일</label>
                   <div class="row">
                       <div class="col-sm-8">
-                          <input type="text" class="form-control" id="email" name="email" placeholder="email" />
+                          <input type="text" class="form-control" id="email" name="email" placeholder="email" style="ime-mode:disabled;"/>
                       </div>
                       <div class="col-sm-4">
                           <input type="button" id="codeSendBtn" class="btn btn-primary d-grid w-100" value="확인" onclick="codeSend(3, 0)">
@@ -107,11 +108,11 @@
 
                 <div class="mb-3">
                   <label for="name" class="form-label">이름</label>
-                  <input type="text" class="form-control" id="name" name="name" placeholder="name" maxlength="6"/>
+                  <input type="text" class="form-control" id="name" name="name" placeholder="name" maxlength="6" pattern="[ㄱ-힣]+" maxlength="6"/>
                 </div>
                 <div class="mb-3">
                   <label for="phone" class="form-label">전화번호</label>
-                  <input type="text" class="form-control" id="phone" name="phone" placeholder="phone" maxlength="12"/>
+                  <input type="text" class="form-control" id="phone" name="phone" placeholder="phone" maxlength="13" onkeyup="phonePattern(this)"/>
                 </div>
                 <div class="mb-3">
                 	<label for="phone" class="form-label">파트</label>
@@ -186,6 +187,20 @@
             );
         }
     })
+  }
+
+  function phonePattern(event) {
+      let phone = document.getElementById('phone');
+      var number = event.value.replaceAll("-", "").replace(/[^-0-9]/g,'');
+      if(number.length > 3 && number.length <= 7){
+      console.log("number : " + number);
+          phone.value = number.substr(0, 3) + "-" + number.substr(3);
+      }else if(number.length > 7) {
+      console.log("number : " + number);
+          phone.value = number.substr(0, 3) + "-" + number.substr(3, 4) + "-" + number.substr(7);
+      }else{
+          phone.value = number;
+      }
   }
 
   function pssChk(){
