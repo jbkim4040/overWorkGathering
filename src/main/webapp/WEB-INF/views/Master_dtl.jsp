@@ -93,8 +93,10 @@ createWorkCollectionExcel = function(){
                 debugger;
 
             },
-            error: function() {
-                alert("에러 발생");
+            error: function(result, request,status,error) {
+                debugger;
+
+                alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
             }
         })
 }

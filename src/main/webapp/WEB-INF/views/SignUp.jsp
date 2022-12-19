@@ -249,6 +249,8 @@
         data: {USER_EMAIL : encryptedEmail},
         dataType : "json",
         success: function(e) {
+            debugger;
+
             if(e.prssYn == "Y"){
                 debugger;
                 code = e.content;
