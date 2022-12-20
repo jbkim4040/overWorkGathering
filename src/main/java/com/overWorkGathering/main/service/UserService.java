@@ -106,7 +106,6 @@ public class UserService {
 		String code = codeGenerator(4);
 
 		try{
-
 			/** 전송할 메일 내용 세팅 */
 			String to = mail;
 			String from = "jbkim404037@gmail.com";

@@ -108,24 +108,19 @@
 
                 <div class="mb-3">
                   <label for="name" class="form-label">이름</label>
-                  <input type="text" class="form-control" id="name" name="name" placeholder="name" maxlength="6" pattern="[ㄱ-힣]+" maxlength="6"/>
+                  <input type="text" class="form-control" id="name" name="name" placeholder="name" maxlength="6" maxlength="6"/>
                 </div>
                 <div class="mb-3">
                   <label for="phone" class="form-label">전화번호</label>
-                  <input type="text" class="form-control" id="phone" name="phone" placeholder="phone" maxlength="13" onkeyup="phonePattern(this)"/>
+                  <input type="text" class="form-control" id="phone" name="phone" placeholder="phone" maxlength="13" onkeyup="phonePattern(this); checkcorrectform(this);"/>
                 </div>
+                <div id="phoneChk_div"></div>
                 <div class="mb-3">
                 	<label for="phone" class="form-label">파트</label>
                 	<select class="form-select" name="part" id="part">
                 		<option value="a">a</option>
                 		<option value="b">b</option>
                 		<option value="c">c</option>
-                	</select>
-                </div>
-                <div class="mb-3">
-                	<label for="phone" class="form-label">파트 리더</label>
-                	<select class="form-select" name="partleader" id="partleader">
-                		<option value="아무개">아무개</option>
                 	</select>
                 </div>
                 <input type="hidden" id="RSAModulus" value="${RSAModulus}" />
@@ -189,6 +184,27 @@
     })
   }
 
+  function checkcorrectform(event) {
+    debugger;
+    let id = event.id;
+    let component = document.getElementById(id);
+    var value = event.value;
+
+    if(id == "phone"){
+        const element = document.getElementById('phoneChk_div');
+
+        if(value.length == 0){
+            element.removeChild(document.getElementById("phoneChkMsg"));
+        }else if(!(value.substr(0, 3) == "010" && value.replaceAll('-', '').length == 11)){
+            element.innerHTML = '<label class="form-label" id="phoneChkMsg" style="color:red">올바르지 않은 전화번호 형식입니다.</label>';
+        }else {
+            element.removeChild(document.getElementById("phoneChkMsg"));
+        }
+    }
+
+  }
+
+
   function phonePattern(event) {
       let phone = document.getElementById('phone');
       var number = event.value.replaceAll("-", "").replace(/[^-0-9]/g,'');
@@ -197,7 +213,7 @@
           phone.value = number.substr(0, 3) + "-" + number.substr(3);
       }else if(number.length > 7) {
       console.log("number : " + number);
-          phone.value = number.substr(0, 3) + "-" + number.substr(3, 4) + "-" + number.substr(7);
+          phone.value = number.substr(0, 3) + "-" + number.substr(3, 4) + "-" + number.substr(7, 4);
       }else{
           phone.value = number;
       }
@@ -329,7 +345,7 @@
         codeSendBtn.setAttribute("disabled", "true");
         email.setAttribute("disabled", "true");
         alert("이메일 인증되었습니다.");
-        emailChk_div.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:blue">사용가능한 이메일입니다.</label>';
+        emailChk_div.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:blue">사용 가능한 이메일입니다.</label>';
     }else{
         emailChk_div.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:red">코드가 일치하지 않습니다.</label>';
     }
