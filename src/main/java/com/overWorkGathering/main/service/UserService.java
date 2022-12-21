@@ -22,11 +22,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.util.HashMap;
 import java.util.Locale;
 
-import static com.overWorkGathering.main.utils.Common.codeGenerator;
-import static com.overWorkGathering.main.utils.Common.hashingPASSWORD;
+import static com.overWorkGathering.main.utils.Common.*;
+import static com.overWorkGathering.main.utils.Common.decryptRsa;
 
 @Slf4j
 @Service
@@ -41,40 +42,55 @@ public class UserService {
 	@Autowired
 	MessageSource messageSource;
 
-	private static String RSA_WEB_KEY = "_RSA_WEB_Key_"; // 개인키 session key
-	private static String RSA_INSTANCE = "RSA"; // rsa transformation
+	private final String RSA_WEB_KEY = "_RSA_WEB_Key_"; // 개인키 session key
+	private final String RSA_INSTANCE = "RSA"; // rsa transformation
 
 
-	public void auth(String userId, String pw, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+	public String auth(String encrypt_userId, String encrypt_pw, HttpServletRequest request, HttpServletResponse response) {
+		HttpSession session = request.getSession();
+		PrivateKey privateKey = (PrivateKey) session.getAttribute(RSA_WEB_KEY);
 		UserInfoEntity user = null;
+		String resultCd = "000";
 
 		try{
+			// 로그인 정보 복호화
+			String userId = decryptRsa(privateKey, encrypt_userId);
+			String pw = decryptRsa(privateKey, encrypt_pw);
+
+			session.removeAttribute(RSA_WEB_KEY);
+
 			if(userId.equals("hirofac") || userId.equals("jhyuk97")){
 				user = userRepository.findByUserIdAndPw(userId, pw);
 			}else{
-				String salt = userRepository.findByUserId(userId).getSalt();
-				HashMap<String, String> map = hashingPASSWORD(pw, salt);
-				System.out.println("아이디 :: " + userId);
-				System.out.println("비밀번호 :: " + map.get("password"));
+				user = userRepository.findByUserId(userId);
 
-				user = userRepository.findByUserIdAndPw(userId, map.get("password"));
+				if(!ObjectUtils.isEmpty(user)){
+					String salt = user.getSalt();
+					HashMap<String, String> map = hashingPASSWORD(pw, salt);
 
-				System.out.println("로그인 성공 :: " + ObjectUtils.isEmpty(user));
+					user = userRepository.findByUserIdAndPw(userId, map.get("password"));
+				}
+			}
+
+
+
+			// 로그인 코드가 999 : 실패     000 : 성공
+			if(ObjectUtils.isEmpty(user)){
+				resultCd = "999";
+				session.setAttribute("login", resultCd);
+			}else{
+				resultCd = "000";
+				session.setAttribute("login", resultCd);
+				session.setAttribute("userId", user.getUserId());
+				session.setAttribute("userName", user.getName());
+				session.setAttribute("auth", user.getAuth());
 			}
 		} catch(Exception e){
-			e.printStackTrace();
+			resultCd = "999";
+			session.setAttribute("login", resultCd);
 		}
 
-		// 로그인 코드가 999 : 실패     000 : 성공
-		if(ObjectUtils.isEmpty(user)){
-			session.setAttribute("login", "999");
-		}else{
-			session.setAttribute("login", "000");
-			session.setAttribute("userId", user.getUserId());
-			session.setAttribute("userName", user.getName());
-			session.setAttribute("auth", user.getAuth());
-		}
-
+		return resultCd;
 	}
 
 	public String duplicatedIdCheck(String userId) throws Exception{

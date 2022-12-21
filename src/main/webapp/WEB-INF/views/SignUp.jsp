@@ -127,6 +127,12 @@
                 		<option value="c">c</option>
                 	</select>
                 </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">파트 리더</label>
+                    <select class="form-select" name="partleader" id="partleader">
+                        <option value="아무개">아무개</option>
+                    </select>
+                </div>
                 <input type="hidden" id="RSAModulus" value="${RSAModulus}" />
                 <input type="hidden" id="RSAExponent" value="${RSAExponent}" />
                 <input type="hidden" id="USER_ID" name="USER_ID">
@@ -134,7 +140,7 @@
                 <input type="hidden" id="USER_NAME" name="USER_NAME">
                 <input type="hidden" id="USER_EMAIL" name="USER_EMAIL">
                 <input type="hidden" id="USER_PHONE" name="USER_PHONE">
-                <input class="btn btn-primary d-grid w-100" type="submit" value="회원가입">
+                <input class="btn btn-primary d-grid w-100" id="btn_save" type="submit" value="회원가입" disabled>
               </form>
             </div>
           </div>
@@ -144,9 +150,39 @@
     </div>
 <script	src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
 <script>
+  var idCheckYn = false;
+  var emailCheckYn = false;
+
   var SetTime;
   var timer;
   var code;
+
+  window.onload = function() {
+
+      // [브라우저 윈도우에서 발생한 keyup 이벤트를 감지]
+      window.addEventListener('keyup', inputKeyUp, false);
+      window.addEventListener('onclick', onclick, false);
+
+      function inputKeyUp(evt){
+          if(idCheckYn && emailCheckYn){
+            document.getElementById('btn_save').disabled = false;
+          }
+
+          if(!idCheckYn || !emailCheckYn){
+            document.getElementById('btn_save').disabled = true;
+          }
+      };
+
+      function onclick(evt){
+          if(idCheckYn && emailCheckYn){
+            document.getElementById('btn_save').disabled = false;
+          }
+
+          if(!idCheckYn || !emailCheckYn){
+            document.getElementById('btn_save').disabled = true;
+          }
+      };
+  };
 
   function dupIdChk(){
     const element = document.getElementById('dupIdChk_div');
@@ -172,6 +208,7 @@
                 element.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:red">사용할수 없는 ID 입니다.</label>';
                 userId.focus();
             }else if(e == "N"){
+                idCheckYn = true;
                 element.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:blue">사용할수 있는 ID 입니다.</label>';
             }else{
                 alert("에러 \n" + e);
@@ -196,6 +233,7 @@
     var value = event.value;
 
     if(id == "userId"){
+        idCheckYn = false;
         document.getElementById('dupIdChk_div').style.display='none';
 
         const element = document.getElementById('userIdChk_div');
@@ -237,6 +275,7 @@
             element.style.display='none';
         }
     }else if(id == "email") {
+        emailCheckYn = false;
         document.getElementById('codeInput_div').style.display='none';
         document.getElementById('btn_codeSend').value = "전송";
         clearInterval(timer);
@@ -400,6 +439,7 @@
         codeSendBtn.setAttribute("disabled", "true");
         email.setAttribute("disabled", "true");
         alert("이메일 인증되었습니다.");
+        emailCheckYn = true;
         emailChk_div.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:blue">사용 가능한 이메일입니다.</label>';
     }else{
         emailChk_div.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:red">코드가 일치하지 않습니다.</label>';
@@ -441,6 +481,26 @@
        alert("전화번호를 입력 해주세요.");
        phone.focus();
        return false;
+      }
+
+      if(!idCheckYn){
+        alert("아이디 중복체크 해주시기 바랍니다.");
+        id.focus();
+        return false;
+      }else if(typeof idCheckYn != "boolean"){
+        alert("정상적이지 않은 회원가입입니다.");
+        id.focus();
+        return false;
+      }
+
+      if(!emailCheckYn){
+        alert("이메일 인증 해주시기 바랍니다.");
+        email.focus();
+        return false;
+      }else if(typeof emailCheckYn != "boolean"){
+        alert("정상적이지 않은 회원가입입니다.");
+        email.focus();
+        return false;
       }
 
       // rsa 암호화

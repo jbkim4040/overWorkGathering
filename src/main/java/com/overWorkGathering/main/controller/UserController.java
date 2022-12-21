@@ -25,8 +25,8 @@ import static com.overWorkGathering.main.utils.Common.*;
 @RequestMapping(path = "/user")
 public class UserController {
 
-	private static String RSA_WEB_KEY = "_RSA_WEB_Key_"; // 개인키 session key
-	private static String RSA_INSTANCE = "RSA"; // rsa transformation
+	private final String RSA_WEB_KEY = "_RSA_WEB_Key_"; // 개인키 session key
+	private final String RSA_INSTANCE = "RSA"; // rsa transformation
 
 	@Autowired
 	UserService userService;
@@ -40,26 +40,13 @@ public class UserController {
 
 	@RequestMapping(value = "/auth", method = RequestMethod.POST)
 	public void auth(@RequestParam("USER_ID") String encrypt_userId, @RequestParam("USER_PW") String encrypt_pw, HttpServletRequest request, HttpServletResponse response){
+		String resultCd = userService.auth(encrypt_userId, encrypt_pw, request, response);
+
 		try {
-			HttpSession session = request.getSession();
-			PrivateKey privateKey = (PrivateKey) session.getAttribute(UserController.RSA_WEB_KEY);
-
-			// 로그인 정보 복호화
-			String userId = decryptRsa(privateKey, encrypt_userId);
-			String pw = decryptRsa(privateKey, encrypt_pw);
-
-			session.removeAttribute(UserController.RSA_WEB_KEY);
-
-			System.out.println("encrypted userID :: " + encrypt_userId);
-			System.out.println("decrypted userID :: " + userId);
-			System.out.println("encrypted PASSWORD :: " + encrypt_pw);
-
-			userService.auth(userId, pw, request, response, session);
-
-			if("999".equals(session.getAttribute("login"))){
+			if ("999".equals(resultCd)) {
 				System.out.println(":: Login FAIL ::");
 				response.sendRedirect("/login");
-			}else{
+			} else {
 				System.out.println(":: Login SUCCESS ::");
 				response.sendRedirect("/calendar");
 			}
@@ -75,7 +62,7 @@ public class UserController {
 			session.invalidate();
 
 			System.out.println(":: LogOut ::");
-			response.sendRedirect("/WEB-INF/views/login");
+			response.sendRedirect("/login");
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -88,7 +75,7 @@ public class UserController {
 					   HttpServletRequest request, HttpServletResponse response){
 		try {
 			HttpSession session = request.getSession();
-			PrivateKey privateKey = (PrivateKey) session.getAttribute(UserController.RSA_WEB_KEY);
+			PrivateKey privateKey = (PrivateKey) session.getAttribute(RSA_WEB_KEY);
 
 			// 회원가입 정보 복호화
 			String userId = decryptRsa(privateKey, encrypt_userId);
@@ -97,7 +84,7 @@ public class UserController {
 			String userEmail = decryptRsa(privateKey, encrypt_email);
 			String userPhone = decryptRsa(privateKey, encrypt_phone);
 
-			session.removeAttribute(UserController.RSA_WEB_KEY);
+			session.removeAttribute(RSA_WEB_KEY);
 
 			HashMap<String, String> map = hashingPASSWORD(password, "");
 
@@ -115,7 +102,7 @@ public class UserController {
 
 		try {
 			HttpSession session = request.getSession();
-			PrivateKey privateKey = (PrivateKey) session.getAttribute(UserController.RSA_WEB_KEY);
+			PrivateKey privateKey = (PrivateKey) session.getAttribute(RSA_WEB_KEY);
 
 			// 회원가입 정보 복호화
 			String userId = decryptRsa(privateKey, encrypt_userId);
@@ -134,7 +121,7 @@ public class UserController {
 
 		try{
 			HttpSession session = request.getSession();
-			PrivateKey privateKey = (PrivateKey) session.getAttribute(UserController.RSA_WEB_KEY);
+			PrivateKey privateKey = (PrivateKey) session.getAttribute(RSA_WEB_KEY);
 
 			// 회원가입 정보 복호화
 			String mail = decryptRsa(privateKey, encrypt_userEmail);

@@ -34,12 +34,6 @@ var id = "";
 var name = "";
 
   document.addEventListener('DOMContentLoaded', function() {
-     <%
-        session = request.getSession();
-        String userId = (String)session.getAttribute("userId");
-        String userName = (String)session.getAttribute("userName");
-    %>
-
     alert("<%=userName%>님 안녕하세요.");
 
     var calendarEl = document.getElementById('calendar');
