@@ -23,7 +23,7 @@
     <header>
         <div style= 'text-align:right;'>
             <a id="userInfoDtl" style = 'margin-right:15px;' href="" value=""></a>
-            <input class="btn btn-primary" type="button" id="btn_logout" value="로그아웃" onclick="logout()">
+            <input class="btn btn-primary" type="button" id="btn_logout" value="로그아웃" onclick="">
         </div>
     </header>
 <script>
@@ -34,15 +34,6 @@
           String userName = (String)session.getAttribute("userName");
         %>
     });
-
-
-    function logout(){
-        <%
-            session.invalidate();
-        %>
-
-        location.href('/login');
-    }
 </script>
 </body>
 </html>

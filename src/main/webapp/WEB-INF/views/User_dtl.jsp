@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="./static/css/pages/page-auth.css" />
 </head>
 <body>
-<--<%@ include file="/fix/header.jsp"%>-->
+<--<%@ include file="/WEB-INF/fix/footer.jsp"%>-->
 <div class="card">
   <div class="card-body" id="card_body" sytle = 'width:800px;'>
     <div class="table-responsive text-nowrap">
@@ -37,7 +37,7 @@
     </div>
   </div>
 </div>
-<--<%@ include file="/fix/footer.jsp"%>-->
+<--<%@ include file="/WEB-INF/fix/footer.jsp"%>-->
 <script>
 window.onload = function(){
 

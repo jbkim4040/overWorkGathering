@@ -140,7 +140,7 @@
                 <input type="hidden" id="USER_NAME" name="USER_NAME">
                 <input type="hidden" id="USER_EMAIL" name="USER_EMAIL">
                 <input type="hidden" id="USER_PHONE" name="USER_PHONE">
-                <input class="btn btn-primary d-grid w-100" id="btn_save" type="submit" value="회원가입" disabled>
+                <input class="btn btn-primary d-grid w-100" id="btn_save" type="submit" value="회원가입">
               </form>
             </div>
           </div>
@@ -158,30 +158,6 @@
   var code;
 
   window.onload = function() {
-
-      // [브라우저 윈도우에서 발생한 keyup 이벤트를 감지]
-      window.addEventListener('keyup', inputKeyUp, false);
-      window.addEventListener('onclick', onclick, false);
-
-      function inputKeyUp(evt){
-          if(idCheckYn && emailCheckYn){
-            document.getElementById('btn_save').disabled = false;
-          }
-
-          if(!idCheckYn || !emailCheckYn){
-            document.getElementById('btn_save').disabled = true;
-          }
-      };
-
-      function onclick(evt){
-          if(idCheckYn && emailCheckYn){
-            document.getElementById('btn_save').disabled = false;
-          }
-
-          if(!idCheckYn || !emailCheckYn){
-            document.getElementById('btn_save').disabled = true;
-          }
-      };
   };
 
   function dupIdChk(){
