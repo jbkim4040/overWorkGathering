@@ -46,6 +46,11 @@ server:
       init-parameters:
         development: true
 
+
+custom:
+  path:
+    upload-images: '/dev/overworkgathering/images/'
+
 ---
 spring:
   profiles: local
@@ -67,3 +72,8 @@ spring:
 ---
 spring:
   profile: prod
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://211.239.124.246:14302/hong
+    username: hong
+    password: hong1234!

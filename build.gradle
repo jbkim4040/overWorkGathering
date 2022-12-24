@@ -65,6 +65,8 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.tika/tika-core
     implementation group: 'org.apache.tika', name: 'tika-core', version: '2.3.0'
 
+    implementation('commons-net:commons-net:3.9.0')
+
     // 메일 발송 설정
     implementation("org.springframework.boot:spring-boot-starter-mail")
 }
