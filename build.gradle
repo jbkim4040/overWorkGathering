@@ -68,6 +68,9 @@ dependencies {
 
     implementation('commons-net:commons-net:3.9.0')
 
+    // JSch for SFTP
+    implementation group: 'com.jcraft', name: 'jsch', version: '0.1.44-1'
+
     // 메일 발송 설정
     implementation("org.springframework.boot:spring-boot-starter-mail")
 

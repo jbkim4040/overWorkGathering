@@ -50,6 +50,7 @@ var name = "";
 	  },
 	  dateClick: function(e) {
 	    document.getElementById("CalendarPopup").src = "/CalendarPopup?workDt="+ e.dateStr;
+	    debugger;
 	    document.querySelector(".modal").classList.remove("hidden");
 	  }
     });
