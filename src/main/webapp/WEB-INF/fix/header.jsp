@@ -23,17 +23,37 @@
     <header>
         <div style= 'text-align:right;'>
             <a id="userInfoDtl" style = 'margin-right:15px;' href="" value=""></a>
-            <input class="btn btn-primary" type="button" id="btn_logout" value="로그아웃" onclick="">
+            <input class="btn btn-primary" type="button" id="btn_logout" value="로그아웃" onclick="location.href('/user/logOut')">
+        </div>
+        <div>
+            <form method="post" action="/work/fileSendingTest" enctype="multipart/form-data">
+                <input type="file" name="imageFile" id="imageFile">
+                <input type="submit">
+            </form>
         </div>
     </header>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         <%
-          session = request.getSession();
-          String userId = (String)session.getAttribute("userId");
-          String userName = (String)session.getAttribute("userName");
+         session = request.getSession();
+         String userName = (String)session.getAttribute("userName");
         %>
-    });
+      });
+
+
+    logout = function(){
+        debugger;
+        $.ajax({
+            url:"/user/logOut",
+            type:"POST",
+            dataType : "json",
+            success: function(result) {
+                location.href="/login";
+            },
+            error: function() {
+            }
+        })
+    }
 </script>
 </body>
 </html>
