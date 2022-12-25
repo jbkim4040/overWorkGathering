@@ -8,6 +8,7 @@ import com.overWorkGathering.main.utils.Constant;
 import com.overWorkGathering.main.utils.SHA256;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -33,6 +34,11 @@ import static com.overWorkGathering.main.utils.Common.decryptRsa;
 @Service
 public class UserService {
 
+	@Value("${spring.profiles.active}")
+	private String currentEnvironment;
+	private final String RSA_WEB_KEY = "_RSA_WEB_Key_"; // 개인키 session key
+	private final String RSA_INSTANCE = "RSA"; // rsa transformation
+
 	@Autowired
 	private JavaMailSender javaMailSender;
 
@@ -41,9 +47,6 @@ public class UserService {
 
 	@Autowired
 	MessageSource messageSource;
-
-	private final String RSA_WEB_KEY = "_RSA_WEB_Key_"; // 개인키 session key
-	private final String RSA_INSTANCE = "RSA"; // rsa transformation
 
 
 	public String auth(String encrypt_userId, String encrypt_pw, HttpServletRequest request, HttpServletResponse response) {
@@ -84,6 +87,7 @@ public class UserService {
 				session.setAttribute("userId", user.getUserId());
 				session.setAttribute("userName", user.getName());
 				session.setAttribute("auth", user.getAuth());
+				session.setAttribute("currentEnvironment", currentEnvironment);
 			}
 		} catch(Exception e){
 			resultCd = "999";

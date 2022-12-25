@@ -95,37 +95,22 @@ public class WorkController {
 	}
 
 	@RequestMapping(value="/fileSendingTest", method = RequestMethod.POST)
-	public void retrieveWorkCollectionUserDtl(@RequestParam MultipartFile imageFile) {
-		FTPUploader fileUploader = null;
+	public void retrieveWorkCollectionUserDtl(@RequestParam MultipartFile imageFile, HttpServletRequest request) {
+		workService.saveTaxiReceiptImgFile(imageFile, request);
+	}
 
-		if(imageFile.isEmpty()){
-			System.out.println("imageFile 비어있음");
-		}else{
-			String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
-			try{
-				String fullPath = "/Users/gimjeongbin/Desktop/dev/imageRepo/" + fileName;
-				System.out.println("파일 저장 fullPath = " + fullPath);
-				imageFile.transferTo(new File(fullPath));
+	@RequestMapping(value="/taxiReceiptImgFile", method = RequestMethod.POST)
+	public void saveTaxiReceiptImgFile(@RequestParam MultipartFile imageFile, HttpServletRequest request) {
+		workService.saveTaxiReceiptImgFile(imageFile, request);
+	}
 
+	@RequestMapping(value="/taxiReceiptImgFileList", method = RequestMethod.POST)
+	public void saveTaxiReceiptImgFileList(@RequestParam List<MultipartFile> imageFileList, HttpServletRequest request) {
+		workService.saveTaxiReceiptImgFileList(imageFileList, request);
+	}
 
-				fileUploader = new FTPUploader("iabacus.fun25.co.kr", 23203, "root", "abacus2017!",null);
-
-
-				File uploadfile = new File("/Users/gimjeongbin/Desktop/dev/imageRepo/" + fileName); // 파일 객체 생성
-				boolean isUpload = fileUploader.uploadFile("/var/dev/overworkgathering/images/", uploadfile); //업로드
-				System.out.println("isUpload -" + isUpload); // 업로드 여부 확인
-
-			}catch(IOException ioe){
-				ioe.printStackTrace();
-				System.out.println(ioe.getMessage());
-			}catch(Exception ex){
-				ex.printStackTrace();
-				System.out.println(ex.getMessage());
-			}finally {
-				fileUploader.disconnect();
-			}
-
-
-		}
+	@RequestMapping(value="/taxiReceiptImgFile", method = RequestMethod.GET)
+	public void downloadTaxiReceiptImgFile(@RequestParam String imageFileName, HttpServletRequest request) {
+		workService.downloadTaxiReceiptImgFile(imageFileName, request);
 	}
 }

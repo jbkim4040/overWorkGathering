@@ -32,8 +32,7 @@ public class FTPUploader {
 
             // 프로퍼티 설정
             java.util.Properties config = new java.util.Properties();
-            config.put("StrictHostKeyChecking", "no"); // 접속 시 hostkeychecking 여부
-            session.setConfig(config);
+            session.setConfig("StrictHostKeyChecking", "no"); // 접속 시 hostkeychecking 여부
             session.connect();
             //sftp로 접속
             channel = session.openChannel("sftp");
@@ -90,7 +89,6 @@ public class FTPUploader {
      */
     public boolean uploadFile(String dir, File file) {
         boolean isUpload = false;
-        SftpATTRS attrs;
         FileInputStream in = null;
         try {
             in = new FileInputStream(file);

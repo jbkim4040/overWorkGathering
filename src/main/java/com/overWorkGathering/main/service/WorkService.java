@@ -1,17 +1,19 @@
 package com.overWorkGathering.main.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.overWorkGathering.main.DTO.WorkCollectionDtlReqDTO;
 import com.overWorkGathering.main.entity.UserInfoEntity;
 import com.overWorkGathering.main.entity.WorkHisEntity;
+import com.overWorkGathering.main.utils.FTPUploader;
+import org.hibernate.cfg.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.mapstruct.Mapper;
 
@@ -22,9 +24,20 @@ import com.overWorkGathering.main.mapper.UserMapper;
 import com.overWorkGathering.main.mapper.WorkMapper;
 import com.overWorkGathering.main.repository.UserRepository;
 import com.overWorkGathering.main.repository.WorkRepository;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class WorkService {
+	@Value("${spring.profiles.active}")
+	private String currentEnvironment;
+	private final String SFTP_HOST = "iabacus.fun25.co.kr";
+	private final int SFTP_PORT = 23203;
+	private final String SFTP_USER_ID = "root";
+	private final String SFTP_USER_PWD = "abacus2017!";
+	private final String SFTP_TAXI_RECEIPT_IMG_PATH = "/var/dev/overworkgathering/images/";
 
 	@Autowired
 	WorkRepository workRepository;
@@ -279,5 +292,67 @@ public class WorkService {
 		Map<String, List<WorkCollectionDtlReqDTO>> retrieveWorkCollectionDtl = retrieveExcelDtl(part, dt);
 
 		return retrieveWorkCollectionDtl.get(userId);
+	}
+
+	public void saveTaxiReceiptImgFile(MultipartFile imageFile, HttpServletRequest request){
+		System.out.println("현재 개발환경 :: " + currentEnvironment);
+
+		FTPUploader fileUploader = null;
+		String currentDt = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+		final String newImgFileName = UUID.randomUUID().toString().replace("-", "");
+
+		if(imageFile.isEmpty()){
+			System.out.println("imageFile 비어있음");
+		}else{
+			String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
+			String currentPath = System.getProperty("user.dir");
+
+			String fullPath = currentPath + "/ " + newImgFileName;
+			File uploadfile = new File(fullPath); // 파일 객체 생성
+
+			try{
+				if(Integer.parseInt(currentDt.substring(6)) < 15){
+					currentDt = LocalDate.now().minusMonths(1).format(DateTimeFormatter.ofPattern("yyyyMM"));
+				}else {
+					currentDt = currentDt.substring(0, 6);
+				}
+
+				imageFile.transferTo(new File(fullPath));
+
+				fileUploader = new FTPUploader(SFTP_HOST, SFTP_PORT, SFTP_USER_ID, SFTP_USER_PWD,null);
+
+				if(!fileUploader.exists(SFTP_TAXI_RECEIPT_IMG_PATH + currentDt)){
+					fileUploader.mkdir(SFTP_TAXI_RECEIPT_IMG_PATH, currentDt);
+				}
+
+				fileUploader.uploadFile(SFTP_TAXI_RECEIPT_IMG_PATH + currentDt, uploadfile); //업로드
+			}catch(IOException ioe){
+				ioe.printStackTrace();
+				System.out.println(ioe.getMessage());
+			}catch(Exception ex){
+				ex.printStackTrace();
+				System.out.println(ex.getMessage());
+			}finally {
+				fileUploader.disconnect();
+				uploadfile.delete();
+			}
+		}
+	}
+
+	public void saveTaxiReceiptImgFileList(List<MultipartFile> imageFileList, HttpServletRequest request){
+		for(MultipartFile imageFile : imageFileList){
+			saveTaxiReceiptImgFile(imageFile, request);
+		}
+	}
+
+	public void downloadTaxiReceiptImgFile(String imageFileName, HttpServletRequest request){
+		FTPUploader fileUploader = null;
+		String currentDt = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+
+		if(StringUtils.isEmpty(imageFileName)){
+			System.out.println("파일명이 존재하지 않습니다.");
+		}else{
+
+		}
 	}
 }
