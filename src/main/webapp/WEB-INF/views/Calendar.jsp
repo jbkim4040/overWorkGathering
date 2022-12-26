@@ -22,9 +22,9 @@
 		<div id ='calendar'></div>
 	</div>
 
-<div class="modal hidden">
+<div class="modal">
   <div class="bg"></div>
-  <div class="modalBox" style="width:465px; height:670px;">
+  <div class="modalBox" style="width:495px; height:695px;">
     <iframe id="CalendarPopup" width="465" height="670"></iframe>
   </div>
 </div>
@@ -52,6 +52,7 @@ var name = "";
 	    document.getElementById("CalendarPopup").src = "/CalendarPopup?workDt="+ e.dateStr;
 	    debugger;
 	    document.querySelector(".modal").classList.remove("hidden");
+	    document.querySelector(".modal").style.display="flex";
 	  }
     });
     calendar.render();
@@ -86,6 +87,7 @@ var name = "";
   const close = () => {
 	  debugger;
     document.querySelector(".modal").classList.add("hidden");
+    document.querySelector(".modal").style.display="none";
   }
 
   document.querySelector(".bg").addEventListener("click", close);
