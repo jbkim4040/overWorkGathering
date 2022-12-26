@@ -10,12 +10,10 @@ import java.util.stream.Collectors;
 import com.overWorkGathering.main.DTO.WorkCollectionDtlReqDTO;
 import com.overWorkGathering.main.entity.UserInfoEntity;
 import com.overWorkGathering.main.entity.WorkHisEntity;
-import com.overWorkGathering.main.utils.FTPUploader;
-import org.hibernate.cfg.Environment;
+import com.overWorkGathering.main.utils.FTPUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.mapstruct.Mapper;
 
 import com.overWorkGathering.main.DTO.UserDTO;
 import com.overWorkGathering.main.DTO.WorkCollectionReqDTO;
@@ -297,7 +295,7 @@ public class WorkService {
 	public void saveTaxiReceiptImgFile(MultipartFile imageFile, HttpServletRequest request){
 		System.out.println("현재 개발환경 :: " + currentEnvironment);
 
-		FTPUploader fileUploader = null;
+		FTPUtil fileUploader = null;
 		String currentDt = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 		String originalImg = imageFile.getOriginalFilename();
 		// 환경별 업로드 될 디렉토리 동적지정
@@ -327,7 +325,7 @@ public class WorkService {
 
 				imageFile.transferTo(new File(fullPath));
 
-				fileUploader = new FTPUploader(SFTP_HOST, SFTP_PORT, SFTP_USER_ID, SFTP_USER_PWD,null);
+				fileUploader = new FTPUtil(SFTP_HOST, SFTP_PORT, SFTP_USER_ID, SFTP_USER_PWD,null);
 
 				if(!fileUploader.exists(SFTP_TAXI_RECEIPT_IMG_PATH + currentDt)){
 					fileUploader.mkdir(SFTP_TAXI_RECEIPT_IMG_PATH, currentDt);
@@ -354,16 +352,16 @@ public class WorkService {
 	}
 
 	public void downloadTaxiReceiptImgFile(String imageFileName, HttpServletRequest request) throws Exception {
-		FTPUploader fileUploader = new FTPUploader(SFTP_HOST, SFTP_PORT, SFTP_USER_ID, SFTP_USER_PWD,null);
+		FTPUtil fileUploader = new FTPUtil(SFTP_HOST, SFTP_PORT, SFTP_USER_ID, SFTP_USER_PWD,null);
 		String currentDt = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 		// 400c261b41a04ee1b7ee4fe43ab95ad8.JPG
 
 		// 환경별 업로드 될 디렉토리 동적지정
 		String environment = currentEnvironment.equals("prod") ? "prod" : "dev";
 
-		String downloadPath = System.getProperty("user.dir");
-		final String SFTP_TAXI_RECEIPT_IMG_PATH = "/var/" + environment + "/overworkgathering/images/";
-		imageFileName = "400c261b41a04ee1b7ee4fe43ab95ad8.JPG";
+		String downloadPath = "/Users/gimjeongbin/Desktop/dev";
+		final String SFTP_TAXI_RECEIPT_IMG_PATH = "/var/" + environment + "/overworkgathering/images/202212";
+		imageFileName = "aff805a809db464d9c1da3017ab0a538.jpg";
 		fileUploader.download(SFTP_TAXI_RECEIPT_IMG_PATH, imageFileName, downloadPath);
 	}
 

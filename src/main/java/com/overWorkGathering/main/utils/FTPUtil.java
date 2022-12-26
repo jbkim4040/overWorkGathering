@@ -1,15 +1,12 @@
 package com.overWorkGathering.main.utils;
 
 import com.jcraft.jsch.*;
-import org.apache.commons.net.PrintCommandListener;
-import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.*;
 import java.util.Vector;
 
-public class FTPUploader {
+public class FTPUtil {
 
     private Session session = null;
     private Channel channel = null;
@@ -17,7 +14,7 @@ public class FTPUploader {
     FTPClient ftpClient = null;
 
     // param( host server ip, username, password ) 생성자
-    public FTPUploader(String host, int port, String user, String pwd, String privateKey) throws Exception {
+    public FTPUtil(String host, int port, String user, String pwd, String privateKey) throws Exception {
         JSch jSch = new JSch();
 
         try {
@@ -123,23 +120,27 @@ public class FTPUploader {
     public void download(String dir, String downloadFileName, String path) {
         InputStream in = null;
         FileOutputStream out = null;
+
         try {
             channelSftp.cd(dir);
-            in = channelSftp.get(downloadFileName);
-        } catch (SftpException e) {
-            e.printStackTrace();
-        }
+            Vector<?> fileList = channelSftp.ls(dir);
 
-        try {
-            out = new FileOutputStream(new File(path));
-            int i;
+            if(!fileList.isEmpty()){
+                in = channelSftp.get(downloadFileName);
 
-            while ((i = in.read()) != -1) {
-                out.write(i);
+                out = new FileOutputStream(new File(path + "/" + downloadFileName));
+                int i;
+
+                while ((i = in.read()) != -1) {
+                    out.write(i);
+                }
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (SftpException sfte) {
+            sfte.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        } catch(Exception ex){
+            ex.printStackTrace();
         } finally {
             try {
                 out.close();

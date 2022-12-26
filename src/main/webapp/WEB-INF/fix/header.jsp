@@ -25,6 +25,7 @@
             <a id="userInfoDtl" style = 'margin-right:15px;' href="" value=""></a>
             <input class="btn btn-primary" type="button" id="btn_logout" value="로그아웃" onclick="location.href('/user/logOut')">
         </div>
+            <input class="btn btn-primary" type="button" id="btn_download" value="다운로드" onclick="fileDownlaod()">
     </header>
 <script>
     document.addEventListener('DOMContentLoaded', function() {

@@ -23,6 +23,7 @@
 <%@ include file="/WEB-INF/fix/header.jsp"%>
 <div class="card">
   <div class="card-body" id="card_body">
+  <a />
   <input class="btn btn-primary" type="button" id="btn_excel_create" value="엑셀" onClick="createWorkCollectionExcel()">
     <div class="table-responsive text-nowrap">
       <table class="table table-bordered">
@@ -82,23 +83,26 @@ window.onload = function(){
 };
 
 createWorkCollectionExcel = function(){
-    debugger;
-    $.ajax({
-            url:"/excel/workCollection",
-            type:"post",
-            data: JSON.stringify(workCollectionDtl),
-            dataType : "json",
-            contentType: "application/json; charset=UTF-8",
-            success: function(result) {
-                debugger;
+    var url = '/excel/workCollection';
+    var data = JSON.stringify(workCollectionDtl);
 
-            },
-            error: function(result, request,status,error) {
-                debugger;
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function(res) {
+      if (this.readyState == 4 && this.status == 200) {
+        var _data = this.response;
+        var _blob = new Blob([_data], {type : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+        debugger;
+        var link = document.createElement('a');
+        link.href = window.URL.createObjectURL(_blob);
+        link.download = '야근식대.xlsx';
+        link.click();
+      };
+    };
 
-                alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-            }
-        })
+    xhr.open('POST', url);
+    xhr.responseType = 'blob';
+    xhr.setRequestHeader('Content-type', 'application/json');
+    xhr.send(data);
 }
 
 calculationReqPersonnel = function(result){

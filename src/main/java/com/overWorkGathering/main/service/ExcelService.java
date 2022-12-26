@@ -16,6 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -33,8 +34,7 @@ public class ExcelService {
     };
 
 
-    public String createExcel(Map<String, Object> workCollectionDtl, HttpServletResponse response) throws IOException {
-        String result = "success";
+    public void createExcel(Map<String, Object> workCollectionDtl, HttpServletResponse response) {
         String name = "";
         Set<String> keySet = workCollectionDtl.keySet();
 
@@ -712,9 +712,6 @@ public class ExcelService {
             dayOfWeekCnt++;
         }
 
-        System.out.println("dayRowMap >>>>> " + dayRowMap.toString());
-        System.out.println("amtSumMap >>>>> " + amtSumMap.toString());
-
         int index = 1;
 
         CellStyle workManagementCell6Style = workbook.createCellStyle();
@@ -818,8 +815,6 @@ public class ExcelService {
 
             for(int i = 0; i < reqDTOList.size(); i++){
                 WorkCollectionDtlReqDTO DTO = mapper.convertValue(reqDTOList.get(i), WorkCollectionDtlReqDTO.class);
-                System.out.println("시작 시간 >>>>> " + DTO.getStartTime());
-                System.out.println("종료 시간 >>>>> " + DTO.getEndTime());
 
                 int j = Integer.parseInt(DTO.getWorkDt().substring(8));
 
@@ -1033,17 +1028,11 @@ public class ExcelService {
 
 
         // 총 야근식대, 택시비 취합
-
-
-
         workManagementSheet.setColumnWidth(0, 1350);
-        //workManagementSheet.setDisplayGridlines(false);
 
 
         // 택시비 영수증 excel sheet 생성
         Sheet taxiFeeReceiptSheet = workbook.createSheet("택시비 영수증");
-
-
 
 
         String yyyyMMdd = Integer.toString(year) + (month > 9 ? month : "0" + Integer.toString(month)) + (rtn[1] > 9 ? rtn[1] : "0" + Integer.toString(rtn[1]));
@@ -1053,22 +1042,27 @@ public class ExcelService {
         String fileLocation = path.substring(0, path.length()-1) + name + "야근식대" + yyyyMMdd + ".xlsx";
 
         System.out.println("엑셀 생성 경로 >>>> " + fileLocation);
-        FileOutputStream outputStream = new FileOutputStream(fileLocation);
 
-        response.setHeader("Content-Type", "application/octet-stream");
-        response.setHeader("Content-Disposition", String.format("attachment; filename=\"야근식대" + yyyyMMdd + ".xlsx\""));
-        OutputStream os = response.getOutputStream();
-        os.flush();
+        try{
+            response.reset();
 
-        workbook.write(outputStream);
-        workbook.write(os);
+            response.setContentType( "application/vnd.ms-excel" );
+            //response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.addHeader("Content-Disposition","attachment;filename=\"" + URLEncoder.encode("야근식대" + yyyyMMdd, "UTF-8") + ".xlsx\"");
 
-        os.flush();
-        workbook.close();
+            workbook.write(response.getOutputStream());
+            response.getOutputStream().flush();
+        }catch(IOException ioe){
 
-        os.close();
+        }catch(Exception ex){
 
-        return result;
+        }finally{
+            try {
+                workbook.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 

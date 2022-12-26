@@ -19,10 +19,6 @@ public class ExcelController {
 
     @PostMapping(value = "/workCollection")
     public void createOverworkGatheringExcel(@RequestBody Map<String, Object> workCollectionDtl, HttpServletResponse response){
-        try{
-            excelService.createExcel(workCollectionDtl, response);
-        }catch(IOException ioe){
-
-        }
+        excelService.createExcel(workCollectionDtl, response);
     }
 }
