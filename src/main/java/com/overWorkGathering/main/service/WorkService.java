@@ -37,7 +37,6 @@ public class WorkService {
 	private final int SFTP_PORT = 23203;
 	private final String SFTP_USER_ID = "root";
 	private final String SFTP_USER_PWD = "abacus2017!";
-	private final String SFTP_TAXI_RECEIPT_IMG_PATH = "/var/dev/overworkgathering/images/";
 
 	@Autowired
 	WorkRepository workRepository;
@@ -168,7 +167,7 @@ public class WorkService {
 	/*
 	 * 야근식대 저장 및 업데이트
 	 */
-	public void saveWork(Map<String, Object> param) {
+	public void saveWork(HashMap<String, Object> param, MultipartFile file, HttpServletRequest request) {
 
 		if("true".equals(param.get("dinnerYn").toString())) {
 			param.replace("dinnerYn", "Y");
@@ -197,14 +196,15 @@ public class WorkService {
 				.remarks(param.get("remarks").toString()).build();
 
 		WorkHisEntity workHisEntity = workMapper.toWorkEntity(workDTO);
-
 		workRepository.save(workHisEntity);
+
+		saveTaxiReceiptImgFile(file, request);
 	}
 
 	/*
 	 * 야근식대 삭제
 	 */
-	public void deleteWork(Map<String, Object> param) {
+	public void deleteWork(HashMap<String, Object> param, MultipartFile file, HttpServletRequest request) {
 		workRepository.deleteByUserIdAndWorkDt(param.get("userID").toString(), param.get("workDt").toString());
 	}
 
@@ -299,11 +299,19 @@ public class WorkService {
 
 		FTPUploader fileUploader = null;
 		String currentDt = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-		final String newImgFileName = UUID.randomUUID().toString().replace("-", "");
+		String originalImg = imageFile.getOriginalFilename();
+		// 환경별 업로드 될 디렉토리 동적지정
+		String environment = currentEnvironment.equals("prod") ? "prod" : "dev";
+
+		final String ext = "." + originalImg.substring(originalImg.lastIndexOf(".") + 1);
+		final String newImgFileName = UUID.randomUUID().toString().replace("-", "") + ext;
+		final String SFTP_TAXI_RECEIPT_IMG_PATH = "/var/" + environment + "/overworkgathering/images/";
+
 
 		if(imageFile.isEmpty()){
 			System.out.println("imageFile 비어있음");
 		}else{
+			System.out.println("업로드할 이미지명 :: " + newImgFileName);
 			String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
 			String currentPath = System.getProperty("user.dir");
 
@@ -345,14 +353,22 @@ public class WorkService {
 		}
 	}
 
-	public void downloadTaxiReceiptImgFile(String imageFileName, HttpServletRequest request){
-		FTPUploader fileUploader = null;
+	public void downloadTaxiReceiptImgFile(String imageFileName, HttpServletRequest request) throws Exception {
+		FTPUploader fileUploader = new FTPUploader(SFTP_HOST, SFTP_PORT, SFTP_USER_ID, SFTP_USER_PWD,null);
 		String currentDt = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+		// 400c261b41a04ee1b7ee4fe43ab95ad8.JPG
 
-		if(StringUtils.isEmpty(imageFileName)){
-			System.out.println("파일명이 존재하지 않습니다.");
-		}else{
+		// 환경별 업로드 될 디렉토리 동적지정
+		String environment = currentEnvironment.equals("prod") ? "prod" : "dev";
 
-		}
+		String downloadPath = System.getProperty("user.dir");
+		final String SFTP_TAXI_RECEIPT_IMG_PATH = "/var/" + environment + "/overworkgathering/images/";
+		imageFileName = "400c261b41a04ee1b7ee4fe43ab95ad8.JPG";
+		fileUploader.download(SFTP_TAXI_RECEIPT_IMG_PATH, imageFileName, downloadPath);
+	}
+
+	public void deleteTaxiReceiptImgFile(String imageFileName, HttpServletRequest request) throws Exception {
+
+
 	}
 }

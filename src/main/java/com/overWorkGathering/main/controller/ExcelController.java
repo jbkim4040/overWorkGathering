@@ -5,6 +5,7 @@ import com.overWorkGathering.main.service.ExcelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -17,9 +18,9 @@ public class ExcelController {
     private ExcelService excelService;
 
     @PostMapping(value = "/workCollection")
-    public void createOverworkGatheringExcel(@RequestBody Map<String, Object> workCollectionDtl){
+    public void createOverworkGatheringExcel(@RequestBody Map<String, Object> workCollectionDtl, HttpServletResponse response){
         try{
-            excelService.createExcel(workCollectionDtl);
+            excelService.createExcel(workCollectionDtl, response);
         }catch(IOException ioe){
 
         }

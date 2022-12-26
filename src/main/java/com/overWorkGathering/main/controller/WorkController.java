@@ -59,15 +59,15 @@ public class WorkController {
 	public WorkDTO retrieveWorkOne(@RequestParam String userID, @RequestParam String workDt) {
 		return workService.retrieveWorkOne(userID, workDt);
 	}
-	
+
 	@RequestMapping(value="/SaveWork", method = RequestMethod.POST)
-	public void saveWork(@RequestBody Map<String, Object> param) {
-		workService.saveWork(param);
+	public void saveWork(@RequestParam HashMap<String, Object> param, MultipartFile file, HttpServletRequest request) {
+		workService.saveWork(param, file, request);
 	}
 	
 	@RequestMapping(value="/DeleteWork", method = RequestMethod.POST)
-	public void DeleteWork(@RequestBody Map<String, Object> param) {
-		workService.deleteWork(param);
+	public void DeleteWork(@RequestParam HashMap<String, Object> param, MultipartFile file, HttpServletRequest request) {
+		workService.deleteWork(param, file, request);
 	}
 
 	/*
@@ -110,7 +110,13 @@ public class WorkController {
 	}
 
 	@RequestMapping(value="/taxiReceiptImgFile", method = RequestMethod.GET)
-	public void downloadTaxiReceiptImgFile(@RequestParam String imageFileName, HttpServletRequest request) {
+	public void downloadTaxiReceiptImgFile(String imageFileName, HttpServletRequest request) throws Exception{
 		workService.downloadTaxiReceiptImgFile(imageFileName, request);
+	}
+
+
+	@RequestMapping(value="/taxiReceiptImgFile", method = RequestMethod.DELETE)
+	public void deleteTaxiReceiptImgFile(String imageFileName, HttpServletRequest request) throws Exception{
+		workService.deleteTaxiReceiptImgFile(imageFileName, request);
 	}
 }

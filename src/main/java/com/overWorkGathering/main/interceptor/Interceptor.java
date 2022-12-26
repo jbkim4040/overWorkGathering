@@ -27,7 +27,7 @@ public class Interceptor extends HandlerInterceptorAdapter {
             response.setCharacterEncoding("UTF-8");
             response.setContentType("text/html;charset=UTF-8");
             PrintWriter out = response.getWriter();
-            out.println("<script>alert('로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.'); location.href=\"/login\"</script>");
+            out.println("<script>location.href=\"/login\"</script>");
             out.close();
             String referrer = request.getHeader("Referer");
             request.getSession().setAttribute("url_prior_login", referrer);

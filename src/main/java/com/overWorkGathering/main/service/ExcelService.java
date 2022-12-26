@@ -9,9 +9,12 @@ import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,7 +33,8 @@ public class ExcelService {
     };
 
 
-    public String createExcel(Map<String, Object> workCollectionDtl) throws IOException {
+    public String createExcel(Map<String, Object> workCollectionDtl, HttpServletResponse response) throws IOException {
+        String result = "success";
         String name = "";
         Set<String> keySet = workCollectionDtl.keySet();
 
@@ -48,19 +52,21 @@ public class ExcelService {
 
         // 지출내역서 excel sheet 생성
         Sheet outcomeHistorySheet = workbook.createSheet("지출내역서");
-        outcomeHistorySheet.setColumnWidth(0, 5000);
-        outcomeHistorySheet.setColumnWidth(1, 4000);
-        outcomeHistorySheet.setColumnWidth(2, 4000);
-        outcomeHistorySheet.setColumnWidth(3, 4000);
+        outcomeHistorySheet.setColumnWidth(0, 4553);
+        outcomeHistorySheet.setColumnWidth(1, 4046);
+        outcomeHistorySheet.setColumnWidth(2, 4046);
+        outcomeHistorySheet.setColumnWidth(3, 4046);
         outcomeHistorySheet.setDisplayGridlines(false);
 
         //헤더//
-        Row header = outcomeHistorySheet.createRow(0);
-        Row header2 = outcomeHistorySheet.createRow(1);
+        Row indexRow = outcomeHistorySheet.createRow(0);
+        Row header = outcomeHistorySheet.createRow(1);
+        Row header2 = outcomeHistorySheet.createRow(2);
+
 
         // 헤더 제목 셀 생성
         Cell headerTitleCell = header.createCell(0);
-        outcomeHistorySheet.addMergedRegion(new CellRangeAddress(0,1,0,0));
+        outcomeHistorySheet.addMergedRegion(new CellRangeAddress(1,2,0,0));
         headerTitleCell.setCellValue("지출 내역서");
 
         // 헤더 제목 셀 스타일
@@ -72,6 +78,8 @@ public class ExcelService {
         Font headerTitleFont = workbook.createFont();
         headerTitleFont.setBold(true);
         headerTitleFont.setFontName("돋음");
+        headerTitleFont.setFontHeightInPoints((short) 14);
+        headerTitleFont.setUnderline(Font.U_SINGLE);
         headerTitleStyle.setFont(headerTitleFont);
 
         // 헤더 제목 셀 스타일, 폰트 적용
@@ -125,15 +133,15 @@ public class ExcelService {
         headerLedgerCell2.setCellStyle(headerLedgerStyle);
 
         // 바디
-        Row body = outcomeHistorySheet.createRow(3);
+        Row body = outcomeHistorySheet.createRow(4);
         Cell bodyCell = body.createCell(3);
         bodyCell.setCellValue("작성자 :");
 
-        outcomeHistorySheet.addMergedRegion(new CellRangeAddress(5,6,0,0));
-        outcomeHistorySheet.addMergedRegion(new CellRangeAddress(5,5,1,2));
-        outcomeHistorySheet.addMergedRegion(new CellRangeAddress(5,6,3,3));
+        outcomeHistorySheet.addMergedRegion(new CellRangeAddress(6,7,0,0));
+        outcomeHistorySheet.addMergedRegion(new CellRangeAddress(6,6,1,2));
+        outcomeHistorySheet.addMergedRegion(new CellRangeAddress(6,7,3,3));
 
-        Row body1Row = outcomeHistorySheet.createRow(5);
+        Row body1Row = outcomeHistorySheet.createRow(6);
 
         // 바디 타이틀 셀 - 발의일자
         Cell body1Cell = body1Row.createCell(0);
@@ -143,8 +151,8 @@ public class ExcelService {
         CellStyle body1Style = workbook.createCellStyle();
         body1Style.setAlignment(HorizontalAlignment.CENTER);
         body1Style.setVerticalAlignment(VerticalAlignment.CENTER);
-        body1Style.setBorderTop(BorderStyle.THICK);
-        body1Style.setBorderLeft(BorderStyle.THICK);
+        body1Style.setBorderTop(BorderStyle.MEDIUM);
+        body1Style.setBorderLeft(BorderStyle.MEDIUM);
         body1Style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
         body1Style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
@@ -167,7 +175,7 @@ public class ExcelService {
         body2Style.setAlignment(HorizontalAlignment.CENTER);
         body2Style.setVerticalAlignment(VerticalAlignment.CENTER);
         body2Style.setFillBackgroundColor((short) 3);
-        body2Style.setBorderTop(BorderStyle.THICK);
+        body2Style.setBorderTop(BorderStyle.MEDIUM);
         body2Style.setBorderLeft(BorderStyle.THIN);
         body2Style.setBorderRight(BorderStyle.THIN);
         body2Style.setBorderBottom(BorderStyle.THIN);
@@ -183,7 +191,7 @@ public class ExcelService {
         body2Cell.setCellStyle(body2Style);
 
         CellStyle body2_1Style = workbook.createCellStyle();
-        body2_1Style.setBorderTop(BorderStyle.THICK);
+        body2_1Style.setBorderTop(BorderStyle.MEDIUM);
         body2_1Cell.setCellStyle(body2_1Style);
 
         // 바디 타이틀 셀 - 비고
@@ -196,8 +204,8 @@ public class ExcelService {
         body3Style.setVerticalAlignment(VerticalAlignment.CENTER);
         body3Style.setFillBackgroundColor((short) 3);
         //body1Style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        body3Style.setBorderTop(BorderStyle.THICK);
-        body3Style.setBorderRight(BorderStyle.THICK);
+        body3Style.setBorderTop(BorderStyle.MEDIUM);
+        body3Style.setBorderRight(BorderStyle.MEDIUM);
         body3Style.setBorderLeft(BorderStyle.THIN);
         body3Style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
         body3Style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
@@ -213,7 +221,7 @@ public class ExcelService {
         body3Cell.setCellStyle(body3Style);
 
 
-        Row body2Row = outcomeHistorySheet.createRow(6);
+        Row body2Row = outcomeHistorySheet.createRow(7);
 
         // 바디 타이틀 셀 - 발의일자
         Cell body4Cell = body2Row.createCell(0);
@@ -222,7 +230,7 @@ public class ExcelService {
         CellStyle body4Style = workbook.createCellStyle();
         body4Style.setFillBackgroundColor((short) 3);
         //body1Style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        body4Style.setBorderLeft(BorderStyle.THICK);
+        body4Style.setBorderLeft(BorderStyle.MEDIUM);
         body4Style.setBorderBottom(BorderStyle.THIN);
         body4Style.setBorderRight(BorderStyle.THIN);
         body4Cell.setCellStyle(body4Style);
@@ -292,7 +300,7 @@ public class ExcelService {
         CellStyle body7Style = workbook.createCellStyle();
         body7Style.setFillBackgroundColor((short) 3);
         //body1Style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        body7Style.setBorderRight(BorderStyle.THICK);
+        body7Style.setBorderRight(BorderStyle.MEDIUM);
         body7Style.setBorderBottom(BorderStyle.THIN);
         body7Style.setBorderLeft(BorderStyle.THIN);
         body7Cell.setCellStyle(body7Style);
@@ -312,11 +320,11 @@ public class ExcelService {
         monthLeftCellStyle.setBorderTop(BorderStyle.THIN);
         monthLeftCellStyle.setBorderRight(BorderStyle.THIN);
         monthLeftCellStyle.setBorderBottom(BorderStyle.THIN);
-        monthLeftCellStyle.setBorderLeft(BorderStyle.THICK);
+        monthLeftCellStyle.setBorderLeft(BorderStyle.MEDIUM);
 
         CellStyle monthRightCellStyle = workbook.createCellStyle();
         monthRightCellStyle.setBorderTop(BorderStyle.THIN);
-        monthRightCellStyle.setBorderRight(BorderStyle.THICK);
+        monthRightCellStyle.setBorderRight(BorderStyle.MEDIUM);
         monthRightCellStyle.setBorderBottom(BorderStyle.THIN);
         monthRightCellStyle.setBorderLeft(BorderStyle.THIN);
 
@@ -330,7 +338,7 @@ public class ExcelService {
         for(int i = rtn[0]; i <= rtn[1]; i++){
             String dd = i < 10 ? "0" + i : Integer.toString(i);
 
-            Row body3Row = outcomeHistorySheet.createRow(6 + i);
+            Row body3Row = outcomeHistorySheet.createRow(7 + i);
 
             Cell body8Cell = body3Row.createCell(0);
             body8Cell.setCellStyle(monthLeftCellStyle);
@@ -350,7 +358,7 @@ public class ExcelService {
         }
 
         // 총합계 ROW
-        Row body4Row = outcomeHistorySheet.createRow(6 + rtn[1] + 1);
+        Row body4Row = outcomeHistorySheet.createRow(7 + rtn[1] + 1);
 
 
         // 바디 타이틀 셀 - 총합계
@@ -358,20 +366,20 @@ public class ExcelService {
 
         // 바디 타이틀 스타일 - 총합계
         CellStyle body12Style = workbook.createCellStyle();
-        body12Style.setBorderTop(BorderStyle.THICK);
-        body12Style.setBorderLeft(BorderStyle.THICK);
-        body12Style.setBorderBottom(BorderStyle.THICK);
+        body12Style.setBorderTop(BorderStyle.MEDIUM);
+        body12Style.setBorderLeft(BorderStyle.MEDIUM);
+        body12Style.setBorderBottom(BorderStyle.MEDIUM);
         body12Style.setBorderRight(BorderStyle.THIN);
         body12Cell.setCellStyle(body12Style);
 
         // 바디 타이틀 셀 - 총합계
         Cell body13Cell = body4Row.createCell(1);
-        body13Cell.setCellFormula("SUM(B" + (7 + rtn[0]) + ":" + "B" + (7 + rtn[1]) + ")");
+        body13Cell.setCellFormula("SUM(B" + (8 + rtn[0]) + ":" + "B" + (8 + rtn[1]) + ")");
 
         // 바디 타이틀 스타일 - 총합계
         CellStyle body13Style = workbook.createCellStyle();
-        body13Style.setBorderTop(BorderStyle.THICK);
-        body13Style.setBorderBottom(BorderStyle.THICK);
+        body13Style.setBorderTop(BorderStyle.MEDIUM);
+        body13Style.setBorderBottom(BorderStyle.MEDIUM);
         body13Style.setBorderRight(BorderStyle.THIN);
         body13Style.setBorderLeft(BorderStyle.THIN);
         body13Style.setAlignment(HorizontalAlignment.RIGHT);
@@ -382,12 +390,12 @@ public class ExcelService {
         // 바디 타이틀 셀 - 총합계
         Cell body14Cell = body4Row.createCell(2);
         body14Cell.setCellValue(transportAmt);
-        body14Cell.setCellFormula("SUM(C" + (7 + rtn[0]) + ":" + "C" + (7 + rtn[1]) + ")");
+        body14Cell.setCellFormula("SUM(C" + (8 + rtn[0]) + ":" + "C" + (8 + rtn[1]) + ")");
 
         // 바디 타이틀 스타일 - 총합계
         CellStyle body14Style = workbook.createCellStyle();
-        body14Style.setBorderTop(BorderStyle.THICK);
-        body14Style.setBorderBottom(BorderStyle.THICK);
+        body14Style.setBorderTop(BorderStyle.MEDIUM);
+        body14Style.setBorderBottom(BorderStyle.MEDIUM);
         body14Style.setBorderRight(BorderStyle.THIN);
         body14Style.setBorderLeft(BorderStyle.THIN);
         body14Style.setAlignment(HorizontalAlignment.RIGHT);
@@ -400,16 +408,16 @@ public class ExcelService {
 
         // 바디 타이틀 스타일 - 총합계
         CellStyle body15Style = workbook.createCellStyle();
-        body15Style.setBorderTop(BorderStyle.THICK);
-        body15Style.setBorderBottom(BorderStyle.THICK);
-        body15Style.setBorderRight(BorderStyle.THICK);
+        body15Style.setBorderTop(BorderStyle.MEDIUM);
+        body15Style.setBorderBottom(BorderStyle.MEDIUM);
+        body15Style.setBorderRight(BorderStyle.MEDIUM);
         body15Style.setBorderLeft(BorderStyle.THIN);
         body15Cell.setCellStyle(body15Style);
 
 
         // 총합계 ROW
-        Row body5Row = outcomeHistorySheet.createRow(6 + rtn[1] + 2);
-        outcomeHistorySheet.addMergedRegion(new CellRangeAddress(6 + rtn[1] + 2,6 + rtn[1] + 2,1,2));
+        Row body5Row = outcomeHistorySheet.createRow(7 + rtn[1] + 2);
+        outcomeHistorySheet.addMergedRegion(new CellRangeAddress(7 + rtn[1] + 2,7 + rtn[1] + 2,1,2));
 
         // 바디 타이틀 셀 - 총합계
         Cell body16Cell = body5Row.createCell(0);
@@ -417,9 +425,9 @@ public class ExcelService {
 
         // 바디 타이틀 스타일 - 총합계
         XSSFCellStyle body16Style = (XSSFCellStyle) workbook.createCellStyle();
-        body16Style.setBorderTop(BorderStyle.THICK);
-        body16Style.setBorderLeft(BorderStyle.THICK);
-        body16Style.setBorderBottom(BorderStyle.THICK);
+        body16Style.setBorderTop(BorderStyle.MEDIUM);
+        body16Style.setBorderLeft(BorderStyle.MEDIUM);
+        body16Style.setBorderBottom(BorderStyle.MEDIUM);
         body16Style.setBorderRight(BorderStyle.THIN);
         body16Style.setAlignment(HorizontalAlignment.CENTER);
         body16Style.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -441,12 +449,12 @@ public class ExcelService {
         // 바디 타이틀 셀
         Cell body17Cell = body5Row.createCell(1);
         body17Cell.setCellValue(amt);
-        body17Cell.setCellFormula("SUM(B" + (7 + rtn[1] + 1) + "," + "C" + (7 + rtn[1] + 1) + ")");
+        body17Cell.setCellFormula("SUM(B" + (8 + rtn[1] + 1) + "," + "C" + (8 + rtn[1] + 1) + ")");
 
         // 바디 타이틀 스타일
         XSSFCellStyle body17Style = (XSSFCellStyle) workbook.createCellStyle();
-        body17Style.setBorderTop(BorderStyle.THICK);
-        body17Style.setBorderBottom(BorderStyle.THICK);
+        body17Style.setBorderTop(BorderStyle.MEDIUM);
+        body17Style.setBorderBottom(BorderStyle.MEDIUM);
         body17Style.setBorderLeft(BorderStyle.THIN);
         body17Style.setAlignment(HorizontalAlignment.RIGHT);
         body17Style.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -462,8 +470,8 @@ public class ExcelService {
 
         // 바디 타이틀 스타일
         XSSFCellStyle body18Style = (XSSFCellStyle) workbook.createCellStyle();
-        body18Style.setBorderTop(BorderStyle.THICK);
-        body18Style.setBorderBottom(BorderStyle.THICK);
+        body18Style.setBorderTop(BorderStyle.MEDIUM);
+        body18Style.setBorderBottom(BorderStyle.MEDIUM);
         body18Style.setBorderRight(BorderStyle.THIN);
         body18Cell.setCellStyle(body18Style);
 
@@ -477,9 +485,9 @@ public class ExcelService {
 
         // 바디 타이틀 스타일
         XSSFCellStyle body19Style = (XSSFCellStyle) workbook.createCellStyle();
-        body19Style.setBorderTop(BorderStyle.THICK);
-        body19Style.setBorderBottom(BorderStyle.THICK);
-        body19Style.setBorderRight(BorderStyle.THICK);
+        body19Style.setBorderTop(BorderStyle.MEDIUM);
+        body19Style.setBorderBottom(BorderStyle.MEDIUM);
+        body19Style.setBorderRight(BorderStyle.MEDIUM);
         body19Cell.setCellStyle(body19Style);
 
         // custom 배경색
@@ -487,8 +495,8 @@ public class ExcelService {
         body19Style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
         // 결재일자 ROW
-        Row body6Row = outcomeHistorySheet.createRow(6 + rtn[1] + 4);
-        outcomeHistorySheet.addMergedRegion(new CellRangeAddress(6 + rtn[1] + 4,6 + rtn[1] + 4,1,3));
+        Row body6Row = outcomeHistorySheet.createRow(7 + rtn[1] + 4);
+        outcomeHistorySheet.addMergedRegion(new CellRangeAddress(7 + rtn[1] + 4,7 + rtn[1] + 4,1,3));
 
         // 바디 타이틀 셀 - 결재일자
         Cell body20Cell = body6Row.createCell(0);
@@ -498,9 +506,9 @@ public class ExcelService {
         XSSFCellStyle body20Style = (XSSFCellStyle) workbook.createCellStyle();
         body20Style.setFillBackgroundColor((short) 3);
         //body1Style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        body20Style.setBorderTop(BorderStyle.THICK);
-        body20Style.setBorderLeft(BorderStyle.THICK);
-        body20Style.setBorderBottom(BorderStyle.THICK);
+        body20Style.setBorderTop(BorderStyle.MEDIUM);
+        body20Style.setBorderLeft(BorderStyle.MEDIUM);
+        body20Style.setBorderBottom(BorderStyle.MEDIUM);
         body20Style.setBorderRight(BorderStyle.THIN);
         body20Style.setAlignment(HorizontalAlignment.CENTER);
         body20Style.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -522,14 +530,14 @@ public class ExcelService {
 
         // 바디 타이틀 셀
         Cell body21Cell = body6Row.createCell(1);
-        body21Cell.setCellValue(year + "년" + month + "월" + day + "일");
+        body21Cell.setCellValue(year + "년" + month + "월" + rtn[1] + "일");
 
         // 바디 타이틀 스타일
         XSSFCellStyle body21Style = (XSSFCellStyle) workbook.createCellStyle();
         body21Style.setFillBackgroundColor((short) 3);
         //body1Style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        body21Style.setBorderTop(BorderStyle.THICK);
-        body21Style.setBorderBottom(BorderStyle.THICK);
+        body21Style.setBorderTop(BorderStyle.MEDIUM);
+        body21Style.setBorderBottom(BorderStyle.MEDIUM);
         body21Style.setBorderLeft(BorderStyle.THIN);
         body21Style.setAlignment(HorizontalAlignment.CENTER);
         body21Style.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -548,8 +556,8 @@ public class ExcelService {
         XSSFCellStyle body22Style = (XSSFCellStyle) workbook.createCellStyle();
         body22Style.setFillBackgroundColor((short) 3);
         //body1Style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        body22Style.setBorderTop(BorderStyle.THICK);
-        body22Style.setBorderBottom(BorderStyle.THICK);
+        body22Style.setBorderTop(BorderStyle.MEDIUM);
+        body22Style.setBorderBottom(BorderStyle.MEDIUM);
 
         // custom 배경색
         body22Style.setFillForegroundColor(new XSSFColor(new java.awt.Color(255, 255, 153)));	// 255 255 153
@@ -565,9 +573,9 @@ public class ExcelService {
         XSSFCellStyle body23Style = (XSSFCellStyle) workbook.createCellStyle();
         body23Style.setFillBackgroundColor((short) 3);
         //body1Style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        body23Style.setBorderTop(BorderStyle.THICK);
-        body23Style.setBorderRight(BorderStyle.THICK);
-        body23Style.setBorderBottom(BorderStyle.THICK);
+        body23Style.setBorderTop(BorderStyle.MEDIUM);
+        body23Style.setBorderRight(BorderStyle.MEDIUM);
+        body23Style.setBorderBottom(BorderStyle.MEDIUM);
         body23Style.setBorderLeft(BorderStyle.THIN);
 
         // custom 배경색
@@ -579,26 +587,41 @@ public class ExcelService {
 
         // 근태관리 excel sheet 생성
         Sheet workManagementSheet = workbook.createSheet("근태관리");
-        workManagementSheet.createFreezePane(0, 3);
+        workManagementSheet.createFreezePane(1, 3, 1, 3);
+        workManagementSheet.setDisplayGridlines(false);
 
-        CellStyle workManagementCell3Style = workbook.createCellStyle();
-        workManagementCell3Style.setAlignment(HorizontalAlignment.CENTER);
+        CellStyle workManagementCell3Style1 = workbook.createCellStyle();
+        workManagementCell3Style1.setAlignment(HorizontalAlignment.CENTER);
+        workManagementCell3Style1.setBorderTop(BorderStyle.MEDIUM);
+        workManagementCell3Style1.setBorderBottom(BorderStyle.THIN);
+        workManagementCell3Style1.setBorderRight(BorderStyle.THIN);
+        workManagementCell3Style1.setBorderLeft(BorderStyle.THIN);
 
-        System.out.println("화면에서 던져주는 데이터 >>>>>" + workCollectionDtl.toString());
-        System.out.println("화면에서 던져주는 데이터 keyset >>>>> " + keySet.toString());
+        CellStyle workManagementCell3Style2 = workbook.createCellStyle();
+        workManagementCell3Style2.setAlignment(HorizontalAlignment.CENTER);
+        workManagementCell3Style2.setBorderTop(BorderStyle.THIN);
+        workManagementCell3Style2.setBorderBottom(BorderStyle.MEDIUM);
+        workManagementCell3Style2.setBorderRight(BorderStyle.THIN);
+        workManagementCell3Style2.setBorderLeft(BorderStyle.THIN);
+
 
         Row workManagementRow1 = workManagementSheet.createRow(1);
         Cell workManagementCell1 = workManagementRow1.createCell(0);
         // 35px
         workManagementCell1.setCellValue(month + "월");
-        workManagementCell1.setCellStyle(workManagementCell3Style);
-
+        workManagementCell1.setCellStyle(workManagementCell3Style1);
 
         Row workManagementRow1_1 = workManagementSheet.createRow(2);
+
+
         CellStyle employeeInfoHeaderStyle = workbook.createCellStyle();
         employeeInfoHeaderStyle.setAlignment(HorizontalAlignment.CENTER);
         employeeInfoHeaderStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
         employeeInfoHeaderStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        employeeInfoHeaderStyle.setBorderTop(BorderStyle.THIN);
+        employeeInfoHeaderStyle.setBorderBottom(BorderStyle.MEDIUM);
+        employeeInfoHeaderStyle.setBorderRight(BorderStyle.THIN);
+        employeeInfoHeaderStyle.setBorderLeft(BorderStyle.THIN);
 
 
         ObjectMapper mapper = new ObjectMapper();
@@ -606,22 +629,80 @@ public class ExcelService {
         HashMap<String, String> amtSumMap = new HashMap<>();
         String[] dayOfWeekList = {"월", "화", "수", "목", "금", "토", "일"};
         int dayOfWeekCnt = rtn[2];
+
+        CellStyle positionInfoCellStyle1 = workbook.createCellStyle();
+        positionInfoCellStyle1.setAlignment(HorizontalAlignment.CENTER);
+        positionInfoCellStyle1.setVerticalAlignment(VerticalAlignment.CENTER);
+        positionInfoCellStyle1.setBorderTop(BorderStyle.MEDIUM);
+        positionInfoCellStyle1.setBorderBottom(BorderStyle.THIN);
+        positionInfoCellStyle1.setBorderRight(BorderStyle.THIN);
+        positionInfoCellStyle1.setBorderLeft(BorderStyle.MEDIUM);
+
+        CellStyle positionInfoCellStyle2 = workbook.createCellStyle();
+        positionInfoCellStyle2.setAlignment(HorizontalAlignment.CENTER);
+        positionInfoCellStyle2.setVerticalAlignment(VerticalAlignment.CENTER);
+        positionInfoCellStyle2.setBorderTop(BorderStyle.THIN);
+        positionInfoCellStyle2.setBorderBottom(BorderStyle.MEDIUM);
+        positionInfoCellStyle2.setBorderRight(BorderStyle.THIN);
+        positionInfoCellStyle2.setBorderLeft(BorderStyle.MEDIUM);
+
+        CellStyle paymInfoCellStyle1 = workbook.createCellStyle();
+        paymInfoCellStyle1.setAlignment(HorizontalAlignment.CENTER);
+        paymInfoCellStyle1.setVerticalAlignment(VerticalAlignment.CENTER);
+        paymInfoCellStyle1.setBorderTop(BorderStyle.MEDIUM);
+        paymInfoCellStyle1.setBorderBottom(BorderStyle.THIN);
+        paymInfoCellStyle1.setBorderRight(BorderStyle.THIN);
+        paymInfoCellStyle1.setBorderLeft(BorderStyle.THIN);
+
+        CellStyle paymInfoCellStyle2 = workbook.createCellStyle();
+        paymInfoCellStyle2.setAlignment(HorizontalAlignment.CENTER);
+        paymInfoCellStyle2.setVerticalAlignment(VerticalAlignment.CENTER);
+        paymInfoCellStyle2.setBorderTop(BorderStyle.THIN);
+        paymInfoCellStyle2.setBorderBottom(BorderStyle.MEDIUM);
+        paymInfoCellStyle2.setBorderRight(BorderStyle.THIN);
+        paymInfoCellStyle2.setBorderLeft(BorderStyle.THIN);
+
+        CellStyle remarkInfoCellStyle1 = workbook.createCellStyle();
+        remarkInfoCellStyle1.setAlignment(HorizontalAlignment.CENTER);
+        remarkInfoCellStyle1.setVerticalAlignment(VerticalAlignment.CENTER);
+        remarkInfoCellStyle1.setBorderTop(BorderStyle.MEDIUM);
+        remarkInfoCellStyle1.setBorderBottom(BorderStyle.THIN);
+        remarkInfoCellStyle1.setBorderRight(BorderStyle.MEDIUM);
+        remarkInfoCellStyle1.setBorderLeft(BorderStyle.THIN);
+
+        CellStyle remarkInfoCellStyle2 = workbook.createCellStyle();
+        remarkInfoCellStyle2.setAlignment(HorizontalAlignment.CENTER);
+        remarkInfoCellStyle2.setVerticalAlignment(VerticalAlignment.CENTER);
+        remarkInfoCellStyle2.setBorderTop(BorderStyle.THIN);
+        remarkInfoCellStyle2.setBorderBottom(BorderStyle.MEDIUM);
+        remarkInfoCellStyle2.setBorderRight(BorderStyle.MEDIUM);
+        remarkInfoCellStyle2.setBorderLeft(BorderStyle.THIN);
+
         for(int i = rtn[0]; i <= rtn[1]; i++){
             Row workManagementRow2 = workManagementSheet.createRow(1 + (i * 2));
             Cell workManagementCell3 = workManagementRow2.createCell(0);
             workManagementCell3.setCellValue(Integer.toString(i));
-            workManagementCell3.setCellStyle(workManagementCell3Style);
+            workManagementCell3.setCellStyle(workManagementCell3Style1);
 
 
             Row workManagementRow3 = workManagementSheet.createRow(1 + (i * 2) + 1);
             Cell workManagementCell4 = workManagementRow3.createCell(0);
             workManagementCell4.setCellValue(dayOfWeekList[dayOfWeekCnt % 7]);
-            workManagementCell4.setCellStyle(workManagementCell3Style);
+            workManagementCell4.setCellStyle(workManagementCell3Style2);
 
 
             for(int j = 1; j <= workCollectionDtl.size(); j++){
+                // 굳이 0을 넣어야 하나?
                 workManagementRow2.createCell((3 * j) - 1).setCellValue(0);
                 workManagementRow3.createCell((3 * j) - 1).setCellValue(0);
+
+
+                workManagementRow2.createCell((3 * j) - 2).setCellStyle(positionInfoCellStyle1);
+                workManagementRow3.createCell((3 * j) - 2).setCellStyle(positionInfoCellStyle2);
+                workManagementRow2.getCell((3 * j) - 1).setCellStyle(paymInfoCellStyle1);
+                workManagementRow3.getCell((3 * j) - 1).setCellStyle(paymInfoCellStyle2);
+                workManagementRow2.createCell(3 * j).setCellStyle(remarkInfoCellStyle1);
+                workManagementRow3.createCell(3 * j).setCellStyle(remarkInfoCellStyle2);
             }
 
             dayRowMap.put(Integer.toString(i), workManagementRow2);
@@ -636,9 +717,90 @@ public class ExcelService {
 
         int index = 1;
 
-        Set<String> amtSumKeySet = workCollectionDtl.keySet();
+        CellStyle workManagementCell6Style = workbook.createCellStyle();
+        workManagementCell6Style.setAlignment(HorizontalAlignment.CENTER);
+        workManagementCell6Style.setVerticalAlignment(VerticalAlignment.CENTER);
+        workManagementCell6Style.setBorderTop(BorderStyle.THIN);
+        workManagementCell6Style.setBorderBottom(BorderStyle.MEDIUM);
+        workManagementCell6Style.setBorderRight(BorderStyle.MEDIUM);
+        workManagementCell6Style.setBorderLeft(BorderStyle.THIN);
+
+        CellStyle blankCellStyle1 = workbook.createCellStyle();
+        blankCellStyle1.setBorderTop(BorderStyle.MEDIUM);
+        blankCellStyle1.setBorderBottom(BorderStyle.THIN);
+        blankCellStyle1.setBorderLeft(BorderStyle.MEDIUM);
+
+        CellStyle blankCellStyle2 = workbook.createCellStyle();
+        blankCellStyle2.setBorderTop(BorderStyle.MEDIUM);
+        blankCellStyle2.setBorderBottom(BorderStyle.THIN);
+
+        CellStyle blankCellStyle3 = workbook.createCellStyle();
+        blankCellStyle3.setBorderTop(BorderStyle.MEDIUM);
+        blankCellStyle3.setBorderBottom(BorderStyle.THIN);
+        blankCellStyle3.setBorderRight(BorderStyle.MEDIUM);
+
+        CellStyle totalCommonCellStyle1 = workbook.createCellStyle();
+        totalCommonCellStyle1.setAlignment(HorizontalAlignment.CENTER);
+        totalCommonCellStyle1.setVerticalAlignment(VerticalAlignment.CENTER);
+        totalCommonCellStyle1.setBorderTop(BorderStyle.MEDIUM);
+        totalCommonCellStyle1.setBorderBottom(BorderStyle.THIN);
+        totalCommonCellStyle1.setBorderRight(BorderStyle.THIN);
+        totalCommonCellStyle1.setBorderLeft(BorderStyle.THIN);
+
+        CellStyle totalCommonCellStyle2 = workbook.createCellStyle();
+        totalCommonCellStyle2.setAlignment(HorizontalAlignment.CENTER);
+        totalCommonCellStyle2.setVerticalAlignment(VerticalAlignment.CENTER);
+        totalCommonCellStyle2.setBorderTop(BorderStyle.THIN);
+        totalCommonCellStyle2.setBorderBottom(BorderStyle.THIN);
+        totalCommonCellStyle2.setBorderRight(BorderStyle.THIN);
+        totalCommonCellStyle2.setBorderLeft(BorderStyle.THIN);
+
+        CellStyle totalCommonCellStyle3 = workbook.createCellStyle();
+        totalCommonCellStyle3.setAlignment(HorizontalAlignment.CENTER);
+        totalCommonCellStyle3.setVerticalAlignment(VerticalAlignment.CENTER);
+        totalCommonCellStyle3.setBorderTop(BorderStyle.THIN);
+        totalCommonCellStyle3.setBorderBottom(BorderStyle.MEDIUM);
+        totalCommonCellStyle3.setBorderRight(BorderStyle.THIN);
+        totalCommonCellStyle3.setBorderLeft(BorderStyle.THIN);
+
+        CellStyle middlePositionInfoCellStyle = workbook.createCellStyle();
+        middlePositionInfoCellStyle.setBorderTop(BorderStyle.THIN);
+        middlePositionInfoCellStyle.setBorderBottom(BorderStyle.THIN);
+        middlePositionInfoCellStyle.setBorderRight(BorderStyle.THIN);
+        middlePositionInfoCellStyle.setBorderLeft(BorderStyle.MEDIUM);
+
+        CellStyle middleRemarkCellStyle = workbook.createCellStyle();
+        middleRemarkCellStyle.setBorderTop(BorderStyle.THIN);
+        middleRemarkCellStyle.setBorderBottom(BorderStyle.THIN);
+        middleRemarkCellStyle.setBorderRight(BorderStyle.MEDIUM);
+        middleRemarkCellStyle.setBorderLeft(BorderStyle.THIN);
+
+        CellStyle monthAmtSumCellStyle1 = workbook.createCellStyle();
+        monthAmtSumCellStyle1.setBorderTop(BorderStyle.MEDIUM);
+        monthAmtSumCellStyle1.setBorderBottom(BorderStyle.THIN);
+        monthAmtSumCellStyle1.setBorderRight(BorderStyle.MEDIUM);
+        monthAmtSumCellStyle1.setBorderLeft(BorderStyle.MEDIUM);
+
+        CellStyle monthAmtSumCellStyle2 = workbook.createCellStyle();
+        monthAmtSumCellStyle2.setBorderTop(BorderStyle.THIN);
+        monthAmtSumCellStyle2.setBorderBottom(BorderStyle.THIN);
+        monthAmtSumCellStyle2.setBorderRight(BorderStyle.MEDIUM);
+        monthAmtSumCellStyle2.setBorderLeft(BorderStyle.MEDIUM);
+
+        CellStyle monthAmtSumCellStyle3 = workbook.createCellStyle();
+        monthAmtSumCellStyle3.setBorderTop(BorderStyle.THIN);
+        monthAmtSumCellStyle3.setBorderBottom(BorderStyle.MEDIUM);
+        monthAmtSumCellStyle3.setBorderRight(BorderStyle.THIN);
+        monthAmtSumCellStyle3.setBorderLeft(BorderStyle.MEDIUM);
+
         for(String key : keySet){
+            workManagementSheet.addMergedRegion(new CellRangeAddress(1,1, (3 * index) - 2,3 * index));
+
             List<WorkCollectionDtlReqDTO> reqDTOList = (List<WorkCollectionDtlReqDTO>)workCollectionDtl.get(key);
+
+            workManagementRow1.createCell((3 * index) - 2).setCellStyle(blankCellStyle1);
+            workManagementRow1.createCell((3 * index) - 1).setCellStyle(blankCellStyle2);
+            workManagementRow1.createCell(3 * index).setCellStyle(blankCellStyle3);
 
             Cell workManagementCell4 = workManagementRow1_1.createCell((3 * index) - 2);
             workManagementCell4.setCellValue("직책");
@@ -651,6 +813,8 @@ public class ExcelService {
 
             Cell workManagementCell6 = workManagementRow1_1.createCell(3 * index);
             workManagementCell6.setCellValue("비고");
+            workManagementCell6.setCellStyle(workManagementCell6Style);
+
 
             for(int i = 0; i < reqDTOList.size(); i++){
                 WorkCollectionDtlReqDTO DTO = mapper.convertValue(reqDTOList.get(i), WorkCollectionDtlReqDTO.class);
@@ -660,25 +824,52 @@ public class ExcelService {
                 int j = Integer.parseInt(DTO.getWorkDt().substring(8));
 
                 dayRowMap.get(j + "")
-                        .createCell((3 * index) - 2).setCellValue(DTO.getStartTime());
+                        .getCell((3 * index) - 2).setCellValue(DTO.getStartTime());
                 dayRowMap.get(j + "_1")
-                        .createCell((3 * index) - 2).setCellValue(DTO.getEndTime());
+                        .getCell((3 * index) - 2).setCellValue(DTO.getEndTime());
 
                 dayRowMap.get(j + "")
-                        .createCell((3 * index) - 1).setCellValue(DTO.getDinnerYn().equals("Y") ? 9000 : 0);
+                        .getCell((3 * index) - 1).setCellValue(DTO.getDinnerYn().equals("Y") ? 9000 : 0);
                 dayRowMap.get(j + "_1")
-                        .createCell((3 * index) - 1).setCellValue(DTO.getTaxiPay());
+                        .getCell((3 * index) - 1).setCellValue(DTO.getTaxiPay());
 
                 dayRowMap.get(j + "")
-                        .createCell(3 * index).setCellValue("비고1");
+                        .getCell(3 * index).setCellValue("비고1");
                 dayRowMap.get(j + "_1")
-                        .createCell(3 * index).setCellValue("비고2");
+                        .getCell(3 * index).setCellValue("비고2");
+
+
+
+                dayRowMap.get(j + "")
+                        .getCell((3 * index) - 2).setCellStyle(positionInfoCellStyle1);
+                dayRowMap.get(j + "_1")
+                        .getCell((3 * index) - 2).setCellStyle(positionInfoCellStyle2);
+
+                dayRowMap.get(j + "")
+                        .getCell((3 * index) - 1).setCellStyle(paymInfoCellStyle1);
+                dayRowMap.get(j + "_1")
+                        .getCell((3 * index) - 1).setCellStyle(paymInfoCellStyle2);
+
+                dayRowMap.get(j + "")
+                        .getCell(3 * index).setCellStyle(remarkInfoCellStyle1);
+                dayRowMap.get(j + "_1")
+                        .getCell(3 * index).setCellStyle(remarkInfoCellStyle2);
             }
 
             index++;
         }
 
+        workManagementRow1.createCell(3 * keySet.size() + 1).setCellStyle(remarkInfoCellStyle1);
         workManagementRow1_1.createCell(3 * keySet.size() + 1).setCellValue("합계");
+        workManagementRow1_1.getCell(3 * keySet.size() + 1).setCellStyle(remarkInfoCellStyle2);
+
+
+        for(int i = 1; i <= 3 * keySet.size(); i++){
+            workManagementSheet.setColumnWidth(i, 4320);
+        }
+
+        workManagementSheet.setColumnWidth(3 * keySet.size() + 1, 4320);
+
 
         // 일별 야근식대, 택시비 취합
 
@@ -708,7 +899,10 @@ public class ExcelService {
             }
 
             dinnerTotalCell.setCellFormula(totalDinnerAmt);
+            dinnerTotalCell.setCellStyle(remarkInfoCellStyle1);
+
             taxiTotalCell.setCellFormula(totalTaxiAmt);
+            taxiTotalCell.setCellStyle(remarkInfoCellStyle2);
 
             totalDinnerAmt = "SUM(";
             totalTaxiAmt = "SUM(";
@@ -720,8 +914,11 @@ public class ExcelService {
         Row personalMonthAmtSumRow3 = workManagementSheet.createRow(2 + dayRowMap.size() + 3);
 
         personalMonthAmtSumRow1.createCell(0).setCellValue("합계");
+        personalMonthAmtSumRow1.getCell(0).setCellStyle(monthAmtSumCellStyle1);
+        personalMonthAmtSumRow2.createCell(0).setCellStyle(monthAmtSumCellStyle2);
+        personalMonthAmtSumRow3.createCell(0).setCellStyle(monthAmtSumCellStyle3);
 
-
+        // 일별 개인 취합 로직
         for(int i = 1; i <= keySet.size(); i++){
             String oddCell = "SUM(";
             String evenCell = "SUM(";
@@ -752,10 +949,20 @@ public class ExcelService {
             evenCell += ")";
             totalCell += ")";
 
-
+            personalMonthAmtSumRow1.createCell(3 * i - 2).setCellStyle(positionInfoCellStyle1);
             personalMonthAmtSumRow1.createCell(3 * i - 1).setCellFormula(oddCell);
+            personalMonthAmtSumRow1.getCell(3 * i - 1).setCellStyle(totalCommonCellStyle1);
+            personalMonthAmtSumRow1.createCell(3 * i).setCellStyle(remarkInfoCellStyle1);
+
+            personalMonthAmtSumRow2.createCell(3 * i - 2).setCellStyle(middlePositionInfoCellStyle);
             personalMonthAmtSumRow2.createCell(3 * i - 1).setCellFormula(evenCell);
+            personalMonthAmtSumRow2.getCell(3 * i - 1).setCellStyle(totalCommonCellStyle2);
+            personalMonthAmtSumRow2.createCell(3 * i).setCellStyle(middleRemarkCellStyle);
+
+            personalMonthAmtSumRow3.createCell(3 * i - 2).setCellStyle(positionInfoCellStyle2);
             personalMonthAmtSumRow3.createCell(3 * i - 1).setCellFormula(totalCell);
+            personalMonthAmtSumRow3.getCell(3 * i - 1).setCellStyle(totalCommonCellStyle3);
+            personalMonthAmtSumRow3.createCell(3 * i).setCellStyle(remarkInfoCellStyle2);
         }
 
 
@@ -788,10 +995,41 @@ public class ExcelService {
         evenCell += ")";
         totalCell += ")";
 
+
+        CellStyle personalMonthAmtSumCellStyle1 = workbook.createCellStyle();
+        personalMonthAmtSumCellStyle1.setAlignment(HorizontalAlignment.CENTER);
+        personalMonthAmtSumCellStyle1.setVerticalAlignment(VerticalAlignment.CENTER);
+        personalMonthAmtSumCellStyle1.setBorderTop(BorderStyle.MEDIUM);
+        personalMonthAmtSumCellStyle1.setBorderBottom(BorderStyle.THIN);
+        personalMonthAmtSumCellStyle1.setBorderRight(BorderStyle.MEDIUM);
+        personalMonthAmtSumCellStyle1.setBorderLeft(BorderStyle.THIN);
+
+        CellStyle personalMonthAmtSumCellStyle2 = workbook.createCellStyle();
+        personalMonthAmtSumCellStyle2.setAlignment(HorizontalAlignment.CENTER);
+        personalMonthAmtSumCellStyle2.setVerticalAlignment(VerticalAlignment.CENTER);
+        personalMonthAmtSumCellStyle2.setBorderTop(BorderStyle.THIN);
+        personalMonthAmtSumCellStyle2.setBorderBottom(BorderStyle.THIN);
+        personalMonthAmtSumCellStyle2.setBorderRight(BorderStyle.MEDIUM);
+        personalMonthAmtSumCellStyle2.setBorderLeft(BorderStyle.THIN);
+
+        CellStyle personalMonthAmtSumCellStyle3 = workbook.createCellStyle();
+        personalMonthAmtSumCellStyle3.setAlignment(HorizontalAlignment.CENTER);
+        personalMonthAmtSumCellStyle3.setVerticalAlignment(VerticalAlignment.CENTER);
+        personalMonthAmtSumCellStyle3.setBorderTop(BorderStyle.THIN);
+        personalMonthAmtSumCellStyle3.setBorderBottom(BorderStyle.MEDIUM);
+        personalMonthAmtSumCellStyle3.setBorderRight(BorderStyle.MEDIUM);
+        personalMonthAmtSumCellStyle3.setBorderLeft(BorderStyle.THIN);
+
+
         //3 * (keySet.size() + 1) - 2
         personalMonthAmtSumRow1.createCell(3 * (keySet.size() + 1) - 2).setCellFormula(oddCell);
+        personalMonthAmtSumRow1.getCell(3 * (keySet.size() + 1) - 2).setCellStyle(personalMonthAmtSumCellStyle1);
+
         personalMonthAmtSumRow2.createCell(3 * (keySet.size() + 1) - 2).setCellFormula(evenCell);
+        personalMonthAmtSumRow2.getCell(3 * (keySet.size() + 1) - 2).setCellStyle(personalMonthAmtSumCellStyle2);
+
         personalMonthAmtSumRow3.createCell(3 * (keySet.size() + 1) - 2).setCellFormula(totalCell);
+        personalMonthAmtSumRow3.getCell(3 * (keySet.size() + 1) - 2).setCellStyle(personalMonthAmtSumCellStyle3);
 
 
         // 총 야근식대, 택시비 취합
@@ -800,32 +1038,6 @@ public class ExcelService {
 
         workManagementSheet.setColumnWidth(0, 1350);
         //workManagementSheet.setDisplayGridlines(false);
-
-//        //헤더//
-//        Row workManagementHeader1 = outcomeHistorySheet.createRow(1);
-//
-//        // 헤더 제목 셀 생성
-//        Cell headerTitleCell = workManagementHeader1.createCell(0);
-//        outcomeHistorySheet.addMergedRegion(new CellRangeAddress(0,1,0,0));
-//        headerTitleCell.setCellValue("지출 내역서");
-//
-//        // 헤더 제목 셀 스타일
-//        CellStyle headerTitleStyle = workbook.createCellStyle();
-//        headerTitleStyle.setAlignment(HorizontalAlignment.CENTER);
-//        headerTitleStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-//
-//        // 헤더 제목 셀 폰트
-//        Font headerTitleFont = workbook.createFont();
-//        //headerTitleFont.setFontHeight((short) 14);
-//        headerTitleFont.setBold(true);
-//        headerTitleFont.setFontName("돋음");
-//        //headerTitleFont.setUnderline(Font.U_SINGLE);
-//        headerTitleStyle.setFont(headerTitleFont);
-//
-//        // 헤더 제목 셀 스타일, 폰트 적용
-//        headerTitleCell.setCellStyle(headerTitleStyle);
-
-
 
 
         // 택시비 영수증 excel sheet 생성
@@ -842,11 +1054,21 @@ public class ExcelService {
 
         System.out.println("엑셀 생성 경로 >>>> " + fileLocation);
         FileOutputStream outputStream = new FileOutputStream(fileLocation);
+
+        response.setHeader("Content-Type", "application/octet-stream");
+        response.setHeader("Content-Disposition", String.format("attachment; filename=\"야근식대" + yyyyMMdd + ".xlsx\""));
+        OutputStream os = response.getOutputStream();
+        os.flush();
+
         workbook.write(outputStream);
+        workbook.write(os);
+
+        os.flush();
         workbook.close();
 
+        os.close();
 
-        return "성공";
+        return result;
     }
 
 

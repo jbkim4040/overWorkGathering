@@ -25,22 +25,9 @@
             <a id="userInfoDtl" style = 'margin-right:15px;' href="" value=""></a>
             <input class="btn btn-primary" type="button" id="btn_logout" value="로그아웃" onclick="location.href('/user/logOut')">
         </div>
-        <div id="test">
-            <form method="post" action="/work/fileSendingTest" enctype="multipart/form-data">
-                <input type="file" name="imageFile" id="imageFile">
-                <input type="submit">
-            </form>
-        </div>
     </header>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        <%
-         session = request.getSession();
-         String userName = (String)session.getAttribute("userName");
-         String currentEnvironment = (String)session.getAttribute("currentEnvironment");
-        %>
-        const element = document.getElementById('test');
-          element.innerHTML = '<button class="btn btn-primary"><%=currentEnvironment%></button>';
       });
 
 
@@ -52,6 +39,20 @@
             dataType : "json",
             success: function(result) {
                 location.href="/login";
+            },
+            error: function() {
+            }
+        })
+    }
+
+    fileDownlaod = function(){
+        debugger;
+        $.ajax({
+            url:"/work/taxiReceiptImgFile",
+            type:"GET",
+            dataType : "json",
+            success: function(result) {
+
             },
             error: function() {
             }

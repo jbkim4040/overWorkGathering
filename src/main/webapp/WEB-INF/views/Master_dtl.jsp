@@ -44,9 +44,9 @@ let workCollectionDtl;
 
 window.onload = function(){
     <%
-        session = request.getSession();
-        String userId = (String)session.getAttribute("userId");
-        String userName = (String)session.getAttribute("userName");
+     session = request.getSession();
+     String userName = (String)session.getAttribute("userName");
+     String userId = (String)session.getAttribute("userId");
     %>
 
     var userId = "<%=userId%>";

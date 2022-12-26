@@ -22,12 +22,18 @@ var params = window.location.search.substr(1);
 params = params.split("=")[1];
 document.addEventListener("DOMContentLoaded", function(){
 	document.getElementById("workDt").innerHTML = params;
+
+    <%
+     session = request.getSession();
+     String userName = (String)session.getAttribute("userName");
+     String userId = (String)session.getAttribute("userId");
+    %>
 });
 
 $.ajax({
 	url:"/work/retrieveWorkOne",
 	type:"get",
-	data:{userID : "jhyuk97", workDt : params},
+	data:{userID : "<%=userId%>", workDt : params},
 	dataType:"json",
 	contentType:"application/json",
 	success: function(result){
@@ -65,8 +71,6 @@ var fSave = function(url){
     if(imageInput.files[0] !== undefined){
         image = imageInput.files[0].name
     }
-    var formData = new FormData();
-    formData.append("fileObj",imageInput.files[0]);
 
     let startHour = $('#startHour').val();
     let startMin  = $('#startMin').val();
@@ -86,19 +90,31 @@ var fSave = function(url){
             endMin = "0" + endMin;
     }
 
+    var formData = new FormData();
+    formData.append("userID","<%=userId%>");
+    formData.append("workDt",params);
+    formData.append("dinnerYn",$('#dinnerYn').is(':checked'));
+    formData.append("taxiYn",$('#taxiYn').is(':checked'));
+    formData.append("Img",image);
+    formData.append("taxiPay",$('#taxiPay').val());
+    formData.append("startTime",startHour+":"+startMin);
+    formData.append("endTime",endHour+":"+endMin);
+    formData.append("remarks",$('#remarks').val());
+    formData.append("file",imageInput.files[0]);
+
+
 	$.ajax({
-		url:url,
-		type:"POST",
-		data:JSON.stringify({userID : "jhyuk97", workDt : params, dinnerYn:$('#dinnerYn').is(':checked')
-			 , taxiYn:$('#taxiYn').is(':checked'), Img:image, taxiPay:$('#taxiPay').val()
-			 , startTime:startHour+":"+startMin, endTime:endHour+":"+endMin, remarks:$('#remarks').val()}),
-		contentType:"application/json",
+		url: url,
+		enctype:'multipart/form-data',
+		processData: false,
+        contentType: false,
+		type: "POST",
+		data: formData,
 		success: function(result){
-		debugger;
+		    debugger;
 			alert("처리성공");
 			parent.document.querySelector(".modal").classList.add("hidden");
             parent.location.reload();
-
 		}
 	});
 

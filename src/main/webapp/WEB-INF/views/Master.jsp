@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="./static/css/pages/page-auth.css" />
 </head>
 <body>
-<%@ include file="/WEB-INF/fix/footer.jsp"%>
+<%@ include file="/WEB-INF/fix/header.jsp"%>
 <div class="card">
   <div class="card-body" style="width:800px; margin:0 auto;">
     <div class="table-responsive text-nowrap">
@@ -50,13 +50,12 @@
 <script>
 window.onload = function(){
     <%
-        session = request.getSession();
-        String userId = (String)session.getAttribute("userId");
-        String userName = (String)session.getAttribute("userName");
+     session = request.getSession();
+     String userName = (String)session.getAttribute("userName");
+     String userId = (String)session.getAttribute("userId");
     %>
 
     var userId = "<%=userId%>";
-
 	var part = "본구축프로젝트";
 	var dt = "2022-12";
 

@@ -34,8 +34,6 @@ var id = "";
 var name = "";
 
   document.addEventListener('DOMContentLoaded', function() {
-    alert("<%=userName%>님 안녕하세요.");
-
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',
