@@ -33,12 +33,6 @@
     </header>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        <%
-         session = request.getSession();
-         String userName = (String)session.getAttribute("userName");
-         String userId = (String)session.getAttribute("userId");
-         String userAuth = "1";
-        %>
         debugger;
         setDropdownMenu();
     });
