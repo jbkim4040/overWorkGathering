@@ -62,8 +62,8 @@ $.ajax({
 	    const today = new Date();
 	    const writeDay = new Date(params);
 	    if(!(today.getYear() == writeDay.getYear() && today.getMonth()-1 == writeDay.getMonth())){
-	        $("#btn_delete").attr("disabled",true)
-	        $("#btn_save").attr("disabled",true)
+	        $("#btn_delete").attr("disabled",true);
+	        $("#btn_save").attr("disabled",true);
 	    }
 	}
 });
@@ -112,7 +112,8 @@ var fSave = function(url){
     formData.append("remarks",$('#remarks').val());
     formData.append("file",imageInput.files[0]);
 
-
+    $("#btn_delete").attr("disabled",true);
+    $("#btn_save").attr("disabled",true);
 	$.ajax({
 		url: url,
 		enctype:'multipart/form-data',
@@ -128,7 +129,9 @@ var fSave = function(url){
 
 		},
 		error:function(result){
-		    alert("asdfasdf");
+		    alert("등록 실패하였습니다.");
+		    $("#btn_delete").attr("disabled",false);
+            $("#btn_save").attr("disabled",false);
 		}
 	});
 
