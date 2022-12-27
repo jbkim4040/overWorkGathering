@@ -66,11 +66,15 @@ var fSave = function(url){
 	if(url.indexOf("Delete") == -1 && !checkVaild()){
 		return;
 	}
+	debugger;
+
     const imageInput = $("#taxiFile")[0];
     let image = "";
     if(imageInput.files[0] !== undefined){
         image = imageInput.files[0].name
     }
+    var formData = new FormData();
+    formData.append("fileObj",imageInput.files[0]);
 
     let startHour = $('#startHour').val();
     let startMin  = $('#startMin').val();
@@ -115,9 +119,20 @@ var fSave = function(url){
 			alert("처리성공");
 			parent.document.querySelector(".modal").classList.add("hidden");
             parent.location.reload();
+
+		},
+		error:function(result){
+		    alert("asdfasdf");
 		}
 	});
 
+};
+
+var setTime = function(hour, min){
+    if(hour.length == 1) hour = "0" + hour;
+    if(min.length == 1) min = "0" + min;
+
+    return (hour + ":" + min);
 };
 
 var checkVaild = function(){
@@ -135,7 +150,7 @@ var checkVaild = function(){
 	    alert('21시 이전에 퇴근한 경우\n야근식대 신청이 불가합니다.');
 	    return false;
 	}
-debugger;
+
 	if($('#taxiYn').is(':checked') && $('#endHour').val() < 23 && $('#endHour').val() > 9){
 	    alert('23시 이전에 퇴근한 경우\n택시비 신청이 불가합니다.');
 	    return false;
@@ -160,7 +175,7 @@ function minChk(obj){
         obj.value = 00;
     if(obj.value.length > 2)
         obj.value = 00;
-}
+};
 
 function hourChk(obj){
 debugger;
@@ -170,7 +185,7 @@ debugger;
         obj.value = 00;
     if(obj.value.length > 2)
         obj.value = 00;
-}
+};
 
 </script>
 <div class="container-xxl">
@@ -188,12 +203,12 @@ debugger;
             <div class="mb-3">
                 <label>출근시간</label>
                 <input class="form-control" style="width:100px; display:inline;" type="number" id="startHour" min="00" max="23" oninput="hourChk(this)" placeholder="시"></input> :
-                <input class="form-control" style="width:100px; display:inline;" type="number" id="startMin" min="00" max="59" oninput="minChk(this)" placeholder="분"></input>
+                <input class="form-control" style="width:100px; display:inline;" type="number" id="startMin" min="00" max="59" value="00" oninput="minChk(this)" placeholder="분"></input>
             </div>
             <div class="mb-3">
                 <label>퇴근시간</label>
                 <input class="form-control" style="width:100px; display:inline;" type="number" id="endHour" min="00" max="23" oninput="hourChk(this)" placeholder="시"></input> :
-                <input class="form-control" style="width:100px; display:inline;" type="number" id="endMin" min="00" max="59" oninput="minChk(this)" placeholder="분"></input>
+                <input class="form-control" style="width:100px; display:inline;" type="number" id="endMin" min="00" max="59" value="00" oninput="minChk(this)" placeholder="분"></input>
             </div>
 			<div class="mb-3">
 			<label class="form-label">택시비</label>
