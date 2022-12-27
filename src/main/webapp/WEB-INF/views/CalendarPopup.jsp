@@ -37,7 +37,6 @@ $.ajax({
 	dataType:"json",
 	contentType:"application/json",
 	success: function(result){
-	debugger;
 	    if(result.dinnerYn == "Y" || result.taxiYn == "Y"){
             $("#btn_delete").show();
 	    }else{
@@ -51,14 +50,21 @@ $.ajax({
 			$("input:checkbox[id='taxiYn']").prop("checked", true);
 			$("#taxiPay").removeAttr("disabled");
 		}
-
 		$("#taxiPay").val(result.taxiPay);
 		$("#startHour").val(result.startTime.substr(0,2));
 		$("#startMin").val(result.startTime.substr(3,2));
 		$("#endHour").val(result.endTime.substr(0,2));
 		$("#endMin").val(result.endTime.substr(3,2));
 		$("#remarks").val(result.remarks);
-
+	},
+	complete: function(){
+	    debugger;
+	    const today = new Date();
+	    const writeDay = new Date(params);
+	    if(!(today.getYear() == writeDay.getYear() && today.getMonth()-1 == writeDay.getMonth())){
+	        $("#btn_delete").attr("disabled",true)
+	        $("#btn_save").attr("disabled",true)
+	    }
 	}
 });
 
@@ -222,7 +228,7 @@ debugger;
 			</div>
 
 			<div class="mb-3 text-center">
-              <button class="btn btn-primary d-inline w-25" href="Calendar" onclick="fSave('/work/SaveWork')">확인</button>
+              <button class="btn btn-primary d-inline w-25" id="btn_save" href="Calendar" onclick="fSave('/work/SaveWork')">확인</button>
               <button class="btn btn-primary w-25" href="Calendar" style="display:none;" id="btn_delete" onclick="fSave('/work/DeleteWork')">삭제</button>
             </div>
 		</div>
