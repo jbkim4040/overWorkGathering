@@ -34,6 +34,12 @@ var id = "";
 var name = "";
 
   document.addEventListener('DOMContentLoaded', function() {
+    <%
+     session = request.getSession();
+     String userName = (String)session.getAttribute("userName");
+     String userId = (String)session.getAttribute("userId");
+    %>
+
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',
