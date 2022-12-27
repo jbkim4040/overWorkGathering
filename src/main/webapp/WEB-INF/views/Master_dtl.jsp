@@ -44,12 +44,6 @@
 let workCollectionDtl;
 
 window.onload = function(){
-    <%
-     session = request.getSession();
-     String userName = (String)session.getAttribute("userName");
-     String userId = (String)session.getAttribute("userId");
-    %>
-
     var userId = "<%=userId%>";
 	var part = "본구축프로젝트";
 	var dt = "2022-12";
