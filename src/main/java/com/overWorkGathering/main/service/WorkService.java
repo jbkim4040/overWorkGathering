@@ -313,7 +313,7 @@ public class WorkService {
 			String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
 			String currentPath = System.getProperty("user.dir");
 
-			String fullPath = currentPath + "/ " + newImgFileName;
+			String fullPath = currentPath + "/" + newImgFileName;
 			File uploadfile = new File(fullPath); // 파일 객체 생성
 
 			try{
