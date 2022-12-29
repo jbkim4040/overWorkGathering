@@ -207,24 +207,9 @@ public class WorkService {
 		WorkDTO workDTO = retrieveWorkOne(param.get("userID").toString(), param.get("workDt").toString());
 
 		workRepository.deleteByUserIdAndWorkDt(param.get("userID").toString(), param.get("workDt").toString());
-		String currentDt = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-		if(!workDTO.getImageId().isEmpty()){
-			FTPClient ftpClient = new FTPClient();
-			try {
-				if(Integer.parseInt(currentDt.substring(6)) < 15){
-					currentDt = LocalDate.now().minusMonths(1).format(DateTimeFormatter.ofPattern("yyyyMM"));
-				}else {
-					currentDt = currentDt.substring(0, 6);
-				}
-				ftpClient.setControlEncoding("UTF-8");
-				ftpClient.connect(SFTP_HOST, SFTP_PORT);
-				ftpClient.login(SFTP_USER_ID, SFTP_USER_PWD);
-				ftpClient.changeWorkingDirectory("/var/"+currentEnvironment+"/overworkgathering/images/"+currentDt+"/");
-				ftpClient.deleteFile("");
-				ftpClient.disconnect();
-			}catch (IOException e){
 
-			}
+		if(!workDTO.getImageId().isEmpty()){
+
 		}
 	}
 

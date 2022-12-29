@@ -152,6 +152,35 @@ public class FTPUtil {
     }
 
     /**
+     * 파일 업로드
+     *
+     * @param dir 삭제할 파일경로
+     * @param fileName 삭제할 파일
+     * @return 삭제 여부
+     */
+    public boolean deleteFile(String dir, String fileName) {
+        boolean isUpload = false;
+        FileInputStream in = null;
+        try {
+            channelSftp.cd(dir);
+            channelSftp.rm(fileName);
+            // 삭제됐는지 확인
+            if (this.exists(dir +"/"+fileName)) {
+                isUpload = true;
+            }
+        } catch (SftpException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return isUpload;
+    }
+
+    /**
      * 연결 종료
      */
     public void disconnect() {
