@@ -43,4 +43,7 @@ public class UserInfoEntity {
 
 	@Column(name = "SALT")
 	private String salt;
+
+	@Column(name = "ACNT")
+	private String acnt;
 }
