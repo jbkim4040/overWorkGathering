@@ -16,7 +16,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Setter
 @NoArgsConstructor
 @IdClass(DoublePK.class)
-@Table(name = "TB_WORK_HIS")
+@Table(name = "tb_work_his")
 public class WorkHisEntity {
 	
 	@Id
