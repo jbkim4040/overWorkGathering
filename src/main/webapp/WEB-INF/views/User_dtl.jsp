@@ -21,13 +21,13 @@
 </head>
 <body>
 <%@ include file="/WEB-INF/fix/header.jsp"%>
-<div class="card">
-  <div class="card-body" id="card_body" sytle = 'width:800px;'>
+<div class="card" style="table-layout: fixed; width:800px; margin-left: auto; margin-right: auto;">
+  <div class="card-body" id="card_body" >
     <div class="table-responsive text-nowrap">
       <table class="table table-bordered">
         <tbody id="tbody">
           <tr>
-            <th style="width:200px;"><i class="fab fa-angular fa-lg text-danger me-3"></i></th>
+            <th style="table-layout: fixed"; width="200px"><i class="fab fa-angular fa-lg text-danger me-3"></i></th>
           </tr>
           <tr>
             <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>발의일자</strong></td>
@@ -163,7 +163,7 @@ setpMealsAndTaxPay = function ( j, newCell, result, reqPersonnel, day) {
         }
     } else if ( j == 2 ) {
         if ( result.filter(item => reqPersonnel == item.userId).filter(item => item.workDt.substring(8) == day)[0].remarks != null) {
-            newCell.innerHTML = "<strong>" + result.filter(item => reqPersonnel == item.userId).filter(item => item.workDt.substring(8) == day)[0].remarks + "</strong>";
+            newCell.innerHTML = result.filter(item => reqPersonnel == item.userId).filter(item => item.workDt.substring(8) == day)[0].remarks;
         }
     }
 };

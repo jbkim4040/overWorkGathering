@@ -102,6 +102,7 @@
     }
 
     dropdown = function(){
+    debugger;
         const btn_dropdown = document.getElementById("btn_dropdown");
         const ul = document.getElementById("menuList");
         if(!btn_dropdown.classList.contains("show")){

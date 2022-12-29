@@ -32,6 +32,7 @@
 <script>
 var id = "";
 var name = "";
+var calendarDt = "";
 
   document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
@@ -55,6 +56,20 @@ var name = "";
     });
     calendar.render();
 
+
+    $(".fc-prev-button").click(function(){
+        setpCalendarDt();
+    });
+
+    $(".fc-next-button").click(function(){
+        setpCalendarDt();
+    });
+
+    setpCalendarDt = function(){
+        intervalStart = $('#calendar').fullCalendar('getView').intervalStart.format("YYYY-MM-DD");
+        calendarDt = intervalStart;
+    };
+
     $.ajax({
         url:"/work/retrievework",
         type:"get",
@@ -71,8 +86,6 @@ var name = "";
                 	start : result[i].workDt
                 });
             };
-
-
         },
         error: function() {
             alert("에러 발생");
