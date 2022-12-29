@@ -11,7 +11,7 @@ public class WorkDTO {
 	private String workDt;
 	private String startTime;
 	private String endTime;
-	private String taxiReceiptImg;
+	private String imageId;
 	private int taxiPay;
 	private String dinnerYn;
 	private String taxiYn;
@@ -23,7 +23,7 @@ public class WorkDTO {
 			String workDt, 
 			String startTime, 
 			String endTime,
-			String taxiReceiptImg,
+			String imageId,
 			int taxiPay,
 			String dinnerYn,
 			String taxiYn,
@@ -32,7 +32,7 @@ public class WorkDTO {
 		this.workDt = workDt;
 		this.startTime = startTime;
 		this.endTime = endTime;
-		this.taxiReceiptImg = taxiReceiptImg;
+		this.imageId = imageId;
 		this.taxiPay = taxiPay;
 		this.dinnerYn = dinnerYn;
 		this.taxiYn = taxiYn;

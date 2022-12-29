@@ -33,8 +33,8 @@ public class WorkHisEntity {
 	@Column(name = "END_TIME")
 	private String endTime;
 	
-	@Column(name = "TAXI_RECEIPT_IMG")
-	private String taxiReceiptImg;
+	@Column(name = "IMAGE_ID")
+	private String imageId;
 
 	@Column(name = "TAXI_PAY")
 	@ColumnDefault("0")
