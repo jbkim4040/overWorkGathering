@@ -284,9 +284,11 @@ public class WorkService {
 		return workMapper.toWorkDTOList(workHisEntityList);
 	}
 
-	public Map<String, List<WorkCollectionDtlReqDTO>> retrieveExcelDtl(String part, String dt){
+	public Map<String, List<WorkCollectionDtlReqDTO>> retrieveExcelDtl(String userId, String dt){
 
-		List<WorkCollectionDtlReqDTO> workCollectionDtlReqDTOList = retrieveWorkCollectionDtl( part, dt );
+		UserInfoEntity userInfoEntity = userRepository.findByUserId(userId);
+
+		List<WorkCollectionDtlReqDTO> workCollectionDtlReqDTOList = retrieveWorkCollectionDtl( userInfoEntity.getPart(), dt );
 
 		return setResultMap(workCollectionDtlReqDTOList);
 	}
@@ -307,9 +309,9 @@ public class WorkService {
 	}
 
 
-	public List<WorkCollectionDtlReqDTO> retrieveWorkCollectionUserDtl(String part, String dt, String userId) {
+	public List<WorkCollectionDtlReqDTO> retrieveWorkCollectionUserDtl(String dt, String userId) {
 
-		Map<String, List<WorkCollectionDtlReqDTO>> retrieveWorkCollectionDtl = retrieveExcelDtl(part, dt);
+		Map<String, List<WorkCollectionDtlReqDTO>> retrieveWorkCollectionDtl = retrieveExcelDtl(userId, dt);
 
 		return retrieveWorkCollectionDtl.get(userId);
 	}

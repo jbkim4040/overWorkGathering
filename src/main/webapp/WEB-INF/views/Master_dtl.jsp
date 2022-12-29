@@ -45,7 +45,6 @@ let workCollectionDtl;
 
 window.onload = function(){
     var userId = "<%=userId%>";
-	var part = "본구축프로젝트";
 	var dt = "2022-12";
 
 
@@ -53,7 +52,7 @@ window.onload = function(){
         url:"/work/retrieveWorkCollectionDtl",
         type:"get",
         data: {
-        	part : part,
+            userId : userId,
         	dt : dt
         		},
         dataType : "json",

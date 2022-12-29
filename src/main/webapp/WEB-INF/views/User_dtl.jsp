@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="./static/css/pages/page-auth.css" />
 </head>
 <body>
-<--<%@ include file="/WEB-INF/fix/footer.jsp"%>-->
+<%@ include file="/WEB-INF/fix/header.jsp"%>
 <div class="card">
   <div class="card-body" id="card_body" sytle = 'width:800px;'>
     <div class="table-responsive text-nowrap">
@@ -37,17 +37,11 @@
     </div>
   </div>
 </div>
-<--<%@ include file="/WEB-INF/fix/footer.jsp"%>-->
+<%@ include file="/WEB-INF/fix/footer.jsp"%>
 <script>
 window.onload = function(){
-
-	<%
-        session = request.getSession();
-        String userId = (String)session.getAttribute("userId");
-        String userName = (String)session.getAttribute("userName");
-    %>
-
-	var part = "본구축프로젝트";
+debugger;
+    var userId = "<%=userId%>";
 	var dt = "2022-12";
 
 
@@ -55,7 +49,6 @@ window.onload = function(){
         url:"/work/retrieveWorkCollectionUserDtl",
         type:"get",
         data: {
-        	part : part,
         	dt : dt,
         	userId : "<%=userId%>"
         		},
