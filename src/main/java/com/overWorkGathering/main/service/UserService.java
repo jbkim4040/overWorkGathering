@@ -128,17 +128,19 @@ public class UserService {
 		try{
 			/** 전송할 메일 내용 세팅 */
 			String to = mail;
-			String from = "jbkim404037@gmail.com";
-			String subject = "이메일 확인 코드 전송 테스트";
+			String from = "hirofac@naver.com";
+			String subject = "야근식대 홈페이지 이메일 인증 코드";
 
 			StringBuilder body = new StringBuilder();
 			body.append("<html> <body><h1>"+ code + "</h1>");
-			body.append("<div>테스트 입니다. </div> </body></html>");
+			body.append("<div>안녕하세요. \n" +
+					"야근식대 홈페이지 회원가입 인증입니다.\n" +
+					"해당 코드를 입력해주세요. </div> </body></html>");
 
 			MimeMessage message = javaMailSender.createMimeMessage();
 			MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, true, "UTF-8");
 
-			mimeMessageHelper.setFrom(from,"김정빈");
+			mimeMessageHelper.setFrom(from,"애버커스");
 			mimeMessageHelper.setTo(to);
 			mimeMessageHelper.setSubject(subject);
 			mimeMessageHelper.setText(body.toString(), true);
