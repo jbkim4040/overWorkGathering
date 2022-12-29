@@ -5,7 +5,9 @@ import com.overWorkGathering.main.entity.UserInfoEntity;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface UserRepository extends JpaRepository<UserInfoEntity, String> {
 	UserInfoEntity findByUserIdAndPw(String userId, String pw);
 	UserInfoEntity findByUserId(String userId);
