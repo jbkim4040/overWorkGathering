@@ -74,14 +74,14 @@
     }
 
     setDropdownMenu = function(){
-        const adminMenu = [{id:"master_dtlMenu", name:"관리화면"}, {id:"calendarMenu", name:"캘린더로"}]
-        const userMenu = ["calendarMenu","user_dtlMenu"];
+        const adminMenu = [{id:"master_Menu", name:"관리화면", url:"Master"}, {id:"master_dtlMenu", name:"관리자상세", url:"Master_dtl"}, {id:"calendarMenu", name:"캘린더로", url:"calendar"}]
+        const userMenu = [{id:"calendarMenu", name:"캘린더로", url:"calendar"}];
 
         if(<%=userAuth%> == "1"){
             for(var i=0; i<adminMenu.length; i++){
                 const li = document.createElement("li");
                 li.setAttribute("id", adminMenu[i].id);
-                li.innerHTML="<a class='dropdown-item' href='/calendar'>"+ adminMenu[i].name +"</a>";
+                li.innerHTML="<a class='dropdown-item' href='/"+adminMenu[i].url+"'>"+ adminMenu[i].name +"</a>";
 
                 document.getElementById("menuList").appendChild(li);
             }
