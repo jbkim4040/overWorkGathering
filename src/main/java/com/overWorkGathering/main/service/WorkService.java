@@ -11,6 +11,7 @@ import com.overWorkGathering.main.DTO.WorkCollectionDtlReqDTO;
 import com.overWorkGathering.main.entity.UserInfoEntity;
 import com.overWorkGathering.main.entity.WorkHisEntity;
 import com.overWorkGathering.main.utils.FTPUtil;
+import org.apache.commons.net.ftp.FTPClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -66,7 +67,7 @@ public class WorkService {
 	 * 해당날짜 식대신청여부확인을 위한 조회
 	 */
 	public WorkDTO retrieveWorkOne(String userId, String workDt) {
-		WorkHisEntity workHisEntity = workRepository.findAllByUserIdAndWorkDt("jhyuk97", workDt);
+		WorkHisEntity workHisEntity = workRepository.findAllByUserIdAndWorkDt(userId, workDt);
 		if(workHisEntity != null) {
 			return workMapper.toWorkDTO(workHisEntity);
 		}
@@ -187,7 +188,7 @@ public class WorkService {
 				.workDt(param.get("workDt").toString())
 				.startTime(param.get("startTime").toString())
 				.endTime(param.get("endTime").toString())
-				.taxiReceiptImg(param.get("Img").toString())
+				.imageId(param.get("Img").toString())
 				.taxiPay(Integer.parseInt(param.get("taxiPay").toString()))
 				.dinnerYn(param.get("dinnerYn").toString())
 				.taxiYn(param.get("taxiYn").toString())
@@ -203,7 +204,28 @@ public class WorkService {
 	 * 야근식대 삭제
 	 */
 	public void deleteWork(HashMap<String, Object> param, MultipartFile file, HttpServletRequest request) {
+		WorkDTO workDTO = retrieveWorkOne(param.get("userID").toString(), param.get("workDt").toString());
+
 		workRepository.deleteByUserIdAndWorkDt(param.get("userID").toString(), param.get("workDt").toString());
+		String currentDt = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+		if(!workDTO.getImageId().isEmpty()){
+			FTPClient ftpClient = new FTPClient();
+			try {
+				if(Integer.parseInt(currentDt.substring(6)) < 15){
+					currentDt = LocalDate.now().minusMonths(1).format(DateTimeFormatter.ofPattern("yyyyMM"));
+				}else {
+					currentDt = currentDt.substring(0, 6);
+				}
+				ftpClient.setControlEncoding("UTF-8");
+				ftpClient.connect(SFTP_HOST, SFTP_PORT);
+				ftpClient.login(SFTP_USER_ID, SFTP_USER_PWD);
+				ftpClient.changeWorkingDirectory("/var/"+currentEnvironment+"/overworkgathering/images/"+currentDt+"/");
+				ftpClient.deleteFile("");
+				ftpClient.disconnect();
+			}catch (IOException e){
+
+			}
+		}
 	}
 
 	/*
