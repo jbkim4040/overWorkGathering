@@ -7,18 +7,19 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.overWorkGathering.main.DTO.WorkCollectionDtlReqDTO;
+import com.overWorkGathering.main.DTO.*;
+import com.overWorkGathering.main.entity.ImageInfoEntity;
 import com.overWorkGathering.main.entity.UserInfoEntity;
 import com.overWorkGathering.main.entity.WorkHisEntity;
+import com.overWorkGathering.main.mapper.ImageInfoMapper;
+import com.overWorkGathering.main.repository.ImageInfoRepository;
 import com.overWorkGathering.main.utils.FTPUtil;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ntp.TimeStamp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.overWorkGathering.main.DTO.UserDTO;
-import com.overWorkGathering.main.DTO.WorkCollectionReqDTO;
-import com.overWorkGathering.main.DTO.WorkDTO;
 import com.overWorkGathering.main.mapper.UserMapper;
 import com.overWorkGathering.main.mapper.WorkMapper;
 import com.overWorkGathering.main.repository.UserRepository;
@@ -42,9 +43,13 @@ public class WorkService {
 	@Autowired
 	UserRepository userRepository;
 	@Autowired
+	ImageInfoRepository imageInfoRepository;
+	@Autowired
 	WorkMapper workMapper;
 	@Autowired
 	UserMapper userMapper;
+	@Autowired
+	ImageInfoMapper imageInfoMapper;
 
 	public List<WorkDTO> retrieveWork(String userId) {
 
@@ -167,7 +172,8 @@ public class WorkService {
 	 * 야근식대 저장 및 업데이트
 	 */
 	public void saveWork(HashMap<String, Object> param, MultipartFile file, HttpServletRequest request) {
-
+		String ext = "";
+		String uploadFileNm = UUID.randomUUID().toString().replace("-", "");
 		if("true".equals(param.get("dinnerYn").toString())) {
 			param.replace("dinnerYn", "Y");
 		}else {
@@ -183,12 +189,25 @@ public class WorkService {
 		if("".equals(param.get("taxiPay").toString())){
 			param.replace("taxiPay", "0");
 		}
+		if(!file.isEmpty()){
+			ext = file.getOriginalFilename();
+			ext = ext.substring(ext.indexOf("."));
+			ImageInfoDTO imageInfoDTO = ImageInfoDTO.builder().imageId(uploadFileNm)
+					.orgImageName(file.getOriginalFilename())
+					.orgImageExt(ext)
+					.workDt(param.get("workDt").toString())
+					.userId(param.get("userID").toString())
+					.part("가입정보팀").build();
+
+			ImageInfoEntity imageInfoEntity = imageInfoMapper.toImageEntity(imageInfoDTO);
+			imageInfoRepository.save(imageInfoEntity);
+		}
 
 		WorkDTO workDTO = WorkDTO.builder().userId(param.get("userID").toString())
 				.workDt(param.get("workDt").toString())
 				.startTime(param.get("startTime").toString())
 				.endTime(param.get("endTime").toString())
-				.imageId(param.get("Img").toString())
+				.imageId(uploadFileNm)
 				.taxiPay(Integer.parseInt(param.get("taxiPay").toString()))
 				.dinnerYn(param.get("dinnerYn").toString())
 				.taxiYn(param.get("taxiYn").toString())
@@ -197,7 +216,7 @@ public class WorkService {
 		WorkHisEntity workHisEntity = workMapper.toWorkEntity(workDTO);
 		workRepository.save(workHisEntity);
 
-		saveTaxiReceiptImgFile(file, request);
+		saveTaxiReceiptImgFile(file, request, uploadFileNm+ext, param.get("workDt").toString().substring(0,7).replace("-", ""));
 	}
 
 	/*
@@ -205,11 +224,21 @@ public class WorkService {
 	 */
 	public void deleteWork(HashMap<String, Object> param, MultipartFile file, HttpServletRequest request) {
 		WorkDTO workDTO = retrieveWorkOne(param.get("userID").toString(), param.get("workDt").toString());
-
+		ImageInfoDTO imageInfoDTO = imageInfoMapper.toImageInfoDTO(imageInfoRepository.findAllByImageId(workDTO.getImageId()));
 		workRepository.deleteByUserIdAndWorkDt(param.get("userID").toString(), param.get("workDt").toString());
-
 		if(!workDTO.getImageId().isEmpty()){
-
+			imageInfoRepository.deleteByImageId(workDTO.getImageId());
+			FTPUtil ftpUtil = null;
+			try{
+				String environment = currentEnvironment.equals("prod") ? "prod" : "dev";
+				ftpUtil = new FTPUtil(SFTP_HOST, SFTP_PORT, SFTP_USER_ID, SFTP_USER_PWD, null);
+				String fileName = imageInfoDTO.getImageId()+imageInfoDTO.getOrgImageExt();
+				ftpUtil.deleteFile("/var/"+environment+"/overworkgathering/images/"+workDTO.getWorkDt().substring(0, 7).replace("-","")+"/", fileName);
+			}catch(Exception e){
+				System.out.println("파일삭제 실패");
+			}finally {
+				ftpUtil.disconnect();
+			}
 		}
 	}
 
@@ -301,7 +330,7 @@ public class WorkService {
 		return retrieveWorkCollectionDtl.get(userId);
 	}
 
-	public void saveTaxiReceiptImgFile(MultipartFile imageFile, HttpServletRequest request){
+	public void saveTaxiReceiptImgFile(MultipartFile imageFile, HttpServletRequest request, String ImgFileName, String workDt){
 		System.out.println("현재 개발환경 :: " + currentEnvironment);
 
 		FTPUtil fileUploader = null;
@@ -310,8 +339,8 @@ public class WorkService {
 		// 환경별 업로드 될 디렉토리 동적지정
 		String environment = currentEnvironment.equals("prod") ? "prod" : "dev";
 
-		final String ext = "." + originalImg.substring(originalImg.lastIndexOf(".") + 1);
-		final String newImgFileName = UUID.randomUUID().toString().replace("-", "") + ext;
+		String ext = "." + originalImg.substring(originalImg.lastIndexOf(".") + 1);
+		String newImgFileName = UUID.randomUUID().toString().replace("-", "") + ext;
 		final String SFTP_TAXI_RECEIPT_IMG_PATH = "/var/" + environment + "/overworkgathering/images/";
 
 
@@ -319,9 +348,10 @@ public class WorkService {
 			System.out.println("imageFile 비어있음");
 		}else{
 			System.out.println("업로드할 이미지명 :: " + newImgFileName);
-			String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
 			String currentPath = System.getProperty("user.dir");
-
+			if(!"".equals(ImgFileName)){
+				newImgFileName = ImgFileName;
+			}
 			String fullPath = currentPath + "/" + newImgFileName;
 			File uploadfile = new File(fullPath); // 파일 객체 생성
 
@@ -331,7 +361,9 @@ public class WorkService {
 				}else {
 					currentDt = currentDt.substring(0, 6);
 				}
-
+				if(!"".equals(workDt)){
+					currentDt = workDt;
+				}
 				imageFile.transferTo(new File(fullPath));
 
 				fileUploader = new FTPUtil(SFTP_HOST, SFTP_PORT, SFTP_USER_ID, SFTP_USER_PWD,null);
@@ -356,7 +388,7 @@ public class WorkService {
 
 	public void saveTaxiReceiptImgFileList(List<MultipartFile> imageFileList, HttpServletRequest request){
 		for(MultipartFile imageFile : imageFileList){
-			saveTaxiReceiptImgFile(imageFile, request);
+			saveTaxiReceiptImgFile(imageFile, request, "", "");
 		}
 	}
 

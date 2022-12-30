@@ -3,6 +3,7 @@ package com.overWorkGathering.main.repository;
 import com.overWorkGathering.main.entity.ImageInfoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -11,5 +12,7 @@ public interface ImageInfoRepository extends JpaRepository<ImageInfoEntity, Stri
 
     List<ImageInfoEntity> findAllByPart(String part);
 
-    List<ImageInfoEntity> findAllByUserId(String UserId);
+    ImageInfoEntity findAllByImageId(String ImageId);
+    @Transactional
+    void deleteByImageId(String ImageId);
 }

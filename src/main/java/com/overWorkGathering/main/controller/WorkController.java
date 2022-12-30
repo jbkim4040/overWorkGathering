@@ -84,7 +84,7 @@ public class WorkController {
 
 	@RequestMapping(value="/taxiReceiptImgFile", method = RequestMethod.POST)
 	public void saveTaxiReceiptImgFile(@RequestParam MultipartFile imageFile, HttpServletRequest request) {
-		workService.saveTaxiReceiptImgFile(imageFile, request);
+		workService.saveTaxiReceiptImgFile(imageFile, request, "", "");
 	}
 
 	@RequestMapping(value="/taxiReceiptImgFileList", method = RequestMethod.POST)
