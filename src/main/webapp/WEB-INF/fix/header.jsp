@@ -21,10 +21,10 @@
 </head>
 <body>
     <header>
-        <div class="dropdown float-end" style="width:12%">
+        <div class="dropdown float-start" style="">
             <a href="#" class="btn btn-primary dropdown-toggle float-end" id="btn_dropdown" style="margin-right:5px;" role="button" aria-expanded="false" onclick="dropdown()">
             menu</a>
-            <ul class="dropdown-menu float-end" style="top:100%; right:0; margin-top:0.125rem;" id="menuList">
+            <ul class="dropdown-menu float-end" style="top:100%; left:0; margin-top:0.125rem;" id="menuList">
             </ul>
         </div>
             <a id="userInfoDtl" style = 'margin-right:15px;' href="" value=""></a>
@@ -36,7 +36,7 @@
          session = request.getSession();
          String userName = (String)session.getAttribute("userName");
          String userId = (String)session.getAttribute("userId");
-         String userAuth = "1";
+         String userAuth = (String)session.getAttribute("auth");
         %>
         debugger;
         setDropdownMenu();
@@ -58,25 +58,11 @@
         })
     }
 
-    fileDownlaod = function(){
-        debugger;
-        $.ajax({
-            url:"/work/taxiReceiptImgFile",
-            type:"GET",
-            dataType : "json",
-            success: function(result) {
-
-            },
-            error: function() {
-            }
-        })
-    }
-
     setDropdownMenu = function(){
         const adminMenu = [{id:"master_Menu", name:"관리화면", url:"Master"}, {id:"master_dtlMenu", name:"관리자상세", url:"Master_dtl"}, {id:"user_dtlMenu", name:"사용자상세", url:"User_dtl"}, {id:"calendarMenu", name:"캘린더로", url:"calendar"}]
         const userMenu = [{id:"calendarMenu", name:"캘린더로", url:"calendar"}, {id:"user_dtlMenu", name:"사용자상세", url:"User_dtl"}];
 
-        if(<%=userAuth%> == "1"){
+        if("<%=userAuth%>" == "M"){
             for(var i=0; i<adminMenu.length; i++){
                 const li = document.createElement("li");
                 li.setAttribute("id", adminMenu[i].id);
@@ -88,7 +74,7 @@
             for(var i=0; i<userMenu.length; i++){
                 const li = document.createElement("li");
                 li.setAttribute("id", userMenu[i].id);
-                li.innerHTML="<a class='dropdown-item' href='/calendar'>"+ userMenu[i].name +"</a>";
+                li.innerHTML="<a class='dropdown-item' href='/"+userMenu[i].url+"'>"+ userMenu[i].name +"</a>";
 
                 document.getElementById("menuList").appendChild(li);
             }
