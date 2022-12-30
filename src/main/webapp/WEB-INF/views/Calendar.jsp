@@ -32,7 +32,6 @@
 <script>
 var id = "";
 var name = "";
-var calendarDt = "";
 
   document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
@@ -66,8 +65,7 @@ var calendarDt = "";
     });
 
     setpCalendarDt = function(){
-        intervalStart = $('#calendar').fullCalendar('getView').intervalStart.format("YYYY-MM-DD");
-        calendarDt = intervalStart;
+        calendarDt = calendar.getDate().getFullYear() + "-" + String(Number(calendar.getDate().getMonth())+1) ;
     };
 
     $.ajax({
@@ -86,6 +84,7 @@ var calendarDt = "";
                 	start : result[i].workDt
                 });
             };
+            setpCalendarDt();
         },
         error: function() {
             alert("에러 발생");

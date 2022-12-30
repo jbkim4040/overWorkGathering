@@ -31,6 +31,7 @@
 
     </header>
 <script>
+var calendarDt;
     document.addEventListener('DOMContentLoaded', function() {
         <%
          session = request.getSession();
@@ -66,7 +67,7 @@
             for(var i=0; i<adminMenu.length; i++){
                 const li = document.createElement("li");
                 li.setAttribute("id", adminMenu[i].id);
-                li.innerHTML="<a class='dropdown-item' href='/"+adminMenu[i].url+"'>"+ adminMenu[i].name +"</a>";
+                li.innerHTML="<a class='dropdown-item' href='/"+adminMenu[i].url +"?calendarDt="+calendarDt+"'>"+ adminMenu[i].name +"</a>";
 
                 document.getElementById("menuList").appendChild(li);
             }
