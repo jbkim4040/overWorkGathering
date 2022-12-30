@@ -61,7 +61,9 @@ $.ajax({
 	    debugger;
 	    const today = new Date();
 	    const writeDay = new Date(params);
-	    if(!(today.getYear() == writeDay.getYear() && today.getMonth()-1 == writeDay.getMonth())){
+	    if(!(today.getYear() == writeDay.getYear() &&
+	    (12-today.getMonth()+1 == 12-writeDay.getMonth() || 12-today.getMonth() == 12-writeDay.getMonth())
+	    )){
 	        $("#btn_delete").attr("disabled",true);
 	        $("#btn_save").attr("disabled",true);
 	    }

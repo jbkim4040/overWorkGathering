@@ -21,10 +21,10 @@
 </head>
 <body>
     <header>
-        <div class="dropdown float-end" style="width:12%">
+        <div class="dropdown float-start" style="">
             <a href="#" class="btn btn-primary dropdown-toggle float-end" id="btn_dropdown" style="margin-right:5px;" role="button" aria-expanded="false" onclick="dropdown()">
             menu</a>
-            <ul class="dropdown-menu float-end" style="top:100%; right:0; margin-top:0.125rem;" id="menuList">
+            <ul class="dropdown-menu float-end" style="top:100%; left:0; margin-top:0.125rem;" id="menuList">
             </ul>
         </div>
             <a id="userInfoDtl" style = 'margin-right:15px;' href="" value=""></a>
@@ -58,48 +58,27 @@
         })
     }
 
-    fileDownlaod = function(){
-        debugger;
-        $.ajax({
-            url:"/work/taxiReceiptImgFile",
-            type:"GET",
-            dataType : "json",
-            success: function(result) {
-
-            },
-            error: function() {
-            }
-        })
-    }
-
     setDropdownMenu = function(){
-        <%
-            if(userAuth.equals("M")){
-                %>
-                    const adminMenu = [{id:"master_Menu", name:"관리화면", url:"Master"}, {id:"master_dtlMenu", name:"관리자상세", url:"Master_dtl"}, {id:"user_dtlMenu", name:"사용자상세", url:"User_dtl"}, {id:"calendarMenu", name:"캘린더로", url:"calendar"}];
+        const adminMenu = [{id:"master_Menu", name:"관리화면", url:"Master"}, {id:"master_dtlMenu", name:"관리자상세", url:"Master_dtl"}, {id:"user_dtlMenu", name:"사용자상세", url:"User_dtl"}, {id:"calendarMenu", name:"캘린더로", url:"calendar"}]
+        const userMenu = [{id:"calendarMenu", name:"캘린더로", url:"calendar"}, {id:"user_dtlMenu", name:"사용자상세", url:"User_dtl"}];
 
-                    for(var i=0; i<adminMenu.length; i++){
-                        const li = document.createElement("li");
-                        li.setAttribute("id", adminMenu[i].id);
-                        li.innerHTML="<a class='dropdown-item' href='/"+adminMenu[i].url+"'>"+ adminMenu[i].name +"</a>";
+        if("<%=userAuth%>" == "M"){
+            for(var i=0; i<adminMenu.length; i++){
+                const li = document.createElement("li");
+                li.setAttribute("id", adminMenu[i].id);
+                li.innerHTML="<a class='dropdown-item' href='/"+adminMenu[i].url+"'>"+ adminMenu[i].name +"</a>";
 
-                        document.getElementById("menuList").appendChild(li);
-                    }
-                <%
-            }else{
-                %>
-                    const userMenu = [{id:"calendarMenu", name:"캘린더로", url:"calendar"}, {id:"user_dtlMenu", name:"사용자상세", url:"User_dtl"}];
-
-                    for(var i=0; i<userMenu.length; i++){
-                        const li = document.createElement("li");
-                        li.setAttribute("id", userMenu[i].id);
-                        li.innerHTML="<a class='dropdown-item' href='/calendar'>"+ userMenu[i].name +"</a>";
-
-                        document.getElementById("menuList").appendChild(li);
-                    }
-                <%
+                document.getElementById("menuList").appendChild(li);
             }
-        %>
+        }else{
+            for(var i=0; i<userMenu.length; i++){
+                const li = document.createElement("li");
+                li.setAttribute("id", userMenu[i].id);
+                li.innerHTML="<a class='dropdown-item' href='/"+userMenu[i].url+"'>"+ userMenu[i].name +"</a>";
+
+                document.getElementById("menuList").appendChild(li);
+            }
+        }
 
         const logOut = document.createElement("li");
         logOut.setAttribute("id", "logout");

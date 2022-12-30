@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode
-@Table(name = "tb_user_info")
+@Table(name = "tb_image_info")
 public class ImageInfoEntity {
 
     @Id

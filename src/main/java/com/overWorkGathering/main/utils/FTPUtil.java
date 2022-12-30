@@ -91,7 +91,6 @@ public class FTPUtil {
             in = new FileInputStream(file);
             channelSftp.cd(dir);
             channelSftp.put(in, file.getName());
-
             // 업로드했는지 확인
             if (this.exists(dir +"/"+file.getName())) {
                 isUpload = true;
