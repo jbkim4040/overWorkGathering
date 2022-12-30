@@ -36,7 +36,7 @@
          session = request.getSession();
          String userName = (String)session.getAttribute("userName");
          String userId = (String)session.getAttribute("userId");
-         String userAuth = "1";
+         String userAuth = (String)session.getAttribute("auth");
         %>
         debugger;
         setDropdownMenu();
@@ -73,26 +73,33 @@
     }
 
     setDropdownMenu = function(){
-        const adminMenu = [{id:"master_Menu", name:"관리화면", url:"Master"}, {id:"master_dtlMenu", name:"관리자상세", url:"Master_dtl"}, {id:"user_dtlMenu", name:"사용자상세", url:"User_dtl"}, {id:"calendarMenu", name:"캘린더로", url:"calendar"}]
-        const userMenu = [{id:"calendarMenu", name:"캘린더로", url:"calendar"}, {id:"user_dtlMenu", name:"사용자상세", url:"User_dtl"}];
+        <%
+            if(userAuth.equals("M")){
+                %>
+                    const adminMenu = [{id:"master_Menu", name:"관리화면", url:"Master"}, {id:"master_dtlMenu", name:"관리자상세", url:"Master_dtl"}, {id:"user_dtlMenu", name:"사용자상세", url:"User_dtl"}, {id:"calendarMenu", name:"캘린더로", url:"calendar"}];
 
-        if(<%=userAuth%> == "1"){
-            for(var i=0; i<adminMenu.length; i++){
-                const li = document.createElement("li");
-                li.setAttribute("id", adminMenu[i].id);
-                li.innerHTML="<a class='dropdown-item' href='/"+adminMenu[i].url+"'>"+ adminMenu[i].name +"</a>";
+                    for(var i=0; i<adminMenu.length; i++){
+                        const li = document.createElement("li");
+                        li.setAttribute("id", adminMenu[i].id);
+                        li.innerHTML="<a class='dropdown-item' href='/"+adminMenu[i].url+"'>"+ adminMenu[i].name +"</a>";
 
-                document.getElementById("menuList").appendChild(li);
+                        document.getElementById("menuList").appendChild(li);
+                    }
+                <%
+            }else{
+                %>
+                    const userMenu = [{id:"calendarMenu", name:"캘린더로", url:"calendar"}, {id:"user_dtlMenu", name:"사용자상세", url:"User_dtl"}];
+
+                    for(var i=0; i<userMenu.length; i++){
+                        const li = document.createElement("li");
+                        li.setAttribute("id", userMenu[i].id);
+                        li.innerHTML="<a class='dropdown-item' href='/calendar'>"+ userMenu[i].name +"</a>";
+
+                        document.getElementById("menuList").appendChild(li);
+                    }
+                <%
             }
-        }else{
-            for(var i=0; i<userMenu.length; i++){
-                const li = document.createElement("li");
-                li.setAttribute("id", userMenu[i].id);
-                li.innerHTML="<a class='dropdown-item' href='/calendar'>"+ userMenu[i].name +"</a>";
-
-                document.getElementById("menuList").appendChild(li);
-            }
-        }
+        %>
 
         const logOut = document.createElement("li");
         logOut.setAttribute("id", "logout");
