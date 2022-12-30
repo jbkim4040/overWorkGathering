@@ -61,7 +61,8 @@ debugger;
 
         },
         error: function() {
-            alert("에러 발생");
+            setpDateOfInitiation(dt);
+
         }
     })
 
