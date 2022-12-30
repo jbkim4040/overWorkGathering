@@ -67,7 +67,7 @@ var calendarDt;
             for(var i=0; i<adminMenu.length; i++){
                 const li = document.createElement("li");
                 li.setAttribute("id", adminMenu[i].id);
-                li.innerHTML="<a class='dropdown-item' href='/"+adminMenu[i].url +"?calendarDt="+calendarDt+"'>"+ adminMenu[i].name +"</a>";
+                li.innerHTML="<a class='dropdown-item' onclick=moveMenu('"+ adminMenu[i].url.toString() +"')>"+ adminMenu[i].name +"</a>";
 
                 document.getElementById("menuList").appendChild(li);
             }
@@ -86,6 +86,11 @@ var calendarDt;
         logOut.innerHTML="<a class='dropdown-item' onclick='logout();'>로그아웃</a>";
 
         document.getElementById("menuList").appendChild(logOut);
+    }
+
+    moveMenu = function(url){
+    debugger;
+        window.location.href="/"+url+"?calendarDt="+calendarDt;
     }
 
     dropdown = function(){

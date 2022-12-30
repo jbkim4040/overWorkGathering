@@ -198,6 +198,14 @@ debugger;
         obj.value = 00;
 };
 
+function regex(obj){
+    const regex = /^[0-9]+$/;
+    if(!regex.test(obj.value)){
+    debugger;
+        obj.value = obj.value.substr(0, obj.value.length-1);
+    }
+}
+
 </script>
 <div class="container-xxl">
 <div class="authentication-wrapper authentication-basic container-p-y">
@@ -223,7 +231,7 @@ debugger;
             </div>
 			<div class="mb-3">
 			<label class="form-label">택시비</label>
-			<input class="form-control" type="text" id="taxiPay" disabled/>
+			<input class="form-control" type="text" id="taxiPay" oninput="regex(this)" disabled/>
 			<label class="form-label">택시 영수증</label>
 			<input class="form-control" type="file" id="taxiFile" accept="image/*"/>
 			</div>

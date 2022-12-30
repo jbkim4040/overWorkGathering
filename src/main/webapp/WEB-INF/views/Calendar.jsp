@@ -32,6 +32,7 @@
 <script>
 var id = "";
 var name = "";
+var calendarDt = "";
 
   document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');

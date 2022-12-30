@@ -55,13 +55,13 @@ debugger;
         dataType : "json",
         success: function(result) {
         	debugger;
-            setpDateOfInitiation(dt);
+            setpDateOfInitiation(dt.calendarDt);
 
-            setpUserTable(result, userId, dt);
+            setpUserTable(result, userId, dt.calendarDt);
 
         },
         error: function() {
-            setpDateOfInitiation(dt);
+            setpDateOfInitiation(dt.calendarDt);
 
         }
     })
