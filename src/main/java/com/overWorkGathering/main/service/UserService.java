@@ -103,8 +103,8 @@ public class UserService {
 				session.setAttribute("login", resultCd);
 				session.setAttribute("userId", user.getUserId());
 				session.setAttribute("userName", user.getName());
+				session.setAttribute("userPart", user.getPart());
 				session.setAttribute("auth", user.getAuth());
-				session.setAttribute("currentEnvironment", currentEnvironment);
 			}
 		} catch(Exception e){
 			resultCd = "999";
