@@ -103,36 +103,44 @@
                           <input type="button" id="btn_codeSend" class="btn btn-primary d-grid w-100" value="확인" onclick="codeSend()" disabled>
                       </div>
                   </div>
-                  <div id="emailChk_div"></div>
                 </div>
                 <div class="mb-3">
                   <div id="codeInput_div"></div>
+                  <div id="emailChk_div"></div>
                 </div>
 
                 <div class="mb-3">
                   <label for="name" class="form-label">이름</label>
-                  <input type="text" class="form-control" id="name" name="name" placeholder="name" maxlength="6" onkeyup="checkcorrectform(this);"/>
+                  <input type="text" class="form-control" id="name" name="name" placeholder="name" onkeyup="checkcorrectform(this);"/>
                   <div id="nameChk_div"></div>
                 </div>
                 <div class="mb-3">
                   <label for="phone" class="form-label">전화번호</label>
-                  <input type="text" class="form-control" id="phone" name="phone" placeholder="phone" maxlength="13" onkeyup="phonePattern(this); checkcorrectform(this);"/>
+                  <input type="text" class="form-control" id="phone" name="phone" placeholder="phone" onkeyup="phonePattern(this); checkcorrectform(this);"/>
                   <div id="phoneChk_div"></div>
+                </div>
+                <div class="mb-3">
+                  <label for="account" class="form-label">계좌번호</label>
+                  <div class="row">
+                    <div class="col-sm-5">
+                        <select class="form-select" name="bank_name" id="bank_name">
+                            <option value="KB국민">KB국민</option>
+                            <option value="신한">신한</option>
+                            <option value="IBK기업">IBK기업</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="account" name="account" placeholder="account" onkeyup="checkcorrectform(this);"/>
+                    </div>
+                  </div>
+                  <div id="accountChk_div"></div>
                 </div>
                 <div class="mb-3">
                 	<label for="phone" class="form-label">파트</label>
                 	<select class="form-select" name="part" id="part">
-                		<option value="a">a</option>
-                		<option value="b">b</option>
-                		<option value="c">c</option>
                 	</select>
                 </div>
-                <div class="mb-3">
-                    <label for="phone" class="form-label">파트 리더</label>
-                    <select class="form-select" name="partleader" id="partleader">
-                        <option value="아무개">아무개</option>
-                    </select>
-                </div>
+
                 <input type="hidden" id="RSAModulus" value="${RSAModulus}" />
                 <input type="hidden" id="RSAExponent" value="${RSAExponent}" />
                 <input type="hidden" id="USER_ID" name="USER_ID">
@@ -140,6 +148,7 @@
                 <input type="hidden" id="USER_NAME" name="USER_NAME">
                 <input type="hidden" id="USER_EMAIL" name="USER_EMAIL">
                 <input type="hidden" id="USER_PHONE" name="USER_PHONE">
+                <input type="hidden" id="USER_ACCOUNT" name="USER_ACCOUNT">
                 <input class="btn btn-primary d-grid w-100" id="btn_save" type="submit" value="회원가입">
               </form>
             </div>
@@ -157,8 +166,33 @@
   var timer;
   var code;
 
-  window.onload = function() {
-  };
+
+  $.ajax({
+        url:"/user/allPartInfo",
+        type:"GET",
+        dataType : "json",
+        success: function(data) {
+            debugger;
+            var selectEl = document.getElementById("part");
+            selectEl.options.length = 0;
+
+            data.forEach((currentElement, index, array) => {
+                debugger;
+                var objOption = document.createElement("option");
+                objOption.text = currentElement.part;
+                objOption.value = currentElement.part;
+                selectEl.add(objOption);
+            });
+        },
+        error: function(request,status,error) {
+            alert("에러 발생 \n" +
+            "에러코드 : "+request.status+"\n"+
+            "에러메시지 : "+request.responseText+"\n"+
+            "에러 : "+error
+            );
+        }
+    })
+
 
   function dupIdChk(){
     const element = document.getElementById('dupIdChk_div');
@@ -271,7 +305,17 @@
         }
     }else if(id == "password"){
         const element = document.getElementById('passwordChk');
-    }
+    }else if(id == "account"){
+         const element = document.getElementById('accountChk');
+         let account = document.getElementById('account');
+         account.value = account.value.replace(/[^-0-9]/g,'');
+
+         var accountNum = account.value;
+
+         if(accountNum.length > 14) {
+             account.value = accountNum.substr(0, 14);
+         }
+     }
   }
 
   function phonePattern(event) {
@@ -408,6 +452,7 @@
     const email = document.getElementById('email');
     const emailChk_div = document.getElementById('emailChk_div');
 
+    debugger;
     if(code == inputCode){
         clearInterval(timer);
         $("#codeInput_div").remove();
@@ -416,8 +461,10 @@
         email.setAttribute("disabled", "true");
         alert("이메일 인증되었습니다.");
         emailCheckYn = true;
+        emailChk_div.style.display='block';
         emailChk_div.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:blue">사용 가능한 이메일입니다.</label>';
     }else{
+        emailChk_div.style.display='block';
         emailChk_div.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:red">코드가 일치하지 않습니다.</label>';
     }
   }
@@ -427,7 +474,9 @@
       var pw = $("#password");
       var name = $("#name");
       var email = $("#email");
-      var phone = $("#phone");
+      var phone = $("#phone");bank_name
+      var account = $("#account");
+      var bank_name = $("#bank_name");
 
       if(id.val() == ""){
       alert("아이디를 입력 해주세요.");
@@ -459,6 +508,12 @@
        return false;
       }
 
+      if(account.val() == ""){
+       alert("계좌번호를 입력 해주세요.");
+       account.focus();
+       return false;
+      }
+
       if(!idCheckYn){
         alert("아이디 중복체크 해주시기 바랍니다.");
         id.focus();
@@ -479,6 +534,12 @@
         return false;
       }
 
+      if(account.val().length < 11){
+       alert("적절하지않은 계좌번호 형식입니다.");
+       account.focus();
+       return false;
+      }
+
       // rsa 암호화
       var rsa = new RSAKey();
       rsa.setPublic($('#RSAModulus').val(),$('#RSAExponent').val());
@@ -488,12 +549,14 @@
       $("#USER_NAME").val(rsa.encrypt(name.val()));
       $("#USER_EMAIL").val(rsa.encrypt(email.val()));
       $("#USER_PHONE").val(rsa.encrypt(phone.val().replaceAll('-', '')));
+      $("#USER_ACCOUNT").val(rsa.encrypt(bank_name.val() + "_" + account.val()));
 
       id.val("");
       pw.val("");
       name.val("");
       email.val("");
       phone.val("");
+      account.val("");
       return true;
   }
 

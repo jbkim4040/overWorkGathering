@@ -1,6 +1,7 @@
 package com.overWorkGathering.main.controller;
 
 
+import com.overWorkGathering.main.DTO.PartInfoDTO;
 import com.overWorkGathering.main.DTO.PrssRsltDTO;
 import com.overWorkGathering.main.DTO.UserDTO;
 import com.overWorkGathering.main.service.UserService;
@@ -18,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.PrivateKey;
 import java.security.Security;
 import java.util.HashMap;
+import java.util.List;
 
 import static com.overWorkGathering.main.utils.Common.*;
 
@@ -37,6 +39,12 @@ public class UserController {
 
 		return "Calendar";
 	}
+
+	@RequestMapping(value="/allPartInfo", method = RequestMethod.GET)
+	public List<PartInfoDTO> retrieveAllPartInfo(){
+		return userService.retrieveAllPartInfo();
+	}
+
 
 	@RequestMapping(value = "/auth", method = RequestMethod.POST)
 	public void auth(@RequestParam("USER_ID") String encrypt_userId, @RequestParam("USER_PW") String encrypt_pw, HttpServletRequest request, HttpServletResponse response){
@@ -71,7 +79,7 @@ public class UserController {
 	@RequestMapping(value = "/signUp", method = RequestMethod.POST)
 	public void signUp(@RequestParam("USER_ID") String encrypt_userId, @RequestParam("USER_PW") String encrypt_pw, @RequestParam("USER_NAME") String encrypt_name,
 					   @RequestParam("USER_EMAIL") String encrypt_email, @RequestParam("USER_PHONE") String encrypt_phone,
-					   @RequestParam("part") String part, @RequestParam("partleader") String partleader,
+					   @RequestParam("USER_ACCOUNT") String encrypt_account, @RequestParam("part") String part,
 					   HttpServletRequest request, HttpServletResponse response){
 		try {
 			HttpSession session = request.getSession();
@@ -83,12 +91,13 @@ public class UserController {
 			String userName = decryptRsa(privateKey, encrypt_name);
 			String userEmail = decryptRsa(privateKey, encrypt_email);
 			String userPhone = decryptRsa(privateKey, encrypt_phone);
+			String userAccount = decryptRsa(privateKey, encrypt_account);
 
 			session.removeAttribute(RSA_WEB_KEY);
 
 			HashMap<String, String> map = hashingPASSWORD(password, "");
 
-			userService.signUp(userId, map.get("password"), userName, userEmail, userPhone, part, partleader, map.get("salt"));
+			userService.signUp(userId, map.get("password"), userName, userEmail, userPhone, userAccount, part, map.get("salt"));
 
 			response.sendRedirect("/login");
 		}catch(Exception e){

@@ -1,8 +1,12 @@
 package com.overWorkGathering.main.service;
 
+import com.overWorkGathering.main.DTO.PartInfoDTO;
 import com.overWorkGathering.main.DTO.PrssRsltDTO;
 import com.overWorkGathering.main.controller.WebController;
+import com.overWorkGathering.main.entity.PartInfoEntity;
 import com.overWorkGathering.main.entity.UserInfoEntity;
+import com.overWorkGathering.main.mapper.PartInfoMapper;
+import com.overWorkGathering.main.repository.PartInfoRepository;
 import com.overWorkGathering.main.repository.UserRepository;
 import com.overWorkGathering.main.utils.Constant;
 import com.overWorkGathering.main.utils.SHA256;
@@ -25,6 +29,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import static com.overWorkGathering.main.utils.Common.*;
@@ -46,8 +51,20 @@ public class UserService {
 	private UserRepository userRepository;
 
 	@Autowired
+	private PartInfoRepository partInfoRepository;
+
+	@Autowired
+	private PartInfoMapper partInfoMapper;
+
+	@Autowired
 	MessageSource messageSource;
 
+
+	public List<PartInfoDTO> retrieveAllPartInfo(){
+		List<PartInfoEntity> partInfoEntityList = partInfoRepository.findAll();
+
+		return partInfoMapper.toPartINfoDTOList(partInfoEntityList);
+	}
 
 	public String auth(String encrypt_userId, String encrypt_pw, HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
@@ -86,8 +103,8 @@ public class UserService {
 				session.setAttribute("login", resultCd);
 				session.setAttribute("userId", user.getUserId());
 				session.setAttribute("userName", user.getName());
+				session.setAttribute("userPart", user.getPart());
 				session.setAttribute("auth", user.getAuth());
-				session.setAttribute("currentEnvironment", currentEnvironment);
 			}
 		} catch(Exception e){
 			resultCd = "999";
@@ -105,7 +122,9 @@ public class UserService {
 
 
 	public void signUp(String userId, String pw, String name, String email,
-					   String phone, String part, String partleader, String salt) throws Exception{
+					   String phone, String account, String part, String salt) throws Exception{
+		String partLeader = partInfoRepository.findByPart(part).getPartLeader();
+
 
 		UserInfoEntity user = UserInfoEntity.builder()
 				.userId(userId)
@@ -114,9 +133,10 @@ public class UserService {
 				.email(email)
 				.phone(phone)
 				.part(part)
-				.partleader(partleader)
+				.partleader(partLeader)
 				.salt(salt)
 				.auth(Constant.Auth.U.code)		// 기본 권한은 U( 일반사용자 )
+				.acnt(account)
 				.build();
 
 		userRepository.save(user);

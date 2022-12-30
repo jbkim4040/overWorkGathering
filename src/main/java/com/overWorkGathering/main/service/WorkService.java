@@ -331,8 +331,6 @@ public class WorkService {
 	}
 
 	public void saveTaxiReceiptImgFile(MultipartFile imageFile, HttpServletRequest request, String ImgFileName, String workDt){
-		System.out.println("현재 개발환경 :: " + currentEnvironment);
-
 		FTPUtil fileUploader = null;
 		String currentDt = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 		String originalImg = imageFile.getOriginalFilename();
