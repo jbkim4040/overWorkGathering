@@ -60,8 +60,8 @@ var calendarDt;
     }
 
     setDropdownMenu = function(){
-        const adminMenu = [{id:"master_Menu", name:"관리화면", url:"Master"}, {id:"master_dtlMenu", name:"관리자상세", url:"Master_dtl"}, {id:"user_dtlMenu", name:"사용자상세", url:"User_dtl"}, {id:"calendarMenu", name:"캘린더로", url:"calendar"}]
-        const userMenu = [{id:"calendarMenu", name:"캘린더로", url:"calendar"}, {id:"user_dtlMenu", name:"사용자상세", url:"User_dtl"}];
+        const adminMenu = [{id:"master_Menu", name:"관리화면", url:"Master"}, {id:"master_dtlMenu", name:"관리자상세", url:"Master_dtl"}, {id:"user_dtlMenu", name:"사용자상세", url:"User_dtl"}, {id:"calendarMenu", name:"캘린더", url:"calendar"}]
+        const userMenu = [{id:"calendarMenu", name:"캘린더", url:"calendar"}, {id:"user_dtlMenu", name:"사용자상세", url:"User_dtl"}];
 
         if("<%=userAuth%>" == "M"){
             for(var i=0; i<adminMenu.length; i++){
