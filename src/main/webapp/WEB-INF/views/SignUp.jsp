@@ -49,6 +49,7 @@
                             placeholder="ID"
                             style="ime-mode:disabled;"
                             onkeyup="checkcorrectform(this);"
+                            onkeydown="checkId();"
                             autofocus
                         />
                     </div>
@@ -99,7 +100,8 @@
                       <div class="col-sm-9">
                           <div class="row">
                               <div class="col-sm-12">
-                                  <input type="text" class="form-control" id="email" name="email" placeholder="email@iabacus.co.kr" style="ime-mode:disabled;" onkeyup="checkcorrectform(this);"/>
+                                  <input type="text" class="form-control" id="email" name="email" placeholder="email@iabacus.co.kr" style="ime-mode:disabled;"
+                            onkeydown="checkEmail();" onkeyup="checkcorrectform(this);"/>
                               </div>
                           </div>
                       </div>
@@ -197,6 +199,36 @@
         }
     })
 
+    $.ajax({
+        url:"/user/temp/info",
+        type:"POST",
+        success: function(data) {
+        },
+        error: function(request,status,error) {
+            alert("에러 발생 \n" +
+            "에러코드 : "+request.status+"\n"+
+            "에러메시지 : "+request.responseText+"\n"+
+            "에러 : "+error
+            );
+        }
+    })
+
+    window.onbeforeunload = function() {
+      $.ajax({
+              url:"/user/temp/info",
+              type:"DELETE",
+              success: function(data) {
+              },
+              error: function(request,status,error) {
+                  alert("에러 발생 \n" +
+                  "에러코드 : "+request.status+"\n"+
+                  "에러메시지 : "+request.responseText+"\n"+
+                  "에러 : "+error
+                  );
+              }
+          })
+    };
+
 
   function dupIdChk(){
     const element = document.getElementById('dupIdChk_div');
@@ -221,9 +253,17 @@
             if(e == "Y"){
                 element.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:red">사용할수 없는 ID 입니다.</label>';
                 userId.focus();
+                <%
+                    session = request.getSession();
+                    session.setAttribute("idDupChk", "N");
+                %>
             }else if(e == "N"){
                 idCheckYn = true;
                 element.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:blue">사용할수 있는 ID 입니다.</label>';
+                <%
+                    session = request.getSession();
+                    session.setAttribute("idDupChk", "Y");
+                %>
             }else{
                 alert("에러 \n" + e);
                 element.innerHTML = '<label class="form-label" id="dupChkMsg"></label>';
@@ -242,7 +282,6 @@
   function checkcorrectform(event) {
     debugger;
     event.value = event.value.replaceAll(' ', '');
-    console.log(event.value);
     let id = event.id;
     var value = event.value;
 
@@ -299,7 +338,11 @@
         if(value.length == 0){
             element.style.display='none';
             document.getElementById('btn_codeSend').disabled = true;
-        } else{
+        }else if (value.indexOf('@iabacus.co.kr') == -1){
+            element.style.display='block';
+            document.getElementById('btn_codeSend').disabled = true;
+            element.innerHTML = '<label class="form-label" id="emailChkMsg" style="color:red">이메일은 비즈메카 메일만 가능합니다.</label>';
+        }else {
             element.style.display='none';
             document.getElementById('btn_codeSend').disabled = false;
         }
@@ -315,8 +358,27 @@
          if(accountNum.length > 14) {
              account.value = accountNum.substr(0, 14);
          }
+     }else if(id == "code"){
+        if(value.length > 4){
+            event.value = value.substr(0, 4);
+        }
      }
   }
+
+  function checkId(){
+        <%
+        session = request.getSession();
+        session.setAttribute("idDupChk", "N");
+        %>
+  }
+
+  function checkEmail(){
+        <%
+        session = request.getSession();
+        session.setAttribute("emailChk", "N");
+        %>
+  }
+
 
   function phonePattern(event) {
       let phone = document.getElementById('phone');
@@ -361,7 +423,7 @@
     var rsa = new RSAKey();
 
     rsa.setPublic($('#RSAModulus').val(),$('#RSAExponent').val());
-    var encryptedEmail = rsa.encrypt(email.val() + "@iabacus.co.kr");
+    var encryptedEmail = rsa.encrypt(email.val());
 
     const element = document.getElementById('codeInput_div');
     const codeSendBtn = document.getElementById('btn_codeSend');
@@ -371,7 +433,7 @@
     element.innerHTML =
         '<div class="row" id="codeInput_div">' +
         '<div class="col-sm-4">' +
-        '<input type="text" class="form-control" id="code" placeholder="code"/>' +
+        '<input type="text" class="form-control" id="code" placeholder="code"  onkeyup="checkcorrectform(this);"/>' +
         '</div>' +
         '<div class="col-sm-2">' +
         '</div>' +
@@ -463,6 +525,11 @@
         emailCheckYn = true;
         emailChk_div.style.display='block';
         emailChk_div.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:blue">사용 가능한 이메일입니다.</label>';
+
+        <%
+            session = request.getSession();
+            session.setAttribute("emailChk", "Y");
+        %>
     }else{
         emailChk_div.style.display='block';
         emailChk_div.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:red">코드가 일치하지 않습니다.</label>';
@@ -472,11 +539,13 @@
   function login(){
       var id = $("#userId");
       var pw = $("#password");
+      var pwChk = $("#passwordChk");
       var name = $("#name");
       var email = $("#email");
-      var phone = $("#phone");bank_name
+      var phone = $("#phone");
       var account = $("#account");
       var bank_name = $("#bank_name");
+
 
       if(id.val() == ""){
       alert("아이디를 입력 해주세요.");
@@ -490,15 +559,16 @@
        return false;
       }
 
-      if(pw.val() == ""){
-       alert("이름을 입력 해주세요.");
-       pw.focus();
-       return false;
-      }
 
       if(email.val() == ""){
        alert("이메일을 입력 해주세요.");
        email.focus();
+       return false;
+      }
+
+      if(name.val() == ""){
+       alert("이름을 입력 해주세요.");
+       name.focus();
        return false;
       }
 
@@ -512,26 +582,6 @@
        alert("계좌번호를 입력 해주세요.");
        account.focus();
        return false;
-      }
-
-      if(!idCheckYn){
-        alert("아이디 중복체크 해주시기 바랍니다.");
-        id.focus();
-        return false;
-      }else if(typeof idCheckYn != "boolean"){
-        alert("정상적이지 않은 회원가입입니다.");
-        id.focus();
-        return false;
-      }
-
-      if(!emailCheckYn){
-        alert("이메일 인증 해주시기 바랍니다.");
-        email.focus();
-        return false;
-      }else if(typeof emailCheckYn != "boolean"){
-        alert("정상적이지 않은 회원가입입니다.");
-        email.focus();
-        return false;
       }
 
       if(account.val().length < 11){

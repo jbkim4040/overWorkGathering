@@ -31,8 +31,8 @@
               </div>
               <!-- /Logo -->
               <p class="mb-4">이메일 입력시 아이디와 비밀번호를 변경할 수 있는 링크를 보내드립니다.</p>
-              <form id="formAuthentication" class="mb-3" action="index.html" method="POST">
-                <div class="mb-3">
+              <form id="formAuthentication" class="mb-4" action="index.html" method="POST">
+                <div class="mb-4">
                   <label for="email" class="form-label">이메일</label>
                   <input
                     type="text"
