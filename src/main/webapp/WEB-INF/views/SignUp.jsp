@@ -253,17 +253,13 @@
             if(e == "Y"){
                 element.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:red">사용할수 없는 ID 입니다.</label>';
                 userId.focus();
-                <%
-                    session = request.getSession();
-                    session.setAttribute("idDupChk", "N");
-                %>
+
+                nonCheckedId();
             }else if(e == "N"){
                 idCheckYn = true;
                 element.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:blue">사용할수 있는 ID 입니다.</label>';
-                <%
-                    session = request.getSession();
-                    session.setAttribute("idDupChk", "Y");
-                %>
+
+                checkedId();
             }else{
                 alert("에러 \n" + e);
                 element.innerHTML = '<label class="form-label" id="dupChkMsg"></label>';
@@ -363,20 +359,6 @@
             event.value = value.substr(0, 4);
         }
      }
-  }
-
-  function checkId(){
-        <%
-        session = request.getSession();
-        session.setAttribute("idDupChk", "N");
-        %>
-  }
-
-  function checkEmail(){
-        <%
-        session = request.getSession();
-        session.setAttribute("emailChk", "N");
-        %>
   }
 
 
@@ -526,15 +508,84 @@
         emailChk_div.style.display='block';
         emailChk_div.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:blue">사용 가능한 이메일입니다.</label>';
 
-        <%
-            session = request.getSession();
-            session.setAttribute("emailChk", "Y");
-        %>
+        checkedEmail();
     }else{
         emailChk_div.style.display='block';
         emailChk_div.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:red">코드가 일치하지 않습니다.</label>';
+
+        nonCheckedEmail();
     }
   }
+
+
+  function checkedId(key){
+        $.ajax({
+            url:"/user/temp/checkedId",
+            type:"POST",
+            data: {"key" : key},
+            success: function(data) {
+            },
+            error: function(request,status,error) {
+                alert("에러 발생 \n" +
+                "에러코드 : "+request.status+"\n"+
+                "에러메시지 : "+request.responseText+"\n"+
+                "에러 : "+error
+                );
+            }
+        })
+  }
+
+  function checkedEmail(key){
+        $.ajax({
+            url:"/user/temp/checkedEmail",
+            type:"POST",
+            data: {"key" : key},
+            success: function(data) {
+            },
+            error: function(request,status,error) {
+                alert("에러 발생 \n" +
+                "에러코드 : "+request.status+"\n"+
+                "에러메시지 : "+request.responseText+"\n"+
+                "에러 : "+error
+                );
+            }
+        })
+  }
+
+  function nonCheckedId(key){
+        $.ajax({
+            url:"/user/temp/nonCheckedId",
+            type:"POST",
+            data: {"key" : key},
+            success: function(data) {
+            },
+            error: function(request,status,error) {
+                alert("에러 발생 \n" +
+                "에러코드 : "+request.status+"\n"+
+                "에러메시지 : "+request.responseText+"\n"+
+                "에러 : "+error
+                );
+            }
+        })
+  }
+
+  function nonCheckedEmail(key){
+        $.ajax({
+            url:"/user/temp/nonCheckedEmail",
+            type:"POST",
+            data: {"key" : key},
+            success: function(data) {
+            },
+            error: function(request,status,error) {
+                alert("에러 발생 \n" +
+                "에러코드 : "+request.status+"\n"+
+                "에러메시지 : "+request.responseText+"\n"+
+                "에러 : "+error
+                );
+            }
+        })
+  }
+
 
   function login(){
       var id = $("#userId");
@@ -597,7 +648,7 @@
       $("#USER_ID").val(rsa.encrypt(id.val()));
       $("#USER_PW").val(rsa.encrypt(pw.val()));
       $("#USER_NAME").val(rsa.encrypt(name.val()));
-      $("#USER_EMAIL").val(rsa.encrypt(email.val() + "@iabacus.co.kr"));
+      $("#USER_EMAIL").val(rsa.encrypt(email.val()));
       $("#USER_PHONE").val(rsa.encrypt(phone.val().replaceAll('-', '')));
       $("#USER_ACCOUNT").val(rsa.encrypt(bank_name.val() + "_" + account.val()));
 
