@@ -189,7 +189,7 @@ public class WorkService {
 		if("".equals(param.get("taxiPay").toString())){
 			param.replace("taxiPay", "0");
 		}
-		if(file != null && !file.isEmpty()){
+		if(file != null && !file.isEmpty()) {
 			ext = file.getOriginalFilename();
 			ext = ext.substring(ext.indexOf("."));
 			ImageInfoDTO imageInfoDTO = ImageInfoDTO.builder().imageId(uploadFileNm)
@@ -201,6 +201,8 @@ public class WorkService {
 
 			ImageInfoEntity imageInfoEntity = imageInfoMapper.toImageEntity(imageInfoDTO);
 			imageInfoRepository.save(imageInfoEntity);
+		}else{
+			uploadFileNm = "";
 		}
 
 		WorkDTO workDTO = WorkDTO.builder().userId(param.get("userID").toString())
