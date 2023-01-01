@@ -8,14 +8,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PartInfoDTO {
 
-	private String part;
+	private String partNm;
+	private String partCd;
 	private String partLeader;
 
 	@Builder
 	public PartInfoDTO(
-			String part,
+			String partCd,
+			String partNm,
 			String partLeader) {
-		this.part = part;
+		this.partCd = partCd;
+		this.partNm = partNm;
 		this.partLeader = partLeader;
 	}
 }

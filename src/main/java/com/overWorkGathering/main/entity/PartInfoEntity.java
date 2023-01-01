@@ -17,8 +17,11 @@ import javax.persistence.Table;
 public class PartInfoEntity {
 
 	@Id
-	@Column(name = "PART")
-	private String part;
+	@Column(name = "PART_CD")
+	private String partCd;
+
+	@Column(name = "PART_NM")
+	private String partNm;
 
 	@Column(name = "PART_LEADER")
 	private String partLeader;
