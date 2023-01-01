@@ -10,15 +10,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
 
         // 가로채는 경로 설정 가능
-        registry.addInterceptor(new LoginInterceptor())
-        .addPathPatterns("/user/auth");
+        registry.addInterceptor(new MasterCheckInterceptor())
+                .addPathPatterns("/Master")
+                .addPathPatterns("/Master_dtl")
+                .addPathPatterns("/Master/*")
+        ;
 
         registry.addInterceptor(new Interceptor())
-        .addPathPatterns("/*")
-        .excludePathPatterns("/login")
-        .excludePathPatterns("/SignUp")
-        .excludePathPatterns("/FindPw")
-        .excludePathPatterns("/CodeSendPopup")
+                .addPathPatterns("/*")
+                .excludePathPatterns("/login")
+                .excludePathPatterns("/SignUp")
+                .excludePathPatterns("/FindPw")
         ;
     }
 }

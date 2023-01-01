@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PartInfoRepository  extends JpaRepository<PartInfoEntity, String> {
-    PartInfoEntity findByPart(String part);
+    PartInfoEntity findByPartCd(String partCd);
 }

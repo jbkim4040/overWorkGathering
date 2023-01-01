@@ -94,12 +94,16 @@
                 </div>
 
                 <div class="mb-3">
-                  <label for="email" class="form-label">이메일</label>
+                  <label for="email" class="form-label">이메일(비즈메카 이메일)</label>
                   <div class="row">
-                      <div class="col-sm-8">
-                          <input type="text" class="form-control" id="email" name="email" placeholder="email" style="ime-mode:disabled;" onkeyup="checkcorrectform(this);"/>
+                      <div class="col-sm-9">
+                          <div class="row">
+                              <div class="col-sm-12">
+                                  <input type="text" class="form-control" id="email" name="email" placeholder="email@iabacus.co.kr" style="ime-mode:disabled;" onkeyup="checkcorrectform(this);"/>
+                              </div>
+                          </div>
                       </div>
-                      <div class="col-sm-4">
+                      <div class="col-sm-3">
                           <input type="button" id="btn_codeSend" class="btn btn-primary d-grid w-100" value="확인" onclick="codeSend()" disabled>
                       </div>
                   </div>
@@ -179,8 +183,8 @@
             data.forEach((currentElement, index, array) => {
                 debugger;
                 var objOption = document.createElement("option");
-                objOption.text = currentElement.part;
-                objOption.value = currentElement.part;
+                objOption.text = currentElement.partNm;
+                objOption.value = currentElement.partCd;
                 selectEl.add(objOption);
             });
         },
@@ -295,10 +299,6 @@
         if(value.length == 0){
             element.style.display='none';
             document.getElementById('btn_codeSend').disabled = true;
-        }else if(!emailCheck(value)){
-            element.style.display='block';
-            document.getElementById('btn_codeSend').disabled = true;
-            element.innerHTML = '<label class="form-label" id="emailChkMsg" style="color:red">이메일 형식이 아닙니다.</label>';
         } else{
             element.style.display='none';
             document.getElementById('btn_codeSend').disabled = false;
@@ -361,7 +361,7 @@
     var rsa = new RSAKey();
 
     rsa.setPublic($('#RSAModulus').val(),$('#RSAExponent').val());
-    var encryptedEmail = rsa.encrypt(email.val());
+    var encryptedEmail = rsa.encrypt(email.val() + "@iabacus.co.kr");
 
     const element = document.getElementById('codeInput_div');
     const codeSendBtn = document.getElementById('btn_codeSend');
@@ -547,7 +547,7 @@
       $("#USER_ID").val(rsa.encrypt(id.val()));
       $("#USER_PW").val(rsa.encrypt(pw.val()));
       $("#USER_NAME").val(rsa.encrypt(name.val()));
-      $("#USER_EMAIL").val(rsa.encrypt(email.val()));
+      $("#USER_EMAIL").val(rsa.encrypt(email.val() + "@iabacus.co.kr"));
       $("#USER_PHONE").val(rsa.encrypt(phone.val().replaceAll('-', '')));
       $("#USER_ACCOUNT").val(rsa.encrypt(bank_name.val() + "_" + account.val()));
 

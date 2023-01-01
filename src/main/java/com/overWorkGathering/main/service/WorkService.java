@@ -332,14 +332,16 @@ public class WorkService {
 
 	public void saveTaxiReceiptImgFile(MultipartFile imageFile, HttpServletRequest request, String ImgFileName, String workDt){
 		FTPUtil fileUploader = null;
+		String part = (String) request.getSession().getAttribute("userPart");
+		String userId = (String) request.getSession().getAttribute("userId");
 		String currentDt = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 		String originalImg = imageFile.getOriginalFilename();
 		// 환경별 업로드 될 디렉토리 동적지정
 		String environment = currentEnvironment.equals("prod") ? "prod" : "dev";
 
-		String ext = "." + originalImg.substring(originalImg.lastIndexOf(".") + 1);
-		String newImgFileName = UUID.randomUUID().toString().replace("-", "") + ext;
-		final String SFTP_TAXI_RECEIPT_IMG_PATH = "/var/" + environment + "/overworkgathering/images/";
+		String ext = originalImg.substring(originalImg.lastIndexOf(".") + 1);
+		String newImgFileName = UUID.randomUUID().toString().replace("-", "");
+		final String SFTP_TAXI_RECEIPT_IMG_PATH = "/var/" + environment + "/overworkgathering/images/" + part ;
 
 
 		if(imageFile.isEmpty()){

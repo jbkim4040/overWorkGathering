@@ -122,9 +122,8 @@ public class UserService {
 
 
 	public void signUp(String userId, String pw, String name, String email,
-					   String phone, String account, String part, String salt) throws Exception{
-		String partLeader = partInfoRepository.findByPart(part).getPartLeader();
-
+					   String phone, String account, String partCd, String salt) throws Exception{
+		String partLeader = partInfoRepository.findByPartCd(partCd).getPartLeader();
 
 		UserInfoEntity user = UserInfoEntity.builder()
 				.userId(userId)
@@ -132,7 +131,7 @@ public class UserService {
 				.name(name)
 				.email(email)
 				.phone(phone)
-				.part(part)
+				.part(partCd)
 				.partleader(partLeader)
 				.salt(salt)
 				.auth(Constant.Auth.U.code)		// 기본 권한은 U( 일반사용자 )
