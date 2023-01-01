@@ -93,11 +93,13 @@ public class UserController {
 			String userPhone = decryptRsa(privateKey, encrypt_phone);
 			String userAccount = decryptRsa(privateKey, encrypt_account);
 
+			String tempId = (String)session.getAttribute("tempId");
+
 			session.removeAttribute(RSA_WEB_KEY);
 
 			HashMap<String, String> map = hashingPASSWORD(password, "");
 
-			userService.signUp(userId, map.get("password"), userName, userEmail, userPhone, userAccount, part, map.get("salt"));
+			userService.signUp(tempId, userId, map.get("password"), userName, userEmail, userPhone, userAccount, part, map.get("salt"));
 
 			response.sendRedirect("/login");
 		}catch(Exception e){
@@ -142,5 +144,15 @@ public class UserController {
 		}
 
 		return prssRsltDTO;
+	}
+
+	@RequestMapping(value = "/temp/info", method = RequestMethod.POST)
+	public void saveTempInfo(HttpServletRequest request){
+		userService.saveTempInfo(request);
+	}
+
+	@RequestMapping(value = "/temp/info", method = RequestMethod.DELETE)
+	public void deleteTempInfo(HttpServletRequest request){
+		userService.deleteTempInfo(request);
 	}
 }

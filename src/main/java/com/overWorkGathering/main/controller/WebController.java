@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.*;
 import java.security.spec.RSAPublicKeySpec;
+import java.util.UUID;
 
 import static com.overWorkGathering.main.utils.Common.*;
 
@@ -38,6 +39,12 @@ public class WebController {
 	public String SignUp(HttpServletRequest request) {
 		// RSA 키 생성
 		initRsa(request);
+
+		// 임시 ID 발급
+		HttpSession session = request.getSession();
+		session.setAttribute("tempId", UUID.randomUUID().toString().replace("-", ""));
+		session.setAttribute("idDupChk", "N");
+		session.setAttribute("emailChk", "N");
 
 		return "SignUp";
 	}

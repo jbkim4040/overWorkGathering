@@ -79,17 +79,13 @@ public class UserService {
 
 			session.removeAttribute(RSA_WEB_KEY);
 
-			if(userId.equals("hirofac") || userId.equals("jhyuk97")){
-				user = userRepository.findByUserIdAndPw(userId, pw);
-			}else{
-				user = userRepository.findByUserId(userId);
+			user = userRepository.findByUserId(userId);
 
-				if(!ObjectUtils.isEmpty(user)){
-					String salt = user.getSalt();
-					HashMap<String, String> map = hashingPASSWORD(pw, salt);
+			if(!ObjectUtils.isEmpty(user)){
+				String salt = user.getSalt();
+				HashMap<String, String> map = hashingPASSWORD(pw, salt);
 
-					user = userRepository.findByUserIdAndPw(userId, map.get("password"));
-				}
+				user = userRepository.findByUserIdAndPw(userId, map.get("password"));
 			}
 
 
@@ -120,8 +116,41 @@ public class UserService {
 		return ObjectUtils.isEmpty(user) ? "N" : "Y";
 	}
 
+	public void saveTempInfo (HttpServletRequest request){
+		System.out.println("임시 데이터 저장");
+		HttpSession session = request.getSession();
+		String tempId = (String)session.getAttribute("tempId");
 
-	public void signUp(String userId, String pw, String name, String email,
+		UserInfoEntity user = UserInfoEntity.builder()
+				.userId(tempId)
+				.pw("")
+				.name("")
+				.email("")
+				.phone("")
+				.part("")
+				.partleader("")
+				.salt("")
+				.auth("")		// 기본 권한은 U( 일반사용자 )
+				.acnt("")
+				.build();
+
+		userRepository.save(user);
+	}
+
+	public void deleteTempInfo (HttpServletRequest request){
+		System.out.println("임시 데이터 삭제");
+		HttpSession session = request.getSession();
+		String tempId = (String)session.getAttribute("tempId");
+
+		userRepository.deleteById(tempId);
+
+		session.removeAttribute("tempId");
+		session.removeAttribute("idDupChk");
+		session.removeAttribute("emailChk");
+	}
+
+
+	public void signUp(String tempId, String userId, String pw, String name, String email,
 					   String phone, String account, String partCd, String salt) throws Exception{
 		String partLeader = partInfoRepository.findByPartCd(partCd).getPartLeader();
 
@@ -139,6 +168,7 @@ public class UserService {
 				.build();
 
 		userRepository.save(user);
+		userRepository.deleteById(tempId);
 	}
 
 	public void sendCode(PrssRsltDTO prssRsltDTO, String mail) {
