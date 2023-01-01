@@ -1,3 +1,14 @@
 # Project exclude paths
 .gradle
 .idea
+build/classes/java/main/com/overWorkGathering/main/Application.class
+*.class
+*.js
+*.css
+*.html
+*.jar
+build/tmp/bootJar/MANIFEST.MF
+build/classes/java/main/com/overWorkGathering/main/mapper/WorkMapperImpl.java
+build/classes/java/main/com/overWorkGathering/main/mapper/UserMapperImpl.java
+src/main/generated/com/overWorkGathering/main/mapper/UserMapperImpl.java
+src/main/generated/com/overWorkGathering/main/mapper/WorkMapperImpl.java
