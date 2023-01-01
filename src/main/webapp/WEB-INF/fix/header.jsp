@@ -31,7 +31,7 @@
 
     </header>
 <script>
-var calendarDt;
+var calendarDt = "";
     document.addEventListener('DOMContentLoaded', function() {
         <%
          session = request.getSession();
@@ -90,7 +90,7 @@ var calendarDt;
 
     moveMenu = function(url){
     debugger;
-        if(calendarDt.length == 6){
+        if(url != "calendar" && calendarDt.length == 6){
             calendarDt = calendarDt.substring(0, 5) + "0" + calendarDt.substring(5);
         }
         window.location.href="/"+url+"?calendarDt="+calendarDt;
