@@ -36,6 +36,4 @@ public class ImageInfoEntity {
     @Column(name = "PART")
     private String part;
 
-    @Column(name = "CREATE_DTTM")
-    private TimeStamp createDttm;
 }
