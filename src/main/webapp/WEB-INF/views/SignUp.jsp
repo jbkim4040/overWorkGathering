@@ -49,7 +49,6 @@
                             placeholder="ID"
                             style="ime-mode:disabled;"
                             onkeyup="checkcorrectform(this);"
-                            onkeydown="checkId();"
                             autofocus
                         />
                     </div>
