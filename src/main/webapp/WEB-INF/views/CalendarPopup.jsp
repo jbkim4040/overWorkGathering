@@ -204,7 +204,11 @@ function regex(obj){
     debugger;
         obj.value = obj.value.substr(0, obj.value.length-1);
     }
-}
+};
+
+function fileClick(){
+    alert("영수증은 저장후 이메일로도 별도 전송 부탁드립니다.");
+};
 
 </script>
 <div class="container-xxl">
@@ -233,7 +237,7 @@ function regex(obj){
 			<label class="form-label">택시비</label>
 			<input class="form-control" type="text" id="taxiPay" oninput="regex(this)" disabled/>
 			<label class="form-label">택시 영수증</label>
-			<input class="form-control" type="file" id="taxiFile" accept="image/*"/>
+			<input class="form-control" type="file" id="taxiFile" onclick="fileClick()" accept="image/*"/>
 			</div>
 
 			<div class="mb-3">
