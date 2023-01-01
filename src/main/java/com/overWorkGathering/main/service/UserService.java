@@ -168,7 +168,6 @@ public class UserService {
 				.build();
 
 		userRepository.save(user);
-		userRepository.deleteById(tempId);
 	}
 
 	public void sendCode(PrssRsltDTO prssRsltDTO, String mail) {
