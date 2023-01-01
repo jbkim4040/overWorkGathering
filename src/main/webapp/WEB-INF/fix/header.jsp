@@ -75,7 +75,7 @@ var calendarDt;
             for(var i=0; i<userMenu.length; i++){
                 const li = document.createElement("li");
                 li.setAttribute("id", userMenu[i].id);
-                li.innerHTML="<a class='dropdown-item' href='/"+userMenu[i].url+"'>"+ userMenu[i].name +"</a>";
+                li.innerHTML="<a class='dropdown-item' onclick=moveMenu('" + userMenu[i].url.toString() + "')>"+ userMenu[i].name +"</a>";
 
                 document.getElementById("menuList").appendChild(li);
             }
