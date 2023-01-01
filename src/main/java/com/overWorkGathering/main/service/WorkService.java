@@ -225,6 +225,9 @@ public class WorkService {
 	public void deleteWork(HashMap<String, Object> param, MultipartFile file, HttpServletRequest request) {
 		WorkDTO workDTO = retrieveWorkOne(param.get("userID").toString(), param.get("workDt").toString());
 		ImageInfoDTO imageInfoDTO = imageInfoMapper.toImageInfoDTO(imageInfoRepository.findAllByImageId(workDTO.getImageId()));
+		if(!workDTO.getImageId().isEmpty()){
+			imageInfoRepository.deleteByImageId(workDTO.getImageId());
+		}
 		workRepository.deleteByUserIdAndWorkDt(param.get("userID").toString(), param.get("workDt").toString());
 		/*if(!workDTO.getImageId().isEmpty()){
 			imageInfoRepository.deleteByImageId(workDTO.getImageId());
