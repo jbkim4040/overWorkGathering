@@ -226,7 +226,7 @@ public class WorkService {
 		WorkDTO workDTO = retrieveWorkOne(param.get("userID").toString(), param.get("workDt").toString());
 		ImageInfoDTO imageInfoDTO = imageInfoMapper.toImageInfoDTO(imageInfoRepository.findAllByImageId(workDTO.getImageId()));
 		workRepository.deleteByUserIdAndWorkDt(param.get("userID").toString(), param.get("workDt").toString());
-		if(!workDTO.getImageId().isEmpty()){
+		/*if(!workDTO.getImageId().isEmpty()){
 			imageInfoRepository.deleteByImageId(workDTO.getImageId());
 			FTPUtil ftpUtil = null;
 			try{
@@ -239,7 +239,7 @@ public class WorkService {
 			}finally {
 				ftpUtil.disconnect();
 			}
-		}
+		}*/
 	}
 
 	/*
