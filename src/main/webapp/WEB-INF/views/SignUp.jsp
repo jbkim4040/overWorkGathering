@@ -252,13 +252,9 @@
             if(e == "Y"){
                 element.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:red">사용할수 없는 ID 입니다.</label>';
                 userId.focus();
-
-                nonCheckedId();
             }else if(e == "N"){
                 idCheckYn = true;
                 element.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:blue">사용할수 있는 ID 입니다.</label>';
-
-                checkedId();
             }else{
                 alert("에러 \n" + e);
                 element.innerHTML = '<label class="form-label" id="dupChkMsg"></label>';
@@ -514,75 +510,6 @@
 
         nonCheckedEmail();
     }
-  }
-
-
-  function checkedId(key){
-        $.ajax({
-            url:"/user/temp/checkedId",
-            type:"POST",
-            data: {"key" : key},
-            success: function(data) {
-            },
-            error: function(request,status,error) {
-                alert("에러 발생 \n" +
-                "에러코드 : "+request.status+"\n"+
-                "에러메시지 : "+request.responseText+"\n"+
-                "에러 : "+error
-                );
-            }
-        })
-  }
-
-  function checkedEmail(key){
-        $.ajax({
-            url:"/user/temp/checkedEmail",
-            type:"POST",
-            data: {"key" : key},
-            success: function(data) {
-            },
-            error: function(request,status,error) {
-                alert("에러 발생 \n" +
-                "에러코드 : "+request.status+"\n"+
-                "에러메시지 : "+request.responseText+"\n"+
-                "에러 : "+error
-                );
-            }
-        })
-  }
-
-  function nonCheckedId(key){
-        $.ajax({
-            url:"/user/temp/nonCheckedId",
-            type:"POST",
-            data: {"key" : key},
-            success: function(data) {
-            },
-            error: function(request,status,error) {
-                alert("에러 발생 \n" +
-                "에러코드 : "+request.status+"\n"+
-                "에러메시지 : "+request.responseText+"\n"+
-                "에러 : "+error
-                );
-            }
-        })
-  }
-
-  function nonCheckedEmail(key){
-        $.ajax({
-            url:"/user/temp/nonCheckedEmail",
-            type:"POST",
-            data: {"key" : key},
-            success: function(data) {
-            },
-            error: function(request,status,error) {
-                alert("에러 발생 \n" +
-                "에러코드 : "+request.status+"\n"+
-                "에러메시지 : "+request.responseText+"\n"+
-                "에러 : "+error
-                );
-            }
-        })
   }
 
 
