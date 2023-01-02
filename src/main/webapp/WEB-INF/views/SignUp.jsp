@@ -99,8 +99,7 @@
                       <div class="col-sm-9">
                           <div class="row">
                               <div class="col-sm-12">
-                                  <input type="text" class="form-control" id="email" name="email" placeholder="email@iabacus.co.kr" style="ime-mode:disabled;"
-                            onkeydown="checkEmail();" onkeyup="checkcorrectform(this);"/>
+                                  <input type="text" class="form-control" id="email" name="email" placeholder="email@iabacus.co.kr" style="ime-mode:disabled;" onkeyup="checkcorrectform(this);"/>
                               </div>
                           </div>
                       </div>
