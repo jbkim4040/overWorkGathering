@@ -79,7 +79,7 @@ public class UserController {
 	@RequestMapping(value = "/signUp", method = RequestMethod.POST)
 	public void signUp(@RequestParam("USER_ID") String encrypt_userId, @RequestParam("USER_PW") String encrypt_pw, @RequestParam("USER_NAME") String encrypt_name,
 					   @RequestParam("USER_EMAIL") String encrypt_email, @RequestParam("USER_PHONE") String encrypt_phone,
-					   @RequestParam("USER_ACCOUNT") String encrypt_account, @RequestParam("part") String part,
+					   @RequestParam("USER_ACCOUNT") String encrypt_account, @RequestParam("part") String part, @RequestParam("rank") String rank,
 					   HttpServletRequest request, HttpServletResponse response){
 		try {
 			HttpSession session = request.getSession();
@@ -99,7 +99,7 @@ public class UserController {
 
 			HashMap<String, String> map = hashingPASSWORD(password, "");
 
-			userService.signUp(tempId, userId, map.get("password"), userName, userEmail, userPhone, userAccount, part, map.get("salt"));
+			userService.signUp(tempId, userId, map.get("password"), userName, userEmail, userPhone, userAccount, part, map.get("salt"), rank);
 
 			response.sendRedirect("/login");
 		}catch(Exception e){

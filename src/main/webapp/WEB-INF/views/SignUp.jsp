@@ -250,6 +250,7 @@
 
             if(e == "Y"){
                 element.innerHTML = '<label class="form-label" id="dupChkMsg" style="color:red">사용할수 없는 ID 입니다.</label>';
+                idCheckYn = false;
                 userId.focus();
             }else if(e == "N"){
                 idCheckYn = true;
@@ -527,6 +528,12 @@
       alert("아이디를 입력 해주세요.");
       id.focus();
       return false;
+      }
+debugger;
+      if(!idCheckYn) {
+        alert("중복체크를 완료해 주세요");
+        name.focus();
+        return false;
       }
 
       if(pw.val() == ""){

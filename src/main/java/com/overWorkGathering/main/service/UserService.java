@@ -151,7 +151,7 @@ public class UserService {
 
 
 	public void signUp(String tempId, String userId, String pw, String name, String email,
-					   String phone, String account, String partCd, String salt) throws Exception{
+					   String phone, String account, String partCd, String salt, String rank) throws Exception{
 		String partLeader = partInfoRepository.findByPartCd(partCd).getPartLeader();
 
 		UserInfoEntity user = UserInfoEntity.builder()
@@ -165,6 +165,7 @@ public class UserService {
 				.salt(salt)
 				.auth(Constant.Auth.U.code)		// 기본 권한은 U( 일반사용자 )
 				.acnt(account)
+				.rank(rank)
 				.build();
 
 		userRepository.save(user);
