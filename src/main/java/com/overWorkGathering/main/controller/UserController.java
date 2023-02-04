@@ -145,14 +145,4 @@ public class UserController {
 
 		return prssRsltDTO;
 	}
-
-	@RequestMapping(value = "/temp/info", method = RequestMethod.POST)
-	public void saveTempInfo(HttpServletRequest request){
-		userService.saveTempInfo(request);
-	}
-
-	@RequestMapping(value = "/temp/info", method = RequestMethod.DELETE)
-	public void deleteTempInfo(HttpServletRequest request){
-		userService.deleteTempInfo(request);
-	}
 }

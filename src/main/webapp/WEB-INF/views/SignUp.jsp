@@ -114,9 +114,23 @@
                 </div>
 
                 <div class="mb-3">
+                  <div class="row">
+                      <div class="col-sm-6">
                   <label for="name" class="form-label">이름</label>
-                  <input type="text" class="form-control" id="name" name="name" placeholder="name" onkeyup="checkcorrectform(this);"/>
-                  <div id="nameChk_div"></div>
+                          <input type="text" class="form-control" id="name" name="name" placeholder="name" onkeyup="checkcorrectform(this);"/>
+                          <div id="nameChk_div"></div>
+                      </div>
+                      <div class="col-sm-6">
+                        <label for="rank1" class="form-label">직급</label>
+                        <select class="form-select" name="rank" id="rank">
+                            <option value="사원">사원</option>
+                            <option value="선임">선임</option>
+                            <option value="책임">책임</option>
+                            <option value="수석">수석</option>
+                            <option value="이사">이사</option>
+                        </select>
+                      </div>
+                  </div>
                 </div>
                 <div class="mb-3">
                   <label for="phone" class="form-label">전화번호</label>
@@ -196,37 +210,6 @@
             );
         }
     })
-
-    $.ajax({
-        url:"/user/temp/info",
-        type:"POST",
-        success: function(data) {
-        },
-        error: function(request,status,error) {
-            alert("에러 발생 \n" +
-            "에러코드 : "+request.status+"\n"+
-            "에러메시지 : "+request.responseText+"\n"+
-            "에러 : "+error
-            );
-        }
-    })
-
-    window.onbeforeunload = function() {
-      $.ajax({
-              url:"/user/temp/info",
-              type:"DELETE",
-              success: function(data) {
-              },
-              error: function(request,status,error) {
-                  alert("에러 발생 \n" +
-                  "에러코드 : "+request.status+"\n"+
-                  "에러메시지 : "+request.responseText+"\n"+
-                  "에러 : "+error
-                  );
-              }
-          })
-    };
-
 
   function dupIdChk(){
     const element = document.getElementById('dupIdChk_div');
