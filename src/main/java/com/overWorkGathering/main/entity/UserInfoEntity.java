@@ -46,4 +46,7 @@ public class UserInfoEntity {
 
 	@Column(name = "ACNT")
 	private String acnt;
+
+	@Column(name = "RANK")
+	private String rank;
 }

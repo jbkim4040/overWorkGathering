@@ -17,8 +17,9 @@ public class UserDTO {
 	private String auth;
 	private String phone;
 	private String salt;
-
 	private String acnt;
+
+	private String rank;
 
 	@Builder
 	public UserDTO(
@@ -31,7 +32,8 @@ public class UserDTO {
 			String auth,
 			String phone,
 			String salt,
-			String acnt) {
+			String acnt,
+			String rank) {
 		this.userId = userId;
 		this.pw = pw;
 		this.name = name;
@@ -42,5 +44,6 @@ public class UserDTO {
 		this.phone = phone;
 		this.salt = salt;
 		this.acnt = acnt;
+		this.rank = rank;
 	}
 }
