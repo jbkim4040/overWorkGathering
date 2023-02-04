@@ -77,9 +77,9 @@ window.onload = function(){
 };
 
 setpTable = function(dt){
-
-	var yyyy = dt.substr(0, 4);;
-	var MM = dt.substr(5);;
+debugger;
+	var yyyy = dt.calendarDt.substr(0, 4);;
+	var MM = dt.calendarDt.substr(5);;
 
 	var date = new Date(yyyy, MM, 0).getDate();
 
