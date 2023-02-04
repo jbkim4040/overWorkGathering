@@ -259,13 +259,13 @@ public class WorkService {
 		//월간 야근식대 요청 현황 전체 조회
 		List<WorkDTO> workDTOList = retrieveWorkCollectionReqDTOList(userIdList, dt);
 
-		List<WorkCollectionDtlReqDTO> workCollectionDtlReqDTOList = setpWorkCollectionDtlReqDTO(workDTOList, userDTOList);
+		List<WorkCollectionDtlReqDTO> workCollectionDtlReqDTOList = setpWorkCollectionDtlReqDTO(workDTOList, userDTOList, part);
 
 		return workCollectionDtlReqDTOList;
 	}
 
 
-	private List<WorkCollectionDtlReqDTO> setpWorkCollectionDtlReqDTO(List<WorkDTO> workDTOList, List<UserDTO> userDTOList) {
+	private List<WorkCollectionDtlReqDTO> setpWorkCollectionDtlReqDTO(List<WorkDTO> workDTOList, List<UserDTO> userDTOList, String part) {
 		List<WorkCollectionDtlReqDTO> workCollectionDtlReqDTOlist = new ArrayList<>();
 		workDTOList.stream().forEach(item ->{
 			workCollectionDtlReqDTOlist.add(WorkCollectionDtlReqDTO
@@ -278,6 +278,7 @@ public class WorkService {
 					.dinnerYn(item.getDinnerYn())
 					.name(setUserNm(userDTOList, item.getUserId()))
 					.remarks(item.getRemarks())
+					.part(part)
 					.build()
 			);
 		});

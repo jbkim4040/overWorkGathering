@@ -18,6 +18,8 @@ public class WorkCollectionDtlReqDTO {
     private String name;
     private String remarks;
 
+    private String part;
+
     @Builder
     public WorkCollectionDtlReqDTO(
             String userId,
@@ -29,7 +31,8 @@ public class WorkCollectionDtlReqDTO {
             String dinnerYn,
             String name,
             String taxiYn,
-            String remarks) {
+            String remarks,
+            String part) {
         this.userId = userId;
         this.workDt = workDt;
         this.startTime = startTime;
@@ -40,5 +43,6 @@ public class WorkCollectionDtlReqDTO {
         this.name = name;
         this.taxiYn = taxiYn;
         this.remarks = remarks;
+        this.part = part;
     }
 }
