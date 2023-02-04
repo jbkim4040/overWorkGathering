@@ -119,6 +119,7 @@ public class FTPUtil {
     public void download(String dir, String downloadFileName, String path) {
         InputStream in = null;
         FileOutputStream out = null;
+        byte[] buffer = new byte[1024 * 8];
 
         try {
             channelSftp.cd(dir);
@@ -130,8 +131,8 @@ public class FTPUtil {
                 out = new FileOutputStream(new File(path + "/" + downloadFileName));
                 int i;
 
-                while ((i = in.read()) != -1) {
-                    out.write(i);
+                while ((i = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, i);
                 }
             }
         } catch (SftpException sfte) {
