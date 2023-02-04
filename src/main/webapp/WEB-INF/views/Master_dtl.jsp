@@ -103,8 +103,8 @@ calculationReqPersonnel = function(result){
 };
 
 setpDateOfInitiation = function(dt) {
-	var yyyy = dt.substr(0, 4);
-	var MM = dt.substr(5);
+	var yyyy = dt.calendarDt.substring(0, 4);
+	var MM = dt.calendarDt.substring(5);
 
 	var date = new Date(yyyy, MM, 0).getDate();
     var tbody = document.getElementById("tbody");
