@@ -78,8 +78,8 @@ window.onload = function(){
 
 setpTable = function(dt){
 debugger;
-	var yyyy = dt.calendarDt.substr(0, 4);;
-	var MM = dt.calendarDt.substr(5);;
+	var yyyy = dt.calendarDt.substr(0, 4);
+	var MM = dt.calendarDt.substr(5);
 
 	var date = new Date(yyyy, MM, 0).getDate();
 
