@@ -225,12 +225,12 @@ function fileClick(){
 			</div>
             <div class="mb-3">
                 <label>출근시간</label>
-                <input class="form-control" style="width:100px; display:inline;" type="number" id="startHour" min="00" max="23" oninput="hourChk(this)" placeholder="시"></input> :
+                <input class="form-control" style="width:100px; display:inline;" type="number" id="startHour" min="00" max="23" value="09" oninput="hourChk(this)" placeholder="시"></input> :
                 <input class="form-control" style="width:100px; display:inline;" type="number" id="startMin" min="00" max="59" value="00" oninput="minChk(this)" placeholder="분"></input>
             </div>
             <div class="mb-3">
                 <label>퇴근시간</label>
-                <input class="form-control" style="width:100px; display:inline;" type="number" id="endHour" min="00" max="23" oninput="hourChk(this)" placeholder="시"></input> :
+                <input class="form-control" style="width:100px; display:inline;" type="number" id="endHour" min="00" max="23" value="21" oninput="hourChk(this)" placeholder="시"></input> :
                 <input class="form-control" style="width:100px; display:inline;" type="number" id="endMin" min="00" max="59" value="00" oninput="minChk(this)" placeholder="분"></input>
             </div>
 			<div class="mb-3">
