@@ -152,7 +152,7 @@ public class FTPUtil {
     }
 
     /**
-     * 파일 업로드
+     * 파일 삭제
      *
      * @param dir 삭제할 파일경로
      * @param fileName 삭제할 파일

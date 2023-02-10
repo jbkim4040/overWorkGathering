@@ -515,7 +515,7 @@
 debugger;
       if(!idCheckYn) {
         alert("중복체크를 완료해 주세요");
-        name.focus();
+        id.focus();
         return false;
       }
 

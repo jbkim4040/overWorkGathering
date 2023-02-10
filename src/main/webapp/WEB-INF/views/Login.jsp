@@ -89,15 +89,16 @@
     </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        debugger;
         <%
             session = request.getSession();
             String login = (String)session.getAttribute("login");
+            String ID = (String)session.getAttribute("ID");
 
             if(login == "999"){
             %>
                 alert("로그인에 실패하였습니다. \n 다시 로그인하여 주십시오.");
-                $("#userId").val = "";
+                debugger;
+                $("#userId").attr('value',"<%=ID%>");
                 $("#password").val = "";
             <%
             }

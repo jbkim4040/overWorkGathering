@@ -93,9 +93,11 @@ public class UserService {
 			// 로그인 코드가 999 : 실패     000 : 성공
 			if(ObjectUtils.isEmpty(user)){
 				resultCd = "999";
+				session.setAttribute("ID", userId);
 				session.setAttribute("login", resultCd);
 			}else{
 				resultCd = "000";
+				session.removeAttribute("ID");
 				session.setAttribute("login", resultCd);
 				session.setAttribute("userId", user.getUserId());
 				session.setAttribute("userName", user.getName());
