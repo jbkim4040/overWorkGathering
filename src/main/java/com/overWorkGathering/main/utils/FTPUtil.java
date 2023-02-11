@@ -48,7 +48,7 @@ public class FTPUtil {
      * @param mkdirName 생성할 디렉토리명
      */
     public void mkdir(String dir, String mkdirName) {
-        if (!this.exists(dir + "/" + mkdirName)) {
+        if (!this.exists(dir + mkdirName)) {
             try {
                 channelSftp.cd(dir);
                 channelSftp.mkdir(mkdirName);

@@ -3,9 +3,11 @@ package com.overWorkGathering.main.DTO;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @NoArgsConstructor
+@ToString
 public class WorkCollectionDtlReqDTO {
     private String userId;
     private String workDt;

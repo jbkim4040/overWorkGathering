@@ -2,6 +2,7 @@ package com.overWorkGathering.main.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.overWorkGathering.main.DTO.WorkCollectionDtlReqDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -24,6 +25,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
+@Slf4j
 public class ExcelService {
     private final String[] alphabet = {
             "A", "B", "C", "D", "E", "F",
@@ -693,8 +695,8 @@ public class ExcelService {
 
             for(int j = 1; j <= workCollectionDtl.size(); j++){
                 // 굳이 0을 넣어야 하나?
-                workManagementRow2.createCell((3 * j) - 1).setCellValue(0);
-                workManagementRow3.createCell((3 * j) - 1).setCellValue(0);
+                workManagementRow2.createCell((3 * j) - 1); // .setCellValue(0);
+                workManagementRow3.createCell((3 * j) - 1); // .setCellValue(0);
 
 
                 workManagementRow2.createCell((3 * j) - 2).setCellStyle(positionInfoCellStyle1);
@@ -794,6 +796,7 @@ public class ExcelService {
             workManagementSheet.addMergedRegion(new CellRangeAddress(1,1, (3 * index) - 2,3 * index));
 
             List<WorkCollectionDtlReqDTO> reqDTOList = (List<WorkCollectionDtlReqDTO>)workCollectionDtl.get(key);
+            log.info("reqDTOList :: "  + reqDTOList.toString());
 
             workManagementRow1.createCell((3 * index) - 2).setCellStyle(blankCellStyle1);
             workManagementRow1.createCell((3 * index) - 1).setCellStyle(blankCellStyle2);
@@ -823,15 +826,17 @@ public class ExcelService {
                 dayRowMap.get(j + "_1")
                         .getCell((3 * index) - 2).setCellValue(DTO.getEndTime());
 
-                dayRowMap.get(j + "")
-                        .getCell((3 * index) - 1).setCellValue(DTO.getDinnerYn().equals("Y") ? 9000 : 0);
+                if(DTO.getDinnerYn().equals("Y")){
+                    dayRowMap.get(j + "")
+                            .getCell((3 * index) - 1).setCellValue(9000);
+                }
                 dayRowMap.get(j + "_1")
                         .getCell((3 * index) - 1).setCellValue(DTO.getTaxiPay());
 
                 dayRowMap.get(j + "")
-                        .getCell(3 * index).setCellValue("비고1");
+                        .getCell(3 * index).setCellValue(DTO.getRemarks());
                 dayRowMap.get(j + "_1")
-                        .getCell(3 * index).setCellValue("비고2");
+                        .getCell(3 * index).setCellValue("");
 
 
 
@@ -1098,4 +1103,6 @@ public class ExcelService {
 
         return cellAlphabet;
     }
+
+    //private
 }

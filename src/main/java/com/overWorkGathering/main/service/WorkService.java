@@ -14,6 +14,7 @@ import com.overWorkGathering.main.entity.WorkHisEntity;
 import com.overWorkGathering.main.mapper.ImageInfoMapper;
 import com.overWorkGathering.main.repository.ImageInfoRepository;
 import com.overWorkGathering.main.utils.FTPUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ntp.TimeStamp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 
 @Service
+@Slf4j
 public class WorkService {
 	@Value("${spring.profiles.active}")
 	private String currentEnvironment;
@@ -347,13 +349,12 @@ public class WorkService {
 
 		String ext = originalImg.substring(originalImg.lastIndexOf(".") + 1);
 		String newImgFileName = UUID.randomUUID().toString().replace("-", "");
-		final String SFTP_TAXI_RECEIPT_IMG_PATH = "/var/" + environment + "/overworkgathering/images/" + part ;
+		final String SFTP_TAXI_RECEIPT_IMG_PATH = "/var/" + environment + "/overworkgathering/images/" + part + "/";
 
 
 		if(imageFile.isEmpty()){
-			System.out.println("imageFile 비어있음");
+			log.info("imageFile 비어있음");
 		}else{
-			System.out.println("업로드할 이미지명 :: " + newImgFileName);
 			String currentPath = System.getProperty("user.dir");
 			if(!"".equals(ImgFileName)){
 				newImgFileName = ImgFileName;
@@ -377,8 +378,11 @@ public class WorkService {
 				if(!fileUploader.exists(SFTP_TAXI_RECEIPT_IMG_PATH + currentDt)){
 					fileUploader.mkdir(SFTP_TAXI_RECEIPT_IMG_PATH, currentDt);
 				}
+				log.info("업로드할 이미지 경로 :: " + SFTP_TAXI_RECEIPT_IMG_PATH + currentDt);
 
-				fileUploader.uploadFile(SFTP_TAXI_RECEIPT_IMG_PATH + currentDt, uploadfile); //업로드
+				boolean uploadYn = fileUploader.uploadFile(SFTP_TAXI_RECEIPT_IMG_PATH + currentDt, uploadfile); //업로드
+
+				log.info("파일 업로드 성공여부 :: " + (uploadYn ? "성공" : "실패"));
 			}catch(IOException ioe){
 				ioe.printStackTrace();
 				System.out.println(ioe.getMessage());
