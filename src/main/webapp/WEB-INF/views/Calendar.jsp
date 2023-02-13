@@ -13,36 +13,28 @@
 <!-- fullcalendar 언어 CDN -->
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/locales-all.min.js'></script>
 <!-- 모달 CDN -->
-<link rel="stylesheet" href="../css/modal.css" />
+<link rel="stylesheet" href="./static/css/modal.css" />
 <title>Insert title here</title>
 </head>
 <body>
-	<div id='calendar-container' style="margin:0 auto; width:70%;">
+<%@ include file="/WEB-INF/fix/header.jsp"%>
+	<div id='calendar-container' style="margin:0 auto; width:60%;">
 		<div id ='calendar'></div>
 	</div>
 
-<div class="modal hidden">
+<div class="modal">
   <div class="bg"></div>
-  <div class="modalBox">
-    <iframe id="CalendarPopup" width="400" height="350"></iframe>
+  <div class="modalBox" style="width:495px; height:695px;">
+    <iframe id="CalendarPopup" width="465" height="670"></iframe>
   </div>
 </div>
+<%@ include file="/WEB-INF/fix/footer.jsp"%>
 <script>
 var id = "";
 var name = "";
+var calendarDt = "";
 
   document.addEventListener('DOMContentLoaded', function() {
-     <%
-        session = request.getSession();
-        String userId = (String)session.getAttribute("userId");
-        String userName = (String)session.getAttribute("userName");
-    %>
-
-    id = "<%=userId%>";
-    name = "<%=userName%>";
-
-    alert(name + "님 환영합니다.");
-
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',
@@ -57,15 +49,29 @@ var name = "";
 	  },
 	  dateClick: function(e) {
 	    document.getElementById("CalendarPopup").src = "/CalendarPopup?workDt="+ e.dateStr;
+	    debugger;
 	    document.querySelector(".modal").classList.remove("hidden");
+	    document.querySelector(".modal").style.display="flex";
 	  }
     });
     calendar.render();
 
+
+    $(".fc-prev-button").click(function(){
+        setpCalendarDt();
+    });
+
+    $(".fc-next-button").click(function(){
+        setpCalendarDt();
+    });
+
+    setpCalendarDt = function(){
+        calendarDt = calendar.getDate().getFullYear() + "-" + String(Number(calendar.getDate().getMonth())+1) ;
+    };
+
     $.ajax({
         url:"/work/retrievework",
         type:"get",
-        data: {userId : id},
         dataType : "json",
         success: function(result) {
         	debugger;
@@ -79,8 +85,7 @@ var name = "";
                 	start : result[i].workDt
                 });
             };
-
-
+            setpCalendarDt();
         },
         error: function() {
             alert("에러 발생");
@@ -93,6 +98,7 @@ var name = "";
   const close = () => {
 	  debugger;
     document.querySelector(".modal").classList.add("hidden");
+    document.querySelector(".modal").style.display="none";
   }
 
   document.querySelector(".bg").addEventListener("click", close);

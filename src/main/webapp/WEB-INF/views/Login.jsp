@@ -5,19 +5,19 @@
 <meta charset="UTF-8">
 <title>로그인</title>
     <script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script type="text/javascript" src="../js/rsa.js"></script>
-    <script type="text/javascript" src="../js/jsbn.js"></script>
-    <script type="text/javascript" src="../js/prng4.js"></script>
-    <script type="text/javascript" src="../js/rng.js"></script>
+    <script type="text/javascript" src="./static/js/rsa.js"></script>
+    <script type="text/javascript" src="./static/js/jsbn.js"></script>
+    <script type="text/javascript" src="./static/js/prng4.js"></script>
+    <script type="text/javascript" src="./static/js/rng.js"></script>
   <!-- Core CSS -->
-    <link rel="stylesheet" href="../css/core.css" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="../css/theme-default.css" class="template-customizer-theme-css" />
-    <link rel="stylesheet" href="../css/demo.css" />
+    <link rel="stylesheet" href="./static/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="./static/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="./static/css/demo.css" />
 <!-- Vendors CSS -->
-    <link rel="stylesheet" href="../css/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="./static/css/perfect-scrollbar.css" />
 <!-- Page CSS -->
 <!-- Page -->
-    <link rel="stylesheet" href="../css/pages/page-auth.css" />
+    <link rel="stylesheet" href="./static/css/pages/page-auth.css" />
 </head>
 <body>
 
@@ -64,12 +64,6 @@
                 </div>
               </div>
               <div class="mb-3">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="remember-me" />
-                  <label class="form-check-label" for="remember-me"> Remember Me </label>
-                </div>
-              </div>
-              <div class="mb-3">
                 <input type="hidden" id="RSAModulus" value="${RSAModulus}" />
                 <input type="hidden" id="RSAExponent" value="${RSAExponent}" />
                 <input type="hidden" id="USER_ID" name="USER_ID">
@@ -95,15 +89,16 @@
     </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        debugger;
         <%
             session = request.getSession();
             String login = (String)session.getAttribute("login");
+            String ID = (String)session.getAttribute("ID");
 
             if(login == "999"){
             %>
                 alert("로그인에 실패하였습니다. \n 다시 로그인하여 주십시오.");
-                $("#userId").val = "";
+                debugger;
+                $("#userId").attr('value',"<%=ID%>");
                 $("#password").val = "";
             <%
             }

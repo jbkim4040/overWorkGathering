@@ -11,10 +11,11 @@ public class WorkDTO {
 	private String workDt;
 	private String startTime;
 	private String endTime;
-	private String img;
-	private String taxiPay;
+	private String imageId;
+	private int taxiPay;
 	private String dinnerYn;
 	private String taxiYn;
+	private String remarks;
 	
 	@Builder
 	public WorkDTO(
@@ -22,17 +23,19 @@ public class WorkDTO {
 			String workDt, 
 			String startTime, 
 			String endTime,
-			String img,
-			String taxiPay,
+			String imageId,
+			int taxiPay,
 			String dinnerYn,
-			String taxiYn) {
+			String taxiYn,
+			String remarks) {
 		this.userId = userId;
 		this.workDt = workDt;
 		this.startTime = startTime;
 		this.endTime = endTime;
-		this.img = img;
+		this.imageId = imageId;
 		this.taxiPay = taxiPay;
 		this.dinnerYn = dinnerYn;
 		this.taxiYn = taxiYn;
+		this.remarks = remarks;
 	}
 }

@@ -13,7 +13,6 @@ import java.security.spec.RSAPublicKeySpec;
 import java.util.Base64;
 import java.util.HashMap;
 
-import static com.sun.javafx.font.FontResource.SALT;
 
 @Controller
 public class Common {
@@ -80,7 +79,6 @@ public class Common {
     public final static String base64Encoding(String info){
         byte[] message = info.getBytes(StandardCharsets.UTF_8);
         String encodedInfo = Base64.getEncoder().encodeToString(message);
-        System.out.println("encodedInfo :: " + encodedInfo);
         return encodedInfo;
     }
 
@@ -91,7 +89,6 @@ public class Common {
      */
     public final static String base64Decoding(String info){
         byte[] decoded = Base64.getDecoder().decode(info);
-        System.out.println("decodedInfo :: " + new String(decoded, StandardCharsets.UTF_8));
         return new String(decoded, StandardCharsets.UTF_8);
     }
 
@@ -156,4 +153,15 @@ public class Common {
         }
         return sb.toString();
     }
+
+    public static String codeGenerator(int codeLength){
+        StringBuffer buf =new StringBuffer();
+
+        for(int i=0;i<codeLength;i++){
+            buf.append((char)((int)(Math.random()*26)+65));
+        }
+
+        return buf.toString();
+    }
+
 }

@@ -13,8 +13,8 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode
-@Table(name = "TB_USER_INFO")
-public class UserEntity {
+@Table(name = "tb_user_info")
+public class UserInfoEntity {
 
 	@Id
 	@Column(name = "USER_ID")
@@ -43,4 +43,10 @@ public class UserEntity {
 
 	@Column(name = "SALT")
 	private String salt;
+
+	@Column(name = "ACNT")
+	private String acnt;
+
+	@Column(name = "RANK")
+	private String rank;
 }

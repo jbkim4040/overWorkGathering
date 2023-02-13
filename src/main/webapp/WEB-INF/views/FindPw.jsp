@@ -6,14 +6,14 @@
 <title>Insert title here</title>
 
 <!-- Core CSS -->
-    <link rel="stylesheet" href="../css/core.css" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="../css/theme-default.css" class="template-customizer-theme-css" />
-    <link rel="stylesheet" href="../css/demo.css" />
+    <link rel="stylesheet" href="./static/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="./static/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="./static/css/demo.css" />
 <!-- Vendors CSS -->
-    <link rel="stylesheet" href="../css/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="./static/css/perfect-scrollbar.css" />
 <!-- Page CSS -->
 <!-- Page -->
-    <link rel="stylesheet" href="../css/pages/page-auth.css" />
+    <link rel="stylesheet" href="./static/css/pages/page-auth.css" />
 </head>
 <body>
 
@@ -31,8 +31,8 @@
               </div>
               <!-- /Logo -->
               <p class="mb-4">이메일 입력시 아이디와 비밀번호를 변경할 수 있는 링크를 보내드립니다.</p>
-              <form id="formAuthentication" class="mb-3" action="index.html" method="POST">
-                <div class="mb-3">
+              <form id="formAuthentication" class="mb-4" action="index.html" method="POST">
+                <div class="mb-4">
                   <label for="email" class="form-label">이메일</label>
                   <input
                     type="text"

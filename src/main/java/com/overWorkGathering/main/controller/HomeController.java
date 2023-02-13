@@ -10,6 +10,6 @@ public class HomeController {
     public String home() {
         System.out.println("home controller start");
 
-        return "index";
+        return "Calendar";
     }
 }

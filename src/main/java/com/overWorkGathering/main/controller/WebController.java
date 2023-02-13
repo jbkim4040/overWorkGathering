@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.*;
 import java.security.spec.RSAPublicKeySpec;
+import java.util.UUID;
 
 import static com.overWorkGathering.main.utils.Common.*;
 
@@ -30,8 +31,6 @@ public class WebController {
 	public String login(final HttpServletRequest request) {
 		// RSA 키 생성
 		initRsa(request);
-		String encodedInfo = base64Encoding("test");
-		String decodedInfo = base64Decoding(encodedInfo);
 
 		return "Login";
 	}
@@ -40,6 +39,12 @@ public class WebController {
 	public String SignUp(HttpServletRequest request) {
 		// RSA 키 생성
 		initRsa(request);
+
+		// 임시 ID 발급
+		HttpSession session = request.getSession();
+		session.setAttribute("tempId", UUID.randomUUID().toString().replace("-", ""));
+		session.setAttribute("idDupChk", "N");
+		session.setAttribute("emailChk", "N");
 
 		return "SignUp";
 	}
@@ -57,5 +62,27 @@ public class WebController {
 		return mav;
 	}
 
+	@RequestMapping(value="/Master")
+	public String Master(final HttpServletRequest request) {
+		// RSA 키 생성
+		initRsa(request);
 
+		return "Master";
+	}
+
+	@RequestMapping(value="/Master_dtl")
+	public String Master_dtl(final HttpServletRequest request) {
+		// RSA 키 생성
+		initRsa(request);
+
+		return "Master_dtl";
+	}
+
+	@RequestMapping(value="/User_dtl")
+	public String User_dtl(final HttpServletRequest request) {
+		// RSA 키 생성
+		initRsa(request);
+
+		return "User_dtl";
+	}
 }
